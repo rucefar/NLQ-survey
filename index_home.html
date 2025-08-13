@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8"> <!-- 頁面編碼設定為 UTF-8，避免中文亂碼 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- RWD：讓行動裝置以正確比例顯示 -->
+    <title>🌿Nurtilite生活營養問卷</title> <!-- 瀏覽器分頁標題 -->
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* 預設字體 */
+            margin: 0; /* 移除預設外距 */
+            padding: 0; /* 移除預設內距 */
+            background: #ffffff; /* 純白背景 */
+            color: #333; /* 文字顏色 */
+            min-height: 100vh; /* 最小高度佔滿視窗高度 */
+        }
+        h1, h2 {
+            color: #2c3e50; /* 標題文字顏色 */
+            margin-bottom: 10px; /* 標題底部間距 */
+        }
+        section {
+            margin-bottom: 40px; /* 區塊之間距離 */
+            padding: 20px; /* 區塊內距 */
+            background: #e8f5e9; /* 淺綠底，醒目區塊 */
+            border-radius: 8px; /* 圓角 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 淡陰影 */
+        }
+        label {
+            display: block; /* 每個標籤一行 */
+            margin-bottom: 8px; /* 與下一項目的距離 */
+        }
+        input[type="text"],
+        input[type="number"] {
+            width: 100%; /* 輸入欄位佔滿容器寬度 */
+            padding: 8px; /* 內距：提升可點擊面積 */
+            margin-top: 4px; /* 與標籤文字間距 */
+            margin-bottom: 12px; /* 與下一元素間距 */
+            border: 1px solid #ccc; /* 邊框 */
+            border-radius: 4px; /* 圓角 */
+        }
+        table {
+            width: 100%; /* 表格佔滿寬度 */
+            border-collapse: collapse; /* 合併邊框 */
+            margin-bottom: 20px; /* 與下方元素間距 */
+        }
+        th, td {
+            border: 1px solid #ddd; /* 表格格線 */
+            padding: 8px; /* 內距：提升可讀性 */
+            text-align: left; /* 文字靠左 */
+        }
+        th {
+            background: #f0f0f0; /* 表頭底色 */
+        }
+        /* 症狀表格容器的表格樣式 */
+        .symptom-list table {
+            width: 100%; /* 佔滿寬度 */
+            border-collapse: collapse; /* 合併邊框 */
+        }
+        .symptom-list td {
+            border: 1px solid #ddd; /* 症狀表格格線 */
+            padding: 4px; /* 內距較小，增加密度 */
+            vertical-align: top; /* 多列文字時頂端對齊 */
+        }
+        /* 症狀表格內的核取方塊與文字對齊 */
+        .symptom-list input[type="checkbox"] {
+            margin-right: 4px; /* 核取方塊與文字距離 */
+        }
+        .btn { /* 全站按鈕樣式 */
+            display: inline-block; /* 行內區塊，能設定寬高 */
+            padding: 30px 20px; /* ↑↓30、←→20：控制按鈕尺寸 */
+            background: #3498db; /* 藍色背景 */
+            color: #fff; /* 白字 */
+            border: none; /* 移除邊框 */
+            border-radius: 4px; /* 圓角 */
+            cursor: pointer; /* 滑鼠手型 */
+            font-size: 24px; /* 文字大小 */
+            margin: 10px 10px 0 0; /* 外距（上右下左） */
+        }
+        .btn:hover { 
+            background: #2980b9; /* 滑過變深藍，提高互動感 */
+        }
+
+        /* 首頁抬頭區（上方標題置中） */
+        .home-header {
+            text-align: center; /* 標題置中 */
+            margin-top: 40px; /* 與頁面頂端距離 */
+            margin-bottom: 20px; /* 與下方容器距離 */
+        }
+        .home-header img {
+            display: block; /* 讓 margin: auto 生效 */
+            margin: 0 auto 8px auto; /* 圖示置中，下方留 8px 間距 */
+            width: 80px; /* 圖示寬度 */
+            height: auto; /* 高度等比例 */
+        }
+        .home-header h1 {
+            font-size: 2rem; /* 標題尺寸 */
+            margin: 0; /* 移除預設外距 */
+            color: #2c3e50; /* 與 h1/h2 一致的深藍灰 */
+        }
+
+        .home-container { 
+            background-image: url('vine_panel_complete.png'); /* 使用完成的藤蔓邊框 PNG 圖 */
+            background-size: contain; /* 讓整個邊框完整出現（等比縮放） */
+            background-repeat: no-repeat; /* 不重複平舖 */
+            background-position: center; /* 邊框置中 */
+            background-color: transparent; /* 透明背景保留白底 */
+            max-width: 700px; /* 最大寬度控制 */
+            width: 90%; /* RWD：寬度 90% */
+            margin: 0 auto; /* 區塊左右置中 */
+            padding: 80px; /* 內距：確保按鈕不要貼到邊框 */
+            box-sizing: border-box; /* 使 padding 納入寬度計算 */
+            min-height: 450px; /* 基礎高度（維持外框比例） */
+            display: flex; /* 使用 Flex 來置中內容 */
+            justify-content: center;  /* 水平置中按鈕群 */
+            align-items: center;      /* 垂直置中按鈕群 */
+            height: 100%;             /* 高度佔父層（配合 min-height） */
+        }
+        .home-buttons {
+            display: flex; /* 讓兩顆按鈕並排 */
+            justify-content: center; /* 水平置中 */
+            gap: 20px; /* 兩顆按鈕的間距 */
+        }
+
+        /* 管理頁面的刪除按鈕樣式 */
+        .delete-btn {
+            background: #e74c3c; /* 紅色刪除鍵 */
+            color: #fff; /* 白字 */
+            border: none; /* 移除邊框 */
+            border-radius: 4px; /* 圓角 */
+            padding: 5px 10px; /* 內距 */
+            cursor: pointer; /* 手型游標 */
+        }
+        .delete-btn:hover {
+            background: #c0392b; /* 滑過變深紅 */
+        }
+
+        /* 管理頁面的新增按鈕（目前未使用，可保留擴充） */
+        .add-btn {
+            display: inline-block; /* 行內區塊 */
+            margin-bottom: 10px; /* 下方間距 */
+            padding: 8px 16px; /* 內距 */
+            background: #27ae60; /* 綠色背景 */
+            color: #fff; /* 白字 */
+            border: none; /* 無邊框 */
+            border-radius: 4px; /* 圓角 */
+            cursor: pointer; /* 手型游標 */
+        }
+        .add-btn:hover {
+            background: #1e8449; /* 滑過變深綠 */
+        }
+
+        .result {
+            margin-top: 10px; /* 與上方內容間距 */
+            font-weight: bold; /* 粗體醒目 */
+            color: #e67e22; /* 橘色字體 */
+        }
+
+        /* 管理頁標題置中 */
+        #managePage h1 {
+            text-align: center; /* 置中標題 */
+        }
+
+        /* 行動裝置微調：避免藤蔓框內距過大擠壓按鈕 */
+        @media (max-width: 480px) {
+            .home-container { padding: 40px; } /* 小螢幕縮小內距 */
+            .btn { font-size: 20px; padding: 20px 16px; } /* 按鈕字級與內距略縮 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 首頁主畫面容器（預設顯示） -->
+    <div id="homePage"> <!-- 首頁外層：用於切換不同頁面可見性 -->
+        <div class="home-header"> <!-- 首頁標題置中區塊 -->
+            <h1>🌿Nurtilite生活營養問卷</h1> <!-- 網站主標題 -->
+        </div>
+        <!-- 藤蔓邊框容器，內含首頁兩顆主按鈕 -->
+        <div class="home-container"> <!-- 含背景藤蔓框，並用 Flex 置中內部按鈕 -->
+            <div class="home-buttons"> <!-- 按鈕群：水平置中、設定間距 -->
+              <button id="btnQuestionnaire" class="btn">生活營養問卷</button> <!-- 進入問卷頁按鈕 -->
+              <button id="btnManage" class="btn">問卷資料管理</button> <!-- 進入管理頁按鈕 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 問卷頁（預設隱藏） -->
+    <div id="questionnairePage" style="display:none;"> <!-- 問卷頁面容器，透過 JS 切換顯示 -->
+        <h1>🌿 生活型態與營養問卷</h1> <!-- 問卷頁標題 -->
+        <form id="questionnaire"> <!-- 問卷表單，提交時由 JS 攔截 -->
+            <section> <!-- 一、基本資料 -->
+                <h2>一、基本資料</h2>
+                <label>姓名
+                    <input type="text" name="name" required> <!-- 使用者姓名（必填） -->
+                </label>
+                <label>性別
+                    <select name="gender" required> <!-- 性別（必選） -->
+                        <option value="">--請選擇--</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </label>
+                <label>年齡
+                    <input type="number" name="age" min="0"> <!-- 年齡（數字，>=0） -->
+                </label>
+                <label>星座
+                    <select name="zodiac"> <!-- 星座（選填） -->
+                        <option value="">--請選擇--</option>
+                        <option value="牡羊座">牡羊座</option>
+                        <option value="金牛座">金牛座</option>
+                        <option value="雙子座">雙子座</option>
+                        <option value="巨蟹座">巨蟹座</option>
+                        <option value="獅子座">獅子座</option>
+                        <option value="處女座">處女座</option>
+                        <option value="天秤座">天秤座</option>
+                        <option value="天蠍座">天蠍座</option>
+                        <option value="射手座">射手座</option>
+                        <option value="魔羯座">魔羯座</option>
+                        <option value="水瓶座">水瓶座</option>
+                        <option value="雙魚座">雙魚座</option>
+                    </select>
+                </label>
+                <label>職業
+                    <input type="text" name="occupation"> <!-- 職業 -->
+                </label>
+                <label>學歷
+                    <input type="text" name="education"> <!-- 學歷 -->
+                </label>
+                <label>身高 (cm)
+                    <input type="number" name="height" min="0" step="0.1"> <!-- 身高公分（可小數） -->
+                </label>
+                <label>體重 (kg)
+                    <input type="number" name="weight" min="0" step="0.1"> <!-- 體重公斤（可小數） -->
+                </label>
+                <label>BMI
+                    <input type="number" name="bmi" step="0.1" readonly> <!-- 自動計算 BMI（唯讀） -->
+                </label>
+                <label>電話或 LINE ID
+                    <input type="text" name="contact"> <!-- 聯絡方式 -->
+                </label>
+                <label>就寢時間
+                    <select name="sleep_time"> <!-- 睡覺時間選單 -->
+                        <option value="">--請選擇--</option>
+                        <option value="10:00~11:00">10:00~11:00</option>
+                        <option value="11:00~12:00">11:00~12:00</option>
+                        <option value="12:00~1:00">12:00~1:00</option>
+                        <option value="1:00~">1:00~</option>
+                        <option value="通宵未稅">通宵未稅</option> <!-- 原文用字保持 -->
+                    </select>
+                </label>
+                <label>早餐時間
+                    <select name="breakfast_time"> <!-- 早餐時間選單 -->
+                        <option value="">--請選擇--</option>
+                        <option value="6:00~7:00">6:00~7:00</option>
+                        <option value="7:00~8:00">7:00~8:00</option>
+                        <option value="8:00~9:00">8:00~9:00</option>
+                        <option value="9:00~">9:00~</option>
+                        <option value="經常沒吃早餐">經常沒吃早餐</option>
+                    </select>
+                </label>
+                <label>飲水種類
+                    <select name="water_type" id="waterTypeSelect"> <!-- 飲水種類（動態顯示下方淨水器欄位） -->
+                        <option value="">--請選擇--</option>
+                        <option value="白開水">白開水</option>
+                        <option value="礦泉水">礦泉水</option>
+                        <option value="飲料">飲料</option>
+                        <option value="家用淨水器">家用淨水器</option>
+                    </select>
+                </label>
+                <!-- 當選「家用淨水器」時顯示 -->
+                <div id="waterFilterInfo" style="display:none; margin-top: 8px;"> <!-- 動態顯示的補充欄位 -->
+                    <label>淨水器品牌與類型
+                        <input type="text" name="water_filter_info"> <!-- 使用者填寫淨水器資訊 -->
+                    </label>
+                </div>
+                <label>是否服用營養補充品
+                    <select name="supplements"> <!-- 補充品使用頻率 -->
+                        <option value="">--請選擇--</option>
+                        <option value="沒有">沒有</option>
+                        <option value="偶爾">偶爾</option>
+                        <option value="曾經">曾經</option>
+                        <option value="現在">現在</option>
+                    </select>
+                </label>
+                <label>運動習慣
+                    <select name="exercise"> <!-- 運動習慣 -->
+                        <option value="">--請選擇--</option>
+                        <option value="沒有">沒有</option>
+                        <option value="偶爾">偶爾</option>
+                        <option value="規律">規律</option>
+                    </select>
+                </label>
+                <label>慢性疾病
+                    <input type="text" name="chronic"> <!-- 使用者填寫慢性病史 -->
+                </label>
+            </section>
+
+            <section> <!-- 二、生活型態評估（勾選＝2分，經由類別欄位連動） -->
+                <h2>二、生活型態評估 (每題 2 分)</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>題號</th> <!-- 題目序號 -->
+                            <th>蘋果579 疾病營養靈我</th> <!-- 題目敘述（原文保留） -->
+                            <th>A</th> <!-- 類別指標（自動連動勾選） -->
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>E</th>
+                            <th>CaMg</th>
+                            <th>FE</th>
+                            <th>纖維</th>
+                            <th>蛋白質</th>
+                            <th>微量元素</th>
+                            <th>是否</th> <!-- 使用者實際勾選處 -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-row="1">
+                            <td>1</td>
+                            <td>我每天都會吃2碗</td> <!-- 題目內容 -->
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="A" disabled></td> <!-- 類別勾選（由下方是否連動） -->
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="1" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life1" class="lifestyle-item life-checkbox" data-row="1"></td> <!-- 使用者勾選 -->
+                        </tr>
+                        <tr data-row="2">
+                            <td>2</td>
+                            <td>我每天吃的蔬菜及水果小於5份</td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="A" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="2" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life2" class="lifestyle-item life-checkbox" data-row="2"></td>
+                        </tr>
+                        <tr data-row="3">
+                            <td>3</td>
+                            <td>我每天吃的肉、魚小於1.5份（全穀根莖類小於0.5份）</td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="A" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="3" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life3" class="lifestyle-item life-checkbox" data-row="3"></td>
+                        </tr>
+                        <tr data-row="4">
+                            <td>4</td>
+                            <td>我每天喝的乳製品少於1.5杯</td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="A" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="4" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life4" class="lifestyle-item life-checkbox" data-row="4"></td>
+                        </tr>
+                        <tr data-row="5">
+                            <td>5</td>
+                            <td>我每天喝的豆漿或茶至少2杯</td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="A" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="5" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life5" class="lifestyle-item life-checkbox" data-row="5"></td>
+                        </tr>
+                        <tr data-row="6">
+                            <td>6</td>
+                            <td>我每天吃的蛋白質食物小於5份（大豆蛋白少於1份）</td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="A" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="6" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life6" class="lifestyle-item life-checkbox" data-row="6"></td>
+                        </tr>
+                        <tr data-row="7">
+                            <td>7</td>
+                            <td>我常吃加工食品</td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="A" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="7" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life7" class="lifestyle-item life-checkbox" data-row="7"></td>
+                        </tr>
+                        <tr data-row="8">
+                            <td>8</td>
+                            <td>我有吸菸的習慣</td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="A" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="8" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life8" class="lifestyle-item life-checkbox" data-row="8"></td>
+                        </tr>
+                        <tr data-row="9">
+                            <td>9</td>
+                            <td>我經常節食以減輕體重</td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="A" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="B" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="C" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="D" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="E" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="CaMg" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="FE" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="纖維" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="蛋白質" disabled></td>
+                            <td><input type="checkbox" class="category" data-row="9" data-cat="微量元素" disabled></td>
+                            <td><input type="checkbox" name="life9" class="lifestyle-item life-checkbox" data-row="9"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn" onclick="computeScore()">計算生活型態分數</button> <!-- 點擊後計分 -->
+                <div id="lifestyleResult" class="result"></div> <!-- 顯示分數結果 -->
+            </section>
+
+            <!-- 置中強化的口號句 -->
+            <p style="margin: 20px 0; font-weight: bold; font-size: 1.5rem; color: #1e7ec8; text-align: center;">
+                給對材料做對事，加上足夠的時間，人體是最好的醫生
+            </p>
+
+            <section> <!-- 三、症狀與營養建議 -->
+                <h2>三、症狀與營養建議 (勾選您有的症狀)</h2>
+                <div class="symptom-list"> <!-- JS 動態插入症狀表格的位置 -->
+                    <!-- Symptoms will be injected here by JS -->
+                </div>
+            </section>
+
+            <button type="submit" class="btn">提交表單</button> <!-- 送出後由 JS 儲存與輸出結果 -->
+            <button type="button" class="btn" id="btnReturnHome">回首頁</button> <!-- 返回首頁 -->
+        </form>
+        <div id="formOutput" class="result"></div> <!-- 送出後在此顯示彙整 -->
+    </div>
+
+    <!-- 管理頁（預設隱藏） -->
+    <div id="managePage" style="display:none;"> <!-- 顯示已儲存的使用者清單 -->
+        <h1>問卷資料管理</h1>
+        <button id="btnManageReturnHome" class="btn">回首頁</button> <!-- 從管理頁回首頁 -->
+        <table id="manageTable"></table> <!-- 由 JS 動態生成清單與刪除鍵 -->
+    </div>
+
+    <script>
+        // ====== 資料：症狀與對應建議（依你的修訂） ======
+        const symptoms = [
+            { name: '刷牙流血', rec: 'C' }, /* 症狀：對應建議 C */
+            { name: '發燒', rec: 'P.C.鈣.鐵' }, /* 多個建議以 . 分隔 */
+            { name: '青春痘', rec: 'A.B' },
+            { name: '皮膚鬆弛', rec: 'P.C.水' },
+            { name: '骨質疏鬆', rec: 'C.鈣' },
+            { name: '脂肪肝', rec: 'P.B.C.卵.甘草' },
+            { name: '口角炎', rec: 'B' },
+            { name: '偏頭痛', rec: 'B.C.鈣.卵' },
+            { name: '臉過油', rec: 'A.B.卵' },
+            { name: '皮膚過敏發炎', rec: 'A.B.C.鈣' },
+            { name: '抽筋', rec: 'B.鈣' },
+            { name: '肥胖', rec: 'P.B.C.卵.纖' },
+            { name: '常打嗝', rec: 'B.鈣' },
+            { name: '易腹瀉', rec: 'P.B.蒜.菌' },
+            { name: '粉刺', rec: 'A' },
+            { name: '頭皮屑', rec: 'A.B.橄欖油' },
+            { name: '水腫', rec: 'P.B.鈣' },
+            { name: '靜脈曲張', rec: 'P.C.E' },
+            { name: '口乾舌燥', rec: 'A.B' },
+            { name: '壓力熬夜', rec: 'P.B' },
+            { name: '黑斑', rec: 'C.E.卵' },
+            { name: '落髮分叉禿頭', rec: 'P.B.卵' },
+            { name: '尿路結石', rec: 'A.B.C.鈣.水' },
+            { name: '貧血', rec: 'P.B.E.鐵' },
+            { name: '口臭', rec: 'B' },
+            { name: '常感冒', rec: 'P.A.C.紫錐花' },
+            { name: '皮膚粗糙', rec: 'A.卵.橄欖油' },
+            { name: '多夢磨牙', rec: 'B.鈣.卵' },
+            { name: '尿酸高（痛風）', rec: 'P.B.C.水' },
+            { name: '更年期', rec: 'E.鈣.甘草' },
+            { name: '脹氣消化不良', rec: 'A.B.鈣.菌.酵素' },
+            { name: '過敏打噴嚏', rec: 'P.A.C.E' },
+            { name: '濕疹', rec: 'B.橄欖油.魚油' },
+            { name: '肌肉關節酸痛', rec: 'B.E.鈣.月見.魚' },
+            { name: '攝護腺肥大', rec: 'P.A.鋁棕櫚' },
+            { name: '膽結石', rec: 'A.早餐.酵素' },
+            { name: '胃口不好', rec: 'P.B.活' },
+            { name: '便秘', rec: 'B.鈣.水.纖.卵' },
+            { name: '經期不順', rec: 'P.月見' },
+            { name: '憂鬱沮喪', rec: 'B.鈣.魚.卵' },
+            { name: '膀胱無力頻尿', rec: 'P.B.E.菌' },
+            { name: '抽菸喝酒習慣', rec: 'A.B.C.E' },
+            { name: '胃痛', rec: 'P' },
+            { name: '手腳冰冷', rec: 'P.E.卵.月見' },
+            { name: '經痛', rec: 'P.B.鈣.月見' },
+            { name: '記憶力減退', rec: 'P.鐵.卵.肉蓯蓉' },
+            { name: '血糖偏高', rec: 'P.鐵.鋁棕櫚' },
+            { name: '老花眼白內障', rec: 'B.C.E.葉黃素' },
+            { name: '常吃藥', rec: 'B.C' },
+            { name: '不易受孕', rec: 'P.A.E.月見.鐵.鋅' },
+            { name: '孕吐', rec: 'B' },
+            { name: '失眠睡不好', rec: 'B.鈣.甘草' },
+            { name: '血壓偏高', rec: 'B.鈣.Q10.魚.茶' },
+            { name: '飛蚊症', rec: 'A.C.葉黃素' },
+            { name: '疲倦', rec: 'P.B' },
+            { name: '白帶', rec: 'A.B.蒜.菌' },
+            { name: '懷孕哺乳', rec: 'P.綜合.B.鈣.魚.卵' },
+            { name: '易怒不耐煩', rec: 'B.鈣.魚' },
+            { name: '血脂偏高', rec: 'B.卵.茶.素' },
+            { name: '三C族', rec: 'A.B.葉黃素' }
+        ];
+
+        // ====== 類別對照表：生活型態每題勾選時，對應哪些營養類別會被「連動」勾選（僅視覺顯示用） ======
+        const categoryMapping = {
+            '1': ['A','B','C','D','E','CaMg','FE','纖維','蛋白質','微量元素'], /* 題1 對應多類別 */
+            '2': ['A','B','C','E','纖維','微量元素'],
+            '3': ['B','E','FE','纖維','微量元素'],
+            '4': ['A','B','D','CaMg','蛋白質'],
+            '5': ['CaMg','FE','微量元素'],
+            '6': ['D','FE','蛋白質','微量元素'],
+            '7': ['B','C','E'],
+            '8': ['A','C','E','FE'],
+            '9': ['A','B','C','D','E','CaMg','FE','纖維','蛋白質','微量元素'] /* 題9 幾乎全包含 */
+        };
+
+        // ====== 動態插入症狀表格（6列均分） ======
+        function injectSymptoms() {
+            const symptomList = document.querySelector('#questionnairePage .symptom-list'); /* 容器節點 */
+            const rowCount = 6; /* 6列呈現 */
+            const itemsPerRow = Math.ceil(symptoms.length / rowCount); /* 每列放置的項目數 */
+            const symptomTable = document.createElement('table'); /* 生成表格 */
+            symptomTable.className = 'symptom-table'; /* 指定表格類別（樣式沿用父層） */
+            for (let row = 0; row < rowCount; row++) { /* 逐列建立 */
+                const tr = document.createElement('tr'); /* 新列 */
+                for (let col = 0; col < itemsPerRow; col++) { /* 逐欄建立 */
+                    const index = row * itemsPerRow + col; /* 計算全域索引 */
+                    const td = document.createElement('td'); /* 新儲存格 */
+                    if (index < symptoms.length) { /* 邊界檢查：超出不放資料 */
+                        const item = symptoms[index]; /* 取得症狀資料 */
+                        const id = 'symptom_' + index; /* 唯一 id */
+                        td.innerHTML = `<input type="checkbox" id="${id}" name="symptom" value="${item.name}" data-rec="${item.rec}">` + /* 勾選症狀 */
+                                       `<label for="${id}"> ${item.name} <span style="color: #888; font-size: 12px;">(${item.rec})</span></label>`; /* 顯示名稱 + 建議 */
+                    }
+                    tr.appendChild(td); /* 加入儲存格 */
+                }
+                symptomTable.appendChild(tr); /* 列加入表格 */
+            }
+            symptomList.innerHTML = ''; /* 清空容器 */
+            symptomList.appendChild(symptomTable); /* 插入新表格 */
+        }
+
+        // ====== 計算生活型態分數（每題 2 分，依據類別欄位目前被勾選的數量 * 2） ======
+        function computeScore() {
+            const categoryChecks = document.querySelectorAll('.category:checked'); /* 取得所有被連動勾選的類別欄 */
+            let total = categoryChecks.length * 2; /* 以 2 分/項換算總分 */
+            document.getElementById('lifestyleResult').textContent = '生活型態分數：' + total + ' 分'; /* 顯示結果 */
+        }
+        window.computeScore = computeScore; /* 使 HTML onclick 可呼叫 */
+
+
+        // ====== 依據是否勾選（使用者的 life-checkbox）去勾/取消 類別欄位 ======
+        function updateCategories(row, isChecked) {
+            const categoriesForRow = categoryMapping[String(row)] || Array.from(
+                document.querySelectorAll(`input.category[data-row="${row}"]`)
+            ).map(catInput => catInput.dataset.cat); /* 若無對照表則依畫面現有欄位 */
+            categoriesForRow.forEach(cat => {
+                const catCheckbox = document.querySelector(
+                    `input.category[data-row="${row}"][data-cat="${cat}"]`
+                );
+                if (catCheckbox) {
+                    catCheckbox.checked = isChecked; /* 同步勾選狀態 */
+                }
+            });
+        }
+
+        // ====== 儲存：將問卷頁面（填寫後）複製成單獨 HTML，寫入 localStorage 並開新視窗預覽 ======
+        function saveSubmission(form) {
+            const nameVal = form.querySelector('input[name="name"]').value.trim(); /* 以姓名作為檔名 Key */
+            if (!nameVal) return; /* 沒填姓名則不儲存 */
+
+            const clone = document.documentElement.cloneNode(true); /* 複製整份文件（深層） */
+
+            /* 移除首頁與管理頁，只保留問卷頁與結果 */
+            const homeEl = clone.querySelector('#homePage');
+            if (homeEl) homeEl.remove();
+            const manageEl = clone.querySelector('#managePage');
+            if (manageEl) manageEl.remove();
+
+            /* 確保問卷頁顯示（避免另存後仍為 display:none） */
+            const qPage = clone.querySelector('#questionnairePage');
+            if (qPage) {
+                qPage.style.display = 'block';
+            }
+
+            /* 將原頁面的輸入值複製到克隆頁（在禁用前同步） */
+            (function copyValues() {
+                const originalInputs = document.querySelectorAll('#questionnairePage input, #questionnairePage select, #questionnairePage textarea'); /* 原輸入元件 */
+                const clonedInputs = clone.querySelectorAll('#questionnairePage input, #questionnairePage select, #questionnairePage textarea'); /* 複製品中的輸入元件 */
+                originalInputs.forEach((orig, idx) => {
+                    const cloned = clonedInputs[idx]; /* 對位元素 */
+                    if (!cloned) return;
+                    const tag = orig.tagName.toLowerCase();
+                    if (tag === 'input') {
+                        const type = orig.type;
+                        if (type === 'checkbox' || type === 'radio') {
+                            cloned.checked = orig.checked; /* 勾選同步 */
+                        } else {
+                            cloned.value = orig.value; /* 文字/數字同步 */
+                        }
+                    } else if (tag === 'select') {
+                        cloned.value = orig.value; /* 下拉選擇同步 */
+                    } else if (tag === 'textarea') {
+                        cloned.value = orig.value; /* 文本框同步 */
+                    }
+                });
+            })();
+
+            /* 禁用克隆頁的互動（防止另存頁還能操作） */
+            clone.querySelectorAll('#questionnairePage input, #questionnairePage select, #questionnairePage textarea, #questionnairePage button').forEach(el => {
+                el.disabled = true; /* 禁用互動 */
+                el.readOnly = true; /* 設唯讀（保險） */
+            });
+
+            /* 移除所有 <script>，避免另存頁執行原本邏輯 */
+            clone.querySelectorAll('script').forEach(scr => scr.remove());
+
+            /* 用姓名覆蓋另存頁的 <title>，方便辨識 */
+            const titleEl = clone.querySelector('title');
+            if (titleEl) titleEl.textContent = nameVal;
+
+            const savedHtml = '<!DOCTYPE html>' + clone.outerHTML; /* 串回完整 HTML 字串 */
+
+            /* 更新姓名清單（避免重複加入） */
+            let names = [];
+            try {
+                names = JSON.parse(localStorage.getItem('savedNames')) || []; /* 讀取既有清單 */
+            } catch (e) {
+                names = []; /* 讀取失敗則重置 */
+            }
+            if (!names.includes(nameVal)) {
+                names.push(nameVal); /* 新增姓名 */
+                localStorage.setItem('savedNames', JSON.stringify(names)); /* 寫回清單 */
+            }
+
+            /* 以 key: savedPage_姓名 保存整頁 HTML 內容 */
+            localStorage.setItem('savedPage_' + nameVal, savedHtml);
+
+            /* 另開視窗預覽保存成果 */
+            const newWin = window.open();
+            if (newWin) {
+                newWin.document.write(savedHtml); /* 寫入 HTML */
+                newWin.document.close(); /* 完成載入 */
+            }
+        }
+
+        // ====== 管理頁面：建立清單表（最多顯示 4 筆），可點開 / 刪除 ======
+        function buildManageTable() {
+            const table = document.getElementById('manageTable'); /* 目標表格 */
+            let names = [];
+            try {
+                names = JSON.parse(localStorage.getItem('savedNames')) || []; /* 讀取姓名清單 */
+            } catch (e) {
+                names = [];
+            }
+            const rowCount = 4; /* 最多顯示 4 行（不足以空白佔位） */
+            table.innerHTML = ''; /* 清空舊內容 */
+            for (let i = 0; i < rowCount; i++) {
+                const tr = document.createElement('tr'); /* 新列 */
+                const nameTd = document.createElement('td'); /* 姓名儲存格 */
+                const deleteTd = document.createElement('td'); /* 刪除鍵儲存格 */
+                if (i < names.length) {
+                    const name = names[i]; /* 取對應姓名 */
+                    const link = document.createElement('a'); /* 可點擊開啟儲存頁 */
+                    link.href = '#';
+                    link.textContent = name;
+                    link.addEventListener('click', function(ev) {
+                        ev.preventDefault();
+                        openSavedPage(name); /* 打開儲存頁 */
+                    });
+                    nameTd.appendChild(link);
+                    const delBtn = document.createElement('button'); /* 刪除按鈕 */
+                    delBtn.textContent = '刪除';
+                    delBtn.className = 'delete-btn';
+                    delBtn.addEventListener('click', function(ev) {
+                        ev.preventDefault();
+                        deleteEntry(name); /* 刪除該筆資料 */
+                    });
+                    deleteTd.appendChild(delBtn);
+                } else {
+                    /* 若沒有資料，補空白行以維持表格高度 */
+                    nameTd.innerHTML = '&nbsp;';
+                    deleteTd.innerHTML = '&nbsp;';
+                }
+                tr.appendChild(nameTd);
+                tr.appendChild(deleteTd);
+                table.appendChild(tr);
+            }
+        }
+
+        // ====== 刪除資料：移除姓名清單與其對應的儲存頁 ======
+        function deleteEntry(name) {
+            let names = [];
+            try {
+                names = JSON.parse(localStorage.getItem('savedNames')) || []; /* 讀取清單 */
+            } catch (e) {
+                names = [];
+            }
+            const newNames = names.filter(n => n !== name); /* 過濾掉目標姓名 */
+            localStorage.setItem('savedNames', JSON.stringify(newNames)); /* 寫回清單 */
+            localStorage.removeItem('savedPage_' + name); /* 移除對應儲存頁 */
+            buildManageTable(); /* 重新渲染表格 */
+        }
+
+        // ====== 開啟儲存的個別頁面（新視窗） ======
+        function openSavedPage(name) {
+            const html = localStorage.getItem('savedPage_' + name); /* 讀取 HTML 字串 */
+            if (html) {
+                const win = window.open();
+                if (win) {
+                    win.document.write(html); /* 輸出內容 */
+                    win.document.close();
+                }
+            } else {
+                alert('無法找到該資料頁面。'); /* 找不到時提示 */
+            }
+        }
+
+        // ====== DOM 載入完成後綁定事件與初始化 ======
+        document.addEventListener('DOMContentLoaded', () => {
+            /* 第一次載入時預設放入一筆範例，讓管理頁有資料可演示 */
+            try {
+                let initNames = JSON.parse(localStorage.getItem('savedNames')) || []; /* 讀清單 */
+                if (!Array.isArray(initNames) || initNames.length === 0) {
+                    const defaultName = '王大明'; /* 範例姓名 */
+                    initNames = [defaultName];
+                    localStorage.setItem('savedNames', JSON.stringify(initNames));
+                    const dummyPage = '<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><title>' + defaultName + '</title></head><body><h1>' + defaultName + '的問卷資料</h1><p>這是一個虛構的範例資料，用來展示資料管理功能。</p></body></html>';
+                    localStorage.setItem('savedPage_' + defaultName, dummyPage);
+                }
+            } catch (err) {
+                /* 若讀取失敗則重置並塞入預設值 */
+                const defaultName = '王大明';
+                localStorage.setItem('savedNames', JSON.stringify([defaultName]));
+                const dummyPage = '<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><title>' + defaultName + '</title></head><body><h1>' + defaultName + '的問卷資料</h1><p>這是一個虛構的範例資料，用來展示資料管理功能。</p></body></html>';
+                localStorage.setItem('savedPage_' + defaultName, dummyPage);
+            }
+
+            injectSymptoms(); /* 產生症狀表格 */
+
+            /* 生活型態題目的「是否」勾選 → 連動上方類別欄位 */
+            document.querySelectorAll('.life-checkbox').forEach(chk => {
+                chk.addEventListener('change', function() {
+                    const row = this.dataset.row; /* 取得該列編號 */
+                    updateCategories(row, this.checked); /* 勾選狀態同步到類別欄 */
+                });
+            });
+
+            /* 自動計算 BMI：當身高或體重變動時重新計算 */
+            (function() {
+                const heightInput = document.querySelector('input[name="height"]'); /* 身高輸入 */
+                const weightInput = document.querySelector('input[name="weight"]'); /* 體重輸入 */
+                const bmiInput = document.querySelector('input[name="bmi"]'); /* BMI 顯示欄 */
+
+                function calculateBMI() {
+                    const h = parseFloat(heightInput.value); /* 取得身高（cm） */
+                    const w = parseFloat(weightInput.value); /* 取得體重（kg） */
+                    if (h > 0 && w > 0) {
+                        const heightM = h / 100.0; /* 換算公尺 */
+                        const bmi = w / (heightM * heightM); /* BMI 計算 */
+                        bmiInput.value = bmi.toFixed(1); /* 小數一位 */
+                    } else {
+                        bmiInput.value = ''; /* 條件不完整則清空 */
+                    }
+                }
+                if (heightInput && weightInput && bmiInput) {
+                    heightInput.addEventListener('input', calculateBMI); /* 監聽身高輸入 */
+                    weightInput.addEventListener('input', calculateBMI); /* 監聽體重輸入 */
+                }
+            })();
+
+            /* 當飲水種類選「家用淨水器」時顯示品牌/類型輸入欄 */
+            (function() {
+                const waterSelect = document.getElementById('waterTypeSelect'); /* 飲水種類選單 */
+                const waterInfo = document.getElementById('waterFilterInfo'); /* 額外資訊欄位 */
+                if (waterSelect && waterInfo) {
+                    waterSelect.addEventListener('change', function() {
+                        if (this.value === '家用淨水器') {
+                            waterInfo.style.display = 'block'; /* 顯示 */
+                        } else {
+                            waterInfo.style.display = 'none'; /* 隱藏 */
+                        }
+                    });
+                }
+            })();
+
+            /* 表單送出：整理結果、顯示於下方、並另存為獨立頁面 */
+            document.getElementById('questionnaire').addEventListener('submit', function(e) {
+                e.preventDefault(); /* 阻止預設提交刷新頁面 */
+                const formData = new FormData(this); /* 收集表單資料 */
+
+                /* 蒐集勾選的症狀與對應建議 */
+                const selectedSymptoms = [];
+                document.querySelectorAll('input[name="symptom"]:checked').forEach(chk => {
+                    selectedSymptoms.push({ name: chk.value, rec: chk.dataset.rec }); /* e.g. { name:'刷牙流血', rec:'C' } */
+                });
+
+                /* 計算分數：以已被勾選的類別欄位數計分（*2） */
+                let lifestyleScore = document.querySelectorAll('.category:checked').length * 2;
+
+                /* 組裝輸出 HTML（顯示在 formOutput） */
+                let output = '<h3>填寫結果</h3>';
+                output += '<p><strong>姓名：</strong>' + (formData.get('name') || '') + '</p>';
+                output += '<p><strong>性別：</strong>' + (formData.get('gender') || '') + '</p>';
+                output += '<p><strong>年齡：</strong>' + (formData.get('age') || '') + '</p>';
+                output += '<p><strong>生活型態分數：</strong>' + lifestyleScore + ' 分</p>';
+
+                if (selectedSymptoms.length > 0) {
+                    output += '<p><strong>勾選的症狀與建議：</strong></p><ul>';
+                    selectedSymptoms.forEach(item => {
+                        output += '<li>' + item.name + ' — 推薦：' + item.rec + '</li>'; /* 列出每個症狀與建議 */
+                    });
+                    output += '</ul>';
+
+                    /* 統計建議營養素出現次數（以 . 分隔） */
+                    const nutrientCounts = {};
+                    selectedSymptoms.forEach(item => {
+                        item.rec.split('.').forEach(nutrient => {
+                            const trimmed = nutrient.trim();
+                            if (trimmed) {
+                                nutrientCounts[trimmed] = (nutrientCounts[trimmed] || 0) + 1; /* 出現次數 +1 */
+                            }
+                        });
+                    });
+
+                    const summaryParts = Object.keys(nutrientCounts).map(key => key + '*' + nutrientCounts[key]); /* 轉為陣列：如 "C*3" */
+                    if (summaryParts.length > 0) {
+                        const summaryLines = summaryParts.map(part => '。' + part).join('<br>'); /* 每項換行顯示 */
+                        output += '<p><strong>缺乏營養素統計：</strong><br>' + summaryLines + '</p>'; /* 顯示統計 */
+                    }
+                } else {
+                    output += '<p><strong>未勾選症狀。</strong></p>'; /* 無勾選時提示 */
+                }
+
+                document.getElementById('formOutput').innerHTML = output; /* 輸出至頁面 */
+
+                saveSubmission(this); /* 另存為單獨 HTML 並開新視窗 */
+            });
+
+            /* 導覽：首頁→問卷 */
+            document.getElementById('btnQuestionnaire').addEventListener('click', function() {
+                document.getElementById('homePage').style.display = 'none'; /* 隱藏首頁 */
+                document.getElementById('managePage').style.display = 'none'; /* 隱藏管理頁 */
+                document.getElementById('questionnairePage').style.display = 'block'; /* 顯示問卷頁 */
+            });
+
+            /* 導覽：首頁→管理頁 */
+            document.getElementById('btnManage').addEventListener('click', function() {
+                document.getElementById('homePage').style.display = 'none'; /* 隱藏首頁 */
+                document.getElementById('questionnairePage').style.display = 'none'; /* 隱藏問卷頁 */
+                document.getElementById('managePage').style.display = 'block'; /* 顯示管理頁 */
+                buildManageTable(); /* 生成管理表格 */
+            });
+
+            /* 問卷頁 → 回首頁 */
+            const returnHomeBtn = document.getElementById('btnReturnHome');
+            if (returnHomeBtn) {
+                returnHomeBtn.addEventListener('click', function() {
+                    document.getElementById('homePage').style.display = 'block'; /* 顯示首頁 */
+                    document.getElementById('questionnairePage').style.display = 'none'; /* 隱藏問卷頁 */
+                    document.getElementById('managePage').style.display = 'none'; /* 隱藏管理頁 */
+                    document.getElementById('formOutput').innerHTML = ''; /* 清空結果輸出 */
+                    // document.getElementById('questionnaire').reset(); /* 若要同時重置表單，可解除註解 */
+                });
+            }
+
+            /* 管理頁 → 回首頁 */
+            const manageReturnBtn = document.getElementById('btnManageReturnHome');
+            if (manageReturnBtn) {
+                manageReturnBtn.addEventListener('click', function() {
+                    document.getElementById('homePage').style.display = 'block'; /* 顯示首頁 */
+                    document.getElementById('questionnairePage').style.display = 'none'; /* 隱藏問卷頁 */
+                    document.getElementById('managePage').style.display = 'none'; /* 隱藏管理頁 */
+                });
+            }
+        });
+    </script>
+</body>
+</html>
