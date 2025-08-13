@@ -179,11 +179,22 @@
          * questionnaire or management pages.  The extra padding
          * increases the button size, while a larger font improves
          * readability on smaller screens. */
-        #btnQuestionnaire.btn,
-        #btnManage.btn {
-            padding: 40px 30px;
-            font-size: 28px;
-        }
+      /* 桌面版（預設） */
+#btnQuestionnaire.btn,
+#btnManage.btn {
+    padding: 40px 30px;
+    font-size: 28px;
+}
+
+/* 手機版（螢幕寬度 ≤ 768px） */
+@media (max-width: 768px) {
+    #btnQuestionnaire.btn,
+    #btnManage.btn {
+        padding: 20px 15px;  /* 手機版縮小內距 */
+        font-size: 18px;     /* 手機版縮小字體 */
+    }
+}
+
         /* Style for manage page delete and add buttons */
         .delete-btn {
             background: #e74c3c;
