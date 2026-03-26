@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>WinPlus+Team</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Caveat:wght@400;600&family=Zen+Maru+Gothic&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Noto Sans TC', sans-serif; }
+
+/* ══ NAV ══════════════════════════════════ */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 50px; background: #1e1e1e; z-index: 9000;
+  display: flex; align-items: center; padding: 0 12px; gap: 6px;
+}
+.nav-logo { font-family: 'Caveat', cursive; font-size: 1.1rem; color: #f0ebe0; flex: 1; white-space: nowrap; }
+.tab-btn {
+  padding: 5px 11px; border: 1.5px solid rgba(255,255,255,.25);
+  background: transparent; color: rgba(255,255,255,.6);
+  font-family: 'Noto Sans TC', sans-serif; font-size: .72rem;
+  cursor: pointer; border-radius: 18px; white-space: nowrap; transition: all .2s;
+}
+.tab-btn.active { background: #e8a045; border-color: #e8a045; color: #fff; }
+
+.save-menu-item {
+  padding: 8px 12px; border-radius: 8px; font-size: .78rem; color: #333;
+  cursor: pointer; transition: background .12s;
+}
+.save-menu-item:hover { background: #f5f0e8; }
+.save-menu-item.danger { color: #c03030; }
+.save-menu-item.danger:hover { background: #ffe8e8; }
+
+/* ══ PAGES ════════════════════════════════ */
+.page {
+  position: absolute; top: 50px; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  display: none;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+.page.active { 
+  display: block;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+/* ══════════════════════════════════════════
+   PAGE 1 — 曼陀羅九宮格
+══════════════════════════════════════════ */
+#page-mandala { background: #fff; overflow: auto; display: flex; align-items: center; justify-content: center; }
+.mandala-wrapper { display: flex; gap: 14px; align-items: flex-start; padding: 12px; min-width: max-content; max-width: 90vw; max-height: 90vh; }
+.mandala-left { display: flex; flex-direction: column; padding: 8px; width: 148px; flex-shrink: 0; }
+.mandala-brand { text-align: center; margin-bottom: 14px; }
+.mandala-brand-title {
+  font-family: 'Zen Maru Gothic', sans-serif; font-size: 1.75rem; font-weight: 700;
+  background: linear-gradient(135deg, #c9783c, #e8b845, #4a7c8e);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.15;
+}
+.left-field { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
+.left-dot { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: #fff; }
+.d-date{background:#4ab8b8} .d-ttl{background:#a8c44a} .d-name{background:#e85a3c} .d-memo{background:#7c5ab8}
+.left-input { flex: 1; border: none; border-bottom: 1.5px solid #ddd; background: transparent; font-family: 'Noto Sans TC', sans-serif; font-size: .73rem; outline: none; padding: 2px 0; color: #333; }
+.left-input::placeholder { color: #bbb; }
+.big-grid { display: grid; grid-template-columns: repeat(9, minmax(40px, 1fr)); grid-template-rows: repeat(9, minmax(40px, 1fr)); border: 2.5px solid #222; background: #222; gap: 1px; max-width: 600px; max-height: 600px; aspect-ratio: 1; }
+.m-cell { width: 56px; height: 56px; background: #fff; position: relative; overflow: hidden; }
+.m-cell.bl { border-left: 2.5px solid #222; } .m-cell.bt { border-top: 2.5px solid #222; }
+.m-cell textarea { position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; resize: none; font-family: 'Noto Sans TC', sans-serif; font-size: .58rem; color: #333; padding: 14px 3px 3px 3px; text-align: center; line-height: 1.35; }
+.cell-code { position: absolute; top: 2px; left: 3px; font-size: .5rem; color: rgba(0,0,0,.3); pointer-events: none; font-weight: 700; z-index: 1; }
+.cA{background:#f5e6b0} .cA .cell-code{color:#b8900a} .cB{background:#f5c0a8} .cB .cell-code{color:#c05030}
+.cC{background:#b0dff0} .cC .cell-code{color:#1a7aaa} .cD{background:#b0dff0} .cD .cell-code{color:#1a7aaa}
+.cE{background:#f5c0d8} .cE .cell-code{color:#b03070} .cF{background:#f5c0d8} .cF .cell-code{color:#b03070}
+.cG{background:#b0f0c8} .cG .cell-code{color:#1a9a50} .cH{background:#b0f0c8} .cH .cell-code{color:#1a9a50}
+.cM{background:#fff5cc} .cM .cell-code{color:#b8900a}
+
+/* ══════════════════════════════════════════
+   PAGE 2 — 跟進網絡圖 (Cork Board)
+══════════════════════════════════════════ */
+#page-cork {
+  background-color: #b07840;
+  background-image:
+    repeating-linear-gradient(12deg,  transparent 0px, transparent 3px, rgba(160,100,40,.18) 3px, rgba(160,100,40,.18) 4px),
+    repeating-linear-gradient(78deg,  transparent 0px, transparent 5px, rgba(200,140,60,.12) 5px, rgba(200,140,60,.12) 6px),
+    repeating-linear-gradient(145deg, transparent 0px, transparent 8px, rgba(100,55,15,.10)  8px, rgba(100,55,15,.10)  9px),
+    radial-gradient(ellipse at 30% 40%, #d4a055 0%, #b07030 45%, #8a5020 100%);
+}
+#sticky-container { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+#sticky-container .sticky { pointer-events: auto; }
+
+#cork-hint {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  font-size: .7rem; color: rgba(255,255,255,.45); pointer-events: none; white-space: nowrap; z-index: 200;
+}
+
+/* Add button + color picker popup */
+#add-sticky-wrap {
+  position: absolute; bottom: 22px; right: 22px; z-index: 500;
+}
+#add-sticky-btn {
+  width: 52px; height: 52px; border-radius: 50%; border: none;
+  background: #e8a045; color: #fff; font-size: 1.6rem; line-height: 1;
+  cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.4);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .15s, background .15s;
+}
+#add-sticky-btn:hover { background: #d09030; transform: scale(1.08); }
+#add-sticky-btn.open { background: #555; transform: rotate(45deg); }
+
+#color-picker-popup {
+  position: absolute; bottom: 62px; right: 0;
+  background: rgba(20,12,4,.75); border-radius: 14px;
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;
+  opacity: 0; pointer-events: none; transform: translateY(10px);
+  transition: opacity .2s, transform .2s;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  min-width: 46px; align-items: center;
+}
+#color-picker-popup.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.cp-swatch {
+  width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.4);
+  cursor: pointer; transition: transform .15s, border-color .15s;
+}
+.cp-swatch:hover { transform: scale(1.2); border-color: #fff; }
+.cp-y{background:#fdf876} .cp-b{background:#c8e8f8} .cp-p{background:#fcd0e0} .cp-g{background:#c8f0cc} .cp-w{background:#fefefe}
+
+/* ── STICKY NOTE ── */
+.sticky {
+  position: absolute; width: 178px; display: flex; flex-direction: column;
+  border-radius: 2px; cursor: grab; user-select: none;
+  box-shadow: 4px 6px 16px rgba(0,0,0,.4), 1px 1px 3px rgba(0,0,0,.2);
+}
+.sticky.sy{background:#fdf876} .sticky.sb{background:#c8e8f8}
+.sticky.sp{background:#fcd0e0} .sticky.sg{background:#c8f0cc} .sticky.sw{background:#fefefe}
+
+/* Pin */
+.s-pin { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 22px; height: 25px; pointer-events: auto; z-index: 5; filter: drop-shadow(0 2px 3px rgba(0,0,0,.4)); cursor: grab; }
+
+/* Header */
+.s-head {
+  height: 26px; padding: 0 6px 0 5px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(0,0,0,.09); border-radius: 2px 2px 0 0;
+  cursor: grab; flex-shrink: 0; gap: 4px;
+}
+
+/* ── Color dots (left side of header) ── */
+.s-color-dots { display: flex; gap: 3px; align-items: center; flex: 1; cursor: pointer; position: relative; }
+.s-dot {
+  width: 9px; height: 9px; border-radius: 50%; border: 1px solid rgba(0,0,0,.18);
+  transition: transform .15s;
+}
+.s-dot:hover { transform: scale(1.35); }
+.dot-y{background:#fdf876} .dot-b{background:#c8e8f8} .dot-p{background:#fcd0e0} .dot-g{background:#c8f0cc} .dot-w{background:#fefefe}
+
+/* Color change popup on sticky */
+.s-color-popup {
+  position: absolute; top: 18px; left: 0;
+  background: rgba(20,12,4,.82); border-radius: 10px;
+  padding: 7px 8px; display: flex; gap: 5px;
+  opacity: 0; pointer-events: none; transform: translateY(-4px);
+  transition: opacity .15s, transform .15s;
+  z-index: 50; backdrop-filter: blur(6px);
+}
+.s-color-popup.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.s-cp-swatch {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35);
+  cursor: pointer; transition: transform .12s;
+}
+.s-cp-swatch:hover { transform: scale(1.25); border-color: #fff; }
+
+.s-del {
+  width: 17px; height: 17px; border: none; background: rgba(180,0,0,.2); color: rgba(100,0,0,.7);
+  border-radius: 50%; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0;
+}
+.s-del:hover { background: rgba(210,0,0,.55); color: #fff; }
+
+.s-body { flex: 1; display: flex; flex-direction: column; padding: 7px; gap: 6px; }
+.s-ta {
+  width: 100%; min-height: 78px; background: transparent; border: none; outline: none; resize: none;
+  font-family: 'Caveat', cursive; font-size: 1.05rem; color: #222; line-height: 1.5; cursor: text;
+}
+.s-ta::placeholder { color: rgba(0,0,0,.22); font-size: .85rem; }
+.s-img {
+  width: 100%; min-height: 60px; background: rgba(0,0,0,.07); border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; overflow: hidden; position: relative; flex-shrink: 0;
+}
+.s-img img { width: 100%; max-height: 120px; object-fit: cover; display: block; }
+.s-img-hint { display: flex; flex-direction: column; align-items: center; gap: 2px; color: rgba(0,0,0,.28); font-size: .63rem; pointer-events: none; }
+.s-img-hint-icon { font-size: 1.2rem; }
+.s-img-del {
+  position: absolute; top: 4px; right: 4px; width: 17px; height: 17px; border: none;
+  background: rgba(0,0,0,.52); color: #fff; border-radius: 50%; font-size: 9px;
+  cursor: pointer; padding: 0; display: none; align-items: center; justify-content: center;
+}
+.s-img:hover .s-img-del { display: flex; }
+.s-file { display: none; }
+
+/* ══════════════════════════════════════════
+   PAGE 3 — 組織網路圖 (Mind Map)
+══════════════════════════════════════════ */
+#page-mindmap {
+  background: #f5f1ea;
+  background-image: radial-gradient(circle at 20% 80%, rgba(74,124,142,.06) 0%, transparent 60%),
+                    radial-gradient(circle at 80% 20%, rgba(201,120,60,.06) 0%, transparent 60%);
+}
+#mm-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1;
+}
+#mm-canvas { 
+  position: absolute; inset: 0; z-index: 2; 
+  width: 100%; height: 100%;
+}
+
+.mm-hint {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  font-size: .7rem; color: rgba(26,26,46,.35);
+  pointer-events: none; white-space: nowrap; z-index: 50;
+}
+.mm-toolbar {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 100;
+  background: #1e1e1e; padding: 8px 16px; border-radius: 40px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+}
+.mm-btn {
+  padding: 7px 15px; border: none; background: rgba(255,255,255,.1); color: #f0ebe0;
+  font-family: 'Noto Sans TC', sans-serif; font-size: .76rem;
+  cursor: pointer; border-radius: 22px; transition: background .15s; letter-spacing: .03em;
+}
+.mm-btn:hover { background: rgba(255,255,255,.2); }
+.mm-btn.danger { color: #ff9a9a; }
+
+/* Mind map nodes */
+.mm-node {
+  position: absolute; transform: translate(-50%, -50%);
+  min-width: 72px; max-width: 160px;
+  text-align: center; cursor: grab; z-index: 10;
+}
+.mm-node:active { cursor: grabbing; }
+.mm-node-inner {
+  padding: 8px 14px; border-radius: 26px;
+  background: #fff; border: 2px solid rgba(26,26,46,.15);
+  box-shadow: 0 3px 14px rgba(26,26,46,.12);
+  font-size: .82rem; line-height: 1.5; word-break: break-all;
+  transition: border-color .18s, box-shadow .18s; position: relative;
+}
+.mm-node.root > .mm-node-inner {
+  background: #1e1e1e; color: #f0ebe0; border-color: #1e1e1e;
+  font-size: .95rem; font-weight: 500; border-radius: 32px; padding: 11px 20px;
+}
+.mm-node.selected > .mm-node-inner {
+  border-color: #e8a045; box-shadow: 0 0 0 3px rgba(232,160,69,.22), 0 3px 14px rgba(26,26,46,.12);
+}
+.mm-node-text { outline: none; min-width: 36px; display: inline-block; white-space: pre-wrap; }
+.mm-node-add {
+  position: absolute; right: -10px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; background: #e8a045; color: #fff;
+  border: none; border-radius: 50%; font-size: 14px; line-height: 20px;
+  cursor: pointer; display: none; z-index: 15;
+}
+.mm-node-del {
+  position: absolute; left: -10px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; background: #e05a5a; color: #fff;
+  border: none; border-radius: 50%; font-size: 11px; line-height: 18px;
+  cursor: pointer; display: none; z-index: 15;
+}
+.mm-node:hover .mm-node-add, .mm-node.selected .mm-node-add { display: block; }
+.mm-node:hover .mm-node-del, .mm-node.selected .mm-node-del { display: block; }
+.mm-node.root .mm-node-del { display: none !important; }
+
+/* ══════════════════════════════════════════
+   PAGE 4 — 時間塊
+══════════════════════════════════════════ */
+#page-timeblock {
+  background: #f8f7f5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Top bar */
+#tb-topbar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px 8px 14px;
+  background: #fff; border-bottom: 1px solid #e8e4de;
+  flex-shrink: 0; z-index: 100;
+}
+#tb-date-nav { display: flex; align-items: center; gap: 6px; flex: 1; }
+.tb-nav-btn {
+  width: 28px; height: 28px; border: 1.5px solid #ddd; background: #fff;
+  border-radius: 50%; font-size: .85rem; cursor: pointer; color: #555;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background .15s, border-color .15s;
+}
+.tb-nav-btn:hover { background: #f0ebe0; border-color: #c4a060; }
+#tb-date-label {
+  font-family: 'Noto Sans TC', sans-serif; font-size: .92rem; font-weight: 700; color: #222;
+  min-width: 90px; text-align: center;
+}
+#tb-today-btn {
+  padding: 4px 11px; border: 1.5px solid #e8a045; background: #fff;
+  color: #e8a045; font-family: 'Noto Sans TC', sans-serif; font-size: .72rem;
+  border-radius: 14px; cursor: pointer; transition: background .15s, color .15s;
+}
+#tb-today-btn:hover { background: #e8a045; color: #fff; }
+
+/* Category chips on topbar */
+#tb-cat-scroll {
+  display: flex; gap: 6px; overflow-x: auto; flex: 2;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+#tb-cat-scroll::-webkit-scrollbar { display: none; }
+.tb-cat-chip {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 14px; font-size: .72rem;
+  font-family: 'Noto Sans TC', sans-serif;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  border: 2px solid transparent; transition: opacity .15s, border-color .15s;
+  color: #fff; font-weight: 500;
+}
+.tb-cat-chip.inactive { opacity: .38; }
+.tb-cat-chip .chip-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.7); flex-shrink: 0; }
+
+/* Manage categories button */
+#tb-manage-btn {
+  width: 28px; height: 28px; border: 1.5px solid #ddd; background: #fff;
+  border-radius: 50%; font-size: .85rem; cursor: pointer; color: #888;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background .15s;
+}
+#tb-manage-btn:hover { background: #f0ebe0; color: #555; }
+
+/* Main body: timeline + sidebar */
+#tb-body { display: flex; flex: 1; overflow: hidden; }
+
+/* Timeline scroll area */
+#tb-timeline-wrap {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  position: relative;
+  scrollbar-width: thin; scrollbar-color: #ddd transparent;
+}
+#tb-timeline-wrap::-webkit-scrollbar { width: 4px; }
+#tb-timeline-wrap::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+#tb-timeline {
+  position: relative; min-height: 100%;
+  padding-bottom: 40px;
+}
+
+/* Hour rows */
+.tb-hour-row {
+  display: flex; align-items: flex-start;
+  min-height: 60px; position: relative;
+}
+.tb-hour-label {
+  width: 44px; flex-shrink: 0; text-align: right; padding-right: 10px;
+  font-size: .65rem; color: #aaa; font-family: 'Noto Sans TC', sans-serif;
+  padding-top: 0; margin-top: -8px; user-select: none;
+}
+.tb-hour-line {
+  flex: 1; border-top: 1px solid #ede9e2; position: relative; min-height: 60px;
+}
+.tb-hour-line::after {
+  content: ''; position: absolute; top: 30px; left: 0; right: 0;
+  border-top: 1px dashed #f0ece6;
+}
+
+/* Blocks inside timeline */
+.tb-block {
+  position: absolute; left: 4px; right: 4px;
+  border-radius: 6px; padding: 3px 7px;
+  font-family: 'Noto Sans TC', sans-serif; font-size: .7rem;
+  color: #fff; font-weight: 500; cursor: pointer; user-select: none;
+  overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  transition: filter .12s, transform .1s;
+  display: flex; flex-direction: column; justify-content: flex-start;
+  z-index: 10;
+}
+.tb-block:hover { filter: brightness(1.1); transform: scaleX(.98); }
+.tb-block .blk-title { font-size: .72rem; font-weight: 600; line-height: 1.3; }
+.tb-block .blk-time  { font-size: .6rem; opacity: .85; margin-top: 1px; }
+
+/* Resize handle at bottom */
+.tb-block-resize {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 8px;
+  cursor: ns-resize; opacity: 0;
+}
+.tb-block:hover .tb-block-resize { opacity: 1; }
+
+/* Current time indicator */
+#tb-now-line {
+  position: absolute; left: 44px; right: 0; height: 2px;
+  background: #e8403a; z-index: 20; pointer-events: none;
+}
+#tb-now-dot {
+  position: absolute; left: -5px; top: -4px;
+  width: 10px; height: 10px; border-radius: 50%; background: #e8403a;
+}
+
+/* Right sidebar: category panel */
+#tb-sidebar {
+  width: 120px; flex-shrink: 0;
+  background: #fff; border-left: 1px solid #e8e4de;
+  display: flex; flex-direction: column;
+  overflow-y: auto; padding: 12px 8px;
+  gap: 6px;
+  scrollbar-width: none;
+}
+#tb-sidebar::-webkit-scrollbar { display: none; }
+#tb-sidebar-title {
+  font-size: .65rem; color: #aaa; text-transform: uppercase;
+  letter-spacing: .06em; padding: 0 2px 4px;
+  border-bottom: 1px solid #f0ece6; flex-shrink: 0;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+.tb-sidebar-cat {
+  padding: 8px 8px; border-radius: 8px;
+  font-family: 'Noto Sans TC', sans-serif; font-size: .72rem;
+  color: #fff; font-weight: 600; text-align: center;
+  cursor: pointer; transition: transform .12s, filter .12s;
+  user-select: none; letter-spacing: .03em;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+}
+.tb-sidebar-cat:hover { transform: scale(1.04); filter: brightness(1.1); }
+.tb-sidebar-cat.selected-cat { outline: 3px solid #222; outline-offset: 1px; }
+
+#tb-sidebar-more {
+  font-size: .65rem; color: #bbb; text-align: center;
+  padding: 6px 0; cursor: pointer;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+#tb-sidebar-more:hover { color: #888; }
+
+/* ── Add Block Modal ── */
+#tb-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  z-index: 5000; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#tb-modal-overlay.show { display: flex; }
+#tb-modal {
+  background: #fff; border-radius: 16px; padding: 22px 20px;
+  width: min(340px, 92vw); box-shadow: 0 12px 48px rgba(0,0,0,.22);
+  font-family: 'Noto Sans TC', sans-serif;
+}
+#tb-modal h3 { font-size: .95rem; font-weight: 700; color: #222; margin-bottom: 16px; }
+.tb-modal-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.tb-modal-row label { font-size: .72rem; color: #888; }
+.tb-modal-row input, .tb-modal-row select {
+  width: 100%; padding: 8px 10px; border: 1.5px solid #ddd; border-radius: 8px;
+  font-family: 'Noto Sans TC', sans-serif; font-size: .82rem; outline: none;
+  color: #222; background: #fafafa;
+  transition: border-color .15s;
+}
+.tb-modal-row input:focus, .tb-modal-row select:focus { border-color: #e8a045; background: #fff; }
+.tb-modal-time-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; }
+.tb-modal-time-sep { color: #aaa; font-size: .85rem; text-align: center; }
+.tb-modal-cats { display: flex; flex-wrap: wrap; gap: 6px; }
+.tb-modal-cat-btn {
+  padding: 5px 12px; border-radius: 20px; border: 2px solid transparent;
+  font-size: .72rem; font-weight: 600; cursor: pointer;
+  color: #fff; transition: transform .1s, filter .1s;
+}
+.tb-modal-cat-btn:hover { filter: brightness(1.1); }
+.tb-modal-cat-btn.selected { border-color: #222; transform: scale(1.06); }
+.tb-modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+.tb-modal-actions button {
+  flex: 1; padding: 9px; border-radius: 10px; border: none;
+  font-family: 'Noto Sans TC', sans-serif; font-size: .8rem; font-weight: 600;
+  cursor: pointer; transition: background .15s;
+}
+#tb-modal-cancel { background: #f0ece6; color: #666; }
+#tb-modal-cancel:hover { background: #e5e0d8; }
+#tb-modal-save { background: #e8a045; color: #fff; }
+#tb-modal-save:hover { background: #d09030; }
+#tb-modal-delete { background: #ffe0e0; color: #c03030; display: none; }
+#tb-modal-delete:hover { background: #ffcccc; }
+
+/* ── Manage Categories Modal ── */
+#tb-cat-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  z-index: 5100; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+#tb-cat-modal-overlay.show { display: flex; }
+#tb-cat-modal {
+  background: #fff; border-radius: 16px; padding: 22px 20px;
+  width: min(320px, 92vw); box-shadow: 0 12px 48px rgba(0,0,0,.22);
+  font-family: 'Noto Sans TC', sans-serif; max-height: 80vh; overflow-y: auto;
+}
+#tb-cat-modal h3 { font-size: .95rem; font-weight: 700; color: #222; margin-bottom: 14px; }
+.tb-cat-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 6px; border-radius: 8px; margin-bottom: 4px;
+}
+.tb-cat-item:hover { background: #f8f5f0; }
+.tb-cat-color-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; cursor: pointer; position: relative; }
+.tb-cat-name-input {
+  flex: 1; border: none; border-bottom: 1.5px solid #eee; background: transparent;
+  font-family: 'Noto Sans TC', sans-serif; font-size: .8rem; outline: none; color: #333;
+  padding: 2px 0;
+}
+.tb-cat-name-input:focus { border-bottom-color: #e8a045; }
+.tb-cat-del-btn {
+  width: 20px; height: 20px; border: none; background: #ffe0e0; color: #c03030;
+  border-radius: 50%; font-size: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.tb-cat-del-btn:hover { background: #ffcccc; }
+#tb-add-cat-row {
+  display: flex; gap: 8px; margin-top: 10px; align-items: center;
+}
+#tb-new-cat-name {
+  flex: 1; padding: 7px 10px; border: 1.5px solid #ddd; border-radius: 8px;
+  font-family: 'Noto Sans TC', sans-serif; font-size: .8rem; outline: none; color: #222;
+}
+#tb-new-cat-name:focus { border-color: #e8a045; }
+#tb-new-cat-color {
+  width: 32px; height: 32px; border: none; border-radius: 50%; padding: 0;
+  cursor: pointer; background: none; flex-shrink: 0;
+}
+#tb-add-cat-btn {
+  padding: 7px 14px; border: none; background: #e8a045; color: #fff;
+  border-radius: 8px; font-family: 'Noto Sans TC', sans-serif; font-size: .78rem;
+  font-weight: 600; cursor: pointer; flex-shrink: 0;
+}
+#tb-add-cat-btn:hover { background: #d09030; }
+#tb-cat-modal-close {
+  width: 100%; margin-top: 14px; padding: 9px; border: none;
+  background: #f0ece6; color: #555; border-radius: 10px;
+  font-family: 'Noto Sans TC', sans-serif; font-size: .8rem;
+  font-weight: 600; cursor: pointer;
+}
+#tb-cat-modal-close:hover { background: #e5e0d8; }
+
+/* Color picker for categories */
+.tb-color-picker-popup {
+  position: absolute; top: 24px; left: 0; z-index: 200;
+  background: rgba(20,12,4,.85); border-radius: 10px;
+  padding: 8px; display: flex; flex-wrap: wrap; gap: 5px; width: 120px;
+  opacity: 0; pointer-events: none; transform: translateY(-4px);
+  transition: opacity .15s, transform .15s;
+}
+.tb-color-picker-popup.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.tb-clr-sw {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.3); cursor: pointer;
+  transition: transform .12s;
+}
+.tb-clr-sw:hover { transform: scale(1.25); border-color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div id="nav">
+  <span class="nav-logo">✦ WinPlus+Team</span>
+  <button class="tab-btn active" onclick="gotoPage('mandala',this)">⊞ 曼陀羅九宮格</button>
+  <button class="tab-btn"       onclick="gotoPage('cork',this)">📌 跟進網絡圖</button>
+  <button class="tab-btn"       onclick="gotoPage('mindmap',this)">🕸 組織網路圖</button>
+  <button class="tab-btn"       onclick="gotoPage('timeblock',this)">🕐 時間塊</button>
+  <button class="tab-btn" id="save-btn" onclick="toggleSaveMenu(this)" style="margin-left:auto">💾 儲存</button>
+</div>
+
+<!-- Save menu popup -->
+<div id="save-menu" style="
+  display:none; position:fixed; top:56px; right:12px; z-index:9999;
+  background:#fff; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,.22);
+  padding:10px 8px; min-width:160px; font-family:'Noto Sans TC',sans-serif;
+">
+  <div style="font-size:.68rem;color:#aaa;padding:2px 8px 6px;border-bottom:1px solid #f0ece6;margin-bottom:6px;">資料管理</div>
+  <div class="save-menu-item" onclick="exportData()">⬇ 匯出備份 (.json)</div>
+  <div class="save-menu-item" onclick="document.getElementById('import-file').click()">⬆ 匯入備份</div>
+  <div class="save-menu-item danger" onclick="clearAllData()">🗑 清除全部資料</div>
+  <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+</div>
+
+<!-- PAGE 1: MANDALA -->
+<div class="page active" id="page-mandala">
+  <div class="mandala-wrapper">
+    <div class="mandala-left">
+      <div class="mandala-brand"><div class="mandala-brand-title">曼陀羅<br>九宮格</div></div>
+      <div class="left-field"><div class="left-dot d-date">日期</div><input id="ml-date" class="left-input" placeholder="年 / 月 / 日"></div>
+      <div class="left-field"><div class="left-dot d-ttl">標題</div><input id="ml-title" class="left-input" placeholder="主題標題"></div>
+      <div class="left-field"><div class="left-dot d-name">姓名</div><input id="ml-name" class="left-input" placeholder="姓名"></div>
+      <div class="left-field"><div class="left-dot d-memo">memo</div><input id="ml-memo" class="left-input" placeholder="備忘錄"></div>
+    </div>
+    <div><div class="big-grid" id="big-grid"></div></div>
+  </div>
+</div>
+
+<!-- PAGE 2: CORK / 跟進網絡圖 -->
+<div class="page" id="page-cork">
+  <div id="cork-hint">拖曳移動便條紙 · 點左上角點點換顏色 · 點圖片格上傳照片</div>
+  <div id="sticky-container"></div>
+
+  <!-- Single add button + color popup -->
+  <div id="add-sticky-wrap">
+    <div id="color-picker-popup">
+      <div class="cp-swatch cp-y" onclick="addSticky('sy');toggleColorPicker();" title="黃色"></div>
+      <div class="cp-swatch cp-b" onclick="addSticky('sb');toggleColorPicker();" title="藍色"></div>
+      <div class="cp-swatch cp-p" onclick="addSticky('sp');toggleColorPicker();" title="粉色"></div>
+      <div class="cp-swatch cp-g" onclick="addSticky('sg');toggleColorPicker();" title="綠色"></div>
+      <div class="cp-swatch cp-w" onclick="addSticky('sw');toggleColorPicker();" title="白色"></div>
+    </div>
+    <button id="add-sticky-btn" onclick="toggleColorPicker()">＋</button>
+  </div>
+</div>
+
+<!-- PAGE 3: MIND MAP / 組織網路圖 -->
+<div class="page" id="page-mindmap">
+  <div class="mm-hint">點選節點 · 拖曳移動 · 點 ＋ 新增子節點 · 雙擊編輯文字</div>
+  <svg id="mm-svg"></svg>
+  <div id="mm-canvas"></div>
+  <div class="mm-toolbar">
+    <button class="mm-btn" onclick="mmAddChildToSelected()">＋ 新增子節點</button>
+    <button class="mm-btn" onclick="mmAutoLayout()">⟳ 自動排版</button>
+    <button class="mm-btn danger" onclick="mmClearAll()">✕ 清除全部</button>
+  </div>
+</div>
+
+<!-- PAGE 4: TIME BLOCK / 時間塊 -->
+<div class="page" id="page-timeblock">
+  <!-- Top bar: date nav + category chips -->
+  <div id="tb-topbar">
+    <div id="tb-date-nav">
+      <button class="tb-nav-btn" onclick="tbChangeDay(-1)">‹</button>
+      <div id="tb-date-label"></div>
+      <button class="tb-nav-btn" onclick="tbChangeDay(1)">›</button>
+      <button id="tb-today-btn" onclick="tbGoToday()">今天</button>
+    </div>
+    <div id="tb-cat-scroll"></div>
+    <button id="tb-manage-btn" onclick="tbOpenCatModal()" title="管理類別">⚙</button>
+  </div>
+
+  <!-- Body: timeline + sidebar -->
+  <div id="tb-body">
+    <!-- Timeline -->
+    <div id="tb-timeline-wrap">
+      <div id="tb-timeline">
+        <div id="tb-now-line"><div id="tb-now-dot"></div></div>
+      </div>
+    </div>
+    <!-- Right sidebar: category quick-add -->
+    <div id="tb-sidebar">
+      <div id="tb-sidebar-title">事件類別</div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Block Modal -->
+<div id="tb-modal-overlay">
+  <div id="tb-modal">
+    <h3 id="tb-modal-title">新增時間塊</h3>
+    <div class="tb-modal-row">
+      <label>標題</label>
+      <input id="tb-blk-title" type="text" placeholder="事件名稱…" maxlength="40">
+    </div>
+    <div class="tb-modal-row">
+      <label>時間</label>
+      <div class="tb-modal-time-row">
+        <input id="tb-blk-start" type="time" value="09:00">
+        <div class="tb-modal-time-sep">→</div>
+        <input id="tb-blk-end"   type="time" value="10:00">
+      </div>
+    </div>
+    <div class="tb-modal-row">
+      <label>類別</label>
+      <div class="tb-modal-cats" id="tb-modal-cats"></div>
+    </div>
+    <div class="tb-modal-actions">
+      <button id="tb-modal-cancel" onclick="tbCloseModal()">取消</button>
+      <button id="tb-modal-delete" onclick="tbDeleteBlock()">刪除</button>
+      <button id="tb-modal-save"   onclick="tbSaveBlock()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Categories Modal -->
+<div id="tb-cat-modal-overlay">
+  <div id="tb-cat-modal">
+    <h3>管理事件類別</h3>
+    <div id="tb-cat-list"></div>
+    <div id="tb-add-cat-row">
+      <input id="tb-new-cat-name" type="text" placeholder="新類別名稱" maxlength="10">
+      <input id="tb-new-cat-color" type="color" value="#e8a045" title="選擇顏色">
+      <button id="tb-add-cat-btn" onclick="tbAddCategory()">新增</button>
+    </div>
+    <button id="tb-cat-modal-close" onclick="tbCloseCatModal()">完成</button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   PAGE 4 — 時間塊 (Time Block)
+══════════════════════════════════════════ */
+(function() {
+
+const HOUR_H = 60; // px per hour
+const START_HOUR = 0, END_HOUR = 24;
+
+// ── State ──────────────────────────────────
+let tbCurrentDate = new Date();
+tbCurrentDate.setHours(0,0,0,0);
+
+let tbCategories = JSON.parse(localStorage.getItem('tb_cats') || 'null') || [
+  {id:'c1', name:'上班',   color:'#e85a5a'},
+  {id:'c2', name:'閱讀',   color:'#e8a045'},
+  {id:'c3', name:'學習',   color:'#c8a800'},
+  {id:'c4', name:'運動',   color:'#4ab870'},
+  {id:'c5', name:'看電視', color:'#4ab8b8'},
+  {id:'c6', name:'玩手機', color:'#6a78d8'},
+  {id:'c7', name:'睡覺',   color:'#a870d8'},
+];
+
+let tbBlocks = JSON.parse(localStorage.getItem('tb_blocks') || '[]').map(b=>({...b, id: Number(b.id)}));
+let tbEditingId = null;
+let tbSelectedCat = tbCategories[0]?.id || null;
+let tbNextBlockId = parseInt(localStorage.getItem('tb_nextId')||'1');
+
+function tbSaveState() {
+  localStorage.setItem('tb_cats',    JSON.stringify(tbCategories));
+  localStorage.setItem('tb_blocks',  JSON.stringify(tbBlocks));
+  localStorage.setItem('tb_nextId',  tbNextBlockId);
+}
+
+// ── Date helpers ────────────────────────────
+function tbDateKey(d) {
+  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+}
+function tbFormatLabel(d) {
+  const days=['日','一','二','三','四','五','六'];
+  return (d.getMonth()+1)+'月'+d.getDate()+'日 週'+days[d.getDay()];
+}
+
+function tbChangeDay(delta) {
+  tbCurrentDate = new Date(tbCurrentDate.getTime() + delta*86400000);
+  tbRender();
+}
+function tbGoToday() {
+  tbCurrentDate = new Date(); tbCurrentDate.setHours(0,0,0,0);
+  tbRender();
+}
+
+// ── Main render ─────────────────────────────
+function tbRender() {
+  tbRenderDateLabel();
+  tbRenderTimeline();
+  tbRenderSidebar();
+  tbRenderCatChips();
+  tbUpdateNowLine();
+}
+
+function tbRenderDateLabel() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  document.getElementById('tb-date-label').textContent = tbFormatLabel(tbCurrentDate);
+  document.getElementById('tb-today-btn').style.display =
+    tbCurrentDate.getTime()===today.getTime() ? 'none' : '';
+}
+
+function tbRenderCatChips() {
+  const wrap = document.getElementById('tb-cat-scroll');
+  wrap.innerHTML = '';
+  tbCategories.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'tb-cat-chip' + (tbSelectedCat===cat.id?'':' inactive');
+    el.style.background = cat.color;
+    el.innerHTML = '<span class="chip-dot"></span>'+cat.name;
+    el.addEventListener('click', () => {
+      tbSelectedCat = cat.id;
+      document.querySelectorAll('.tb-cat-chip').forEach(c=>c.classList.add('inactive'));
+      el.classList.remove('inactive');
+      document.querySelectorAll('.tb-sidebar-cat').forEach(c=>{
+        c.classList.toggle('selected-cat', c.dataset.catId===cat.id);
+      });
+    });
+    wrap.appendChild(el);
+  });
+}
+
+function tbRenderSidebar() {
+  const sb = document.getElementById('tb-sidebar');
+  // Remove old cats, keep title
+  sb.querySelectorAll('.tb-sidebar-cat, #tb-sidebar-more').forEach(e=>e.remove());
+  tbCategories.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'tb-sidebar-cat' + (tbSelectedCat===cat.id?' selected-cat':'');
+    el.dataset.catId = cat.id;
+    el.style.background = cat.color;
+    el.textContent = cat.name;
+    el.addEventListener('click', () => {
+      tbSelectedCat = cat.id;
+      tbRenderSidebar();
+      tbRenderCatChips();
+    });
+    sb.appendChild(el);
+  });
+  const more = document.createElement('div');
+  more.id = 'tb-sidebar-more';
+  more.textContent = '更多事件類別';
+  more.addEventListener('click', tbOpenCatModal);
+  sb.appendChild(more);
+}
+
+function tbRenderTimeline() {
+  const tl = document.getElementById('tb-timeline');
+  // Clear hour rows (keep now-line)
+  tl.querySelectorAll('.tb-hour-row').forEach(e=>e.remove());
+  tl.style.height = (HOUR_H*(END_HOUR-START_HOUR)) + 'px';
+
+  for (let h=START_HOUR; h<END_HOUR; h++) {
+    const row = document.createElement('div');
+    row.className = 'tb-hour-row';
+    row.style.top = ((h-START_HOUR)*HOUR_H)+'px';
+    row.style.height = HOUR_H+'px';
+    row.style.position = 'absolute';
+    row.style.left = '0'; row.style.right = '0';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'tb-hour-label';
+    lbl.textContent = h===0 ? '' : String(h).padStart(2,'0')+':00';
+
+    const line = document.createElement('div');
+    line.className = 'tb-hour-line';
+
+    // Click on line to add block
+    line.addEventListener('click', e => {
+      const rect = line.getBoundingClientRect();
+      const offsetY = e.clientY - rect.top;
+      const min = Math.round(offsetY/HOUR_H*60/15)*15;
+      const startMin = h*60 + Math.min(min, 45);
+      tbOpenModal(null, startMin);
+    });
+
+    row.appendChild(lbl);
+    row.appendChild(line);
+    tl.insertBefore(row, document.getElementById('tb-now-line'));
+  }
+
+  // Render blocks for current date
+  const key = tbDateKey(tbCurrentDate);
+  const dayBlocks = tbBlocks.filter(b=>b.date===key);
+  dayBlocks.forEach(b => tbRenderBlock(b));
+}
+
+function tbRenderBlock(blk) {
+  // Remove existing element if any
+  const existing = document.getElementById('tb-blk-'+blk.id);
+  if (existing) existing.remove();
+
+  const cat = tbCategories.find(c=>c.id===blk.catId) || tbCategories[0];
+  if (!cat) return;
+
+  const topPx  = (blk.startMin - START_HOUR*60)/60 * HOUR_H;
+  const heightPx = Math.max(20, (blk.endMin - blk.startMin)/60 * HOUR_H - 2);
+
+  const el = document.createElement('div');
+  el.className = 'tb-block';
+  el.id = 'tb-blk-'+blk.id;
+  el.style.background = cat.color;
+  el.style.top    = topPx+'px';
+  el.style.height = heightPx+'px';
+
+  const startStr = tbMinToStr(blk.startMin);
+  const endStr   = tbMinToStr(blk.endMin);
+
+  el.innerHTML =
+    '<div class="blk-title">'+blk.title+'</div>'+
+    '<div class="blk-time">'+startStr+' – '+endStr+'</div>'+
+    '<div class="tb-block-resize"></div>';
+
+  // Click to edit
+  el.addEventListener('click', e => {
+    if (e.target.classList.contains('tb-block-resize')) return;
+    e.stopPropagation();
+    tbOpenModal(blk.id);
+  });
+
+  // Drag to move
+  let dragStartY, origStart, origEnd;
+  el.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('tb-block-resize')) return;
+    e.stopPropagation(); e.preventDefault();
+    dragStartY = e.clientY;
+    origStart = blk.startMin; origEnd = blk.endMin;
+    function onMove(ev) {
+      const dy = ev.clientY - dragStartY;
+      const deltaMin = Math.round(dy/HOUR_H*60/15)*15;
+      const dur = origEnd - origStart;
+      let ns = origStart + deltaMin;
+      let ne = ns + dur;
+      if (ns < START_HOUR*60) { ns=START_HOUR*60; ne=ns+dur; }
+      if (ne > END_HOUR*60) { ne=END_HOUR*60; ns=ne-dur; }
+      blk.startMin = ns; blk.endMin = ne;
+      const tp = (ns - START_HOUR*60)/60*HOUR_H;
+      const hp = Math.max(20,(ne-ns)/60*HOUR_H-2);
+      el.style.top=tp+'px'; el.style.height=hp+'px';
+      el.querySelector('.blk-time').textContent=tbMinToStr(ns)+' – '+tbMinToStr(ne);
+    }
+    function onUp() {
+      tbSaveState();
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('mouseup',onUp);
+    }
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('mouseup',onUp);
+  });
+
+  // Resize handle
+  const handle = el.querySelector('.tb-block-resize');
+  handle.addEventListener('mousedown', e => {
+    e.stopPropagation(); e.preventDefault();
+    dragStartY = e.clientY; origEnd = blk.endMin;
+    function onMove(ev) {
+      const dy = ev.clientY - dragStartY;
+      const deltaMin = Math.round(dy/HOUR_H*60/15)*15;
+      let ne = Math.max(blk.startMin+15, origEnd+deltaMin);
+      ne = Math.min(END_HOUR*60, ne);
+      blk.endMin = ne;
+      const hp = Math.max(20,(ne-blk.startMin)/60*HOUR_H-2);
+      el.style.height=hp+'px';
+      el.querySelector('.blk-time').textContent=tbMinToStr(blk.startMin)+' – '+tbMinToStr(ne);
+    }
+    function onUp() {
+      tbSaveState();
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('mouseup',onUp);
+    }
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('mouseup',onUp);
+  });
+
+  document.getElementById('tb-timeline').appendChild(el);
+}
+
+// ── Now line ────────────────────────────────
+function tbUpdateNowLine() {
+  const now = new Date();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const nowLine = document.getElementById('tb-now-line');
+  if (tbCurrentDate.getTime()===today.getTime()) {
+    nowLine.style.display='block';
+    const totalMin = now.getHours()*60+now.getMinutes();
+    nowLine.style.top = ((totalMin-START_HOUR*60)/60*HOUR_H)+'px';
+  } else {
+    nowLine.style.display='none';
+  }
+}
+
+// ── Helpers ─────────────────────────────────
+function tbMinToStr(min) {
+  const h=Math.floor(min/60), m=min%60;
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+}
+function tbStrToMin(str) {
+  const [h,m]=str.split(':').map(Number); return h*60+(m||0);
+}
+
+// ── Add/Edit Modal ───────────────────────────
+function tbOpenModal(blockId, defaultStartMin) {
+  tbEditingId = (blockId != null) ? blockId : null;
+  const modal = document.getElementById('tb-modal');
+  const overlay = document.getElementById('tb-modal-overlay');
+
+  // Populate category buttons
+  const catWrap = document.getElementById('tb-modal-cats');
+  catWrap.innerHTML = '';
+  tbCategories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'tb-modal-cat-btn';
+    btn.style.background = cat.color;
+    btn.textContent = cat.name;
+    btn.dataset.catId = cat.id;
+    btn.addEventListener('click', () => {
+      catWrap.querySelectorAll('.tb-modal-cat-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+    catWrap.appendChild(btn);
+  });
+
+  if (blockId) {
+    // Edit mode
+    const blk = tbBlocks.find(b=>b.id===blockId);
+    if (!blk) return;
+    document.getElementById('tb-modal-title').textContent = '編輯時間塊';
+    document.getElementById('tb-blk-title').value = blk.title;
+    document.getElementById('tb-blk-start').value = tbMinToStr(blk.startMin);
+    document.getElementById('tb-blk-end').value   = tbMinToStr(blk.endMin);
+    const btn = catWrap.querySelector('[data-cat-id="'+blk.catId+'"]');
+    if (btn) btn.classList.add('selected');
+    document.getElementById('tb-modal-delete').style.display = 'flex';
+  } else {
+    // Add mode
+    document.getElementById('tb-modal-title').textContent = '新增時間塊';
+    document.getElementById('tb-blk-title').value = '';
+    const sm = defaultStartMin ?? 9*60;
+    document.getElementById('tb-blk-start').value = tbMinToStr(sm);
+    document.getElementById('tb-blk-end').value   = tbMinToStr(sm+60);
+    const selBtn = catWrap.querySelector('[data-cat-id="'+tbSelectedCat+'"]') || catWrap.firstChild;
+    if (selBtn) selBtn.classList.add('selected');
+    document.getElementById('tb-modal-delete').style.display = 'none';
+  }
+
+  overlay.classList.add('show');
+  document.getElementById('tb-blk-title').focus();
+}
+
+function tbCloseModal() {
+  document.getElementById('tb-modal-overlay').classList.remove('show');
+  tbEditingId = null;
+}
+
+function tbSaveBlock() {
+  const title = document.getElementById('tb-blk-title').value.trim() || '新事件';
+  const startMin = tbStrToMin(document.getElementById('tb-blk-start').value);
+  const endMin   = tbStrToMin(document.getElementById('tb-blk-end').value);
+  const selCatBtn = document.querySelector('#tb-modal-cats .tb-modal-cat-btn.selected');
+  const catId = selCatBtn?.dataset.catId || tbCategories[0]?.id;
+
+  if (endMin <= startMin) {
+    alert('結束時間必須晚於開始時間'); return;
+  }
+
+  if (tbEditingId) {
+    const blk = tbBlocks.find(b=>b.id===tbEditingId);
+    if (blk) { blk.title=title; blk.startMin=startMin; blk.endMin=endMin; blk.catId=catId; }
+  } else {
+    tbBlocks.push({
+      id: tbNextBlockId++,
+      date: tbDateKey(tbCurrentDate),
+      title, startMin, endMin, catId
+    });
+  }
+
+  tbSaveState();
+  tbCloseModal();
+  tbRenderTimeline();
+  tbUpdateNowLine();
+}
+
+function tbDeleteBlock() {
+  if (tbEditingId == null) return;
+  const idToDelete = tbEditingId;
+  tbBlocks = tbBlocks.filter(b=>b.id!==idToDelete);
+  tbSaveState();
+  tbCloseModal();
+  const el = document.getElementById('tb-blk-'+idToDelete);
+  if (el) el.remove();
+}
+
+// Close modal when clicking overlay bg
+document.getElementById('tb-modal-overlay').addEventListener('click', e => {
+  if (e.target===document.getElementById('tb-modal-overlay')) tbCloseModal();
+});
+
+// ── Manage Categories Modal ──────────────────
+const CAT_PALETTE = [
+  '#e85a5a','#e8803a','#e8a045','#c8a800','#5ab870',
+  '#4ab8b8','#3a8ae8','#6a78d8','#a870d8','#e870a8',
+  '#607080','#8a6848',
+];
+
+function tbOpenCatModal() {
+  tbRenderCatList();
+  document.getElementById('tb-cat-modal-overlay').classList.add('show');
+}
+function tbCloseCatModal() {
+  document.getElementById('tb-cat-modal-overlay').classList.remove('show');
+  tbRenderSidebar();
+  tbRenderCatChips();
+  tbRenderTimeline();
+}
+document.getElementById('tb-cat-modal-overlay').addEventListener('click', e => {
+  if (e.target===document.getElementById('tb-cat-modal-overlay')) tbCloseCatModal();
+});
+
+function tbRenderCatList() {
+  const list = document.getElementById('tb-cat-list');
+  list.innerHTML = '';
+  tbCategories.forEach(cat => {
+    const row = document.createElement('div');
+    row.className = 'tb-cat-item';
+
+    // Color dot with mini picker
+    const dotWrap = document.createElement('div');
+    dotWrap.style.position='relative';
+    const dot = document.createElement('div');
+    dot.className = 'tb-cat-color-dot';
+    dot.style.background = cat.color;
+    const picker = document.createElement('div');
+    picker.className = 'tb-color-picker-popup';
+    CAT_PALETTE.forEach(clr => {
+      const sw = document.createElement('div');
+      sw.className = 'tb-clr-sw';
+      sw.style.background = clr;
+      sw.addEventListener('click', e => {
+        e.stopPropagation();
+        cat.color = clr; dot.style.background=clr;
+        tbSaveState(); picker.classList.remove('show');
+      });
+      picker.appendChild(sw);
+    });
+    dot.addEventListener('click', e => {
+      e.stopPropagation();
+      document.querySelectorAll('.tb-color-picker-popup').forEach(p=>p.classList.remove('show'));
+      picker.classList.toggle('show');
+    });
+    dotWrap.appendChild(dot);
+    dotWrap.appendChild(picker);
+
+    // Name input
+    const inp = document.createElement('input');
+    inp.className = 'tb-cat-name-input';
+    inp.value = cat.name; inp.maxLength = 10;
+    inp.addEventListener('input', () => { cat.name=inp.value; tbSaveState(); });
+
+    // Delete button
+    const del = document.createElement('button');
+    del.className = 'tb-cat-del-btn'; del.textContent = '✕';
+    del.addEventListener('click', () => {
+      if (!confirm('刪除類別「'+cat.name+'」？\n（相關時間塊將失去類別）')) return;
+      tbCategories = tbCategories.filter(c=>c.id!==cat.id);
+      if (tbSelectedCat===cat.id) tbSelectedCat=tbCategories[0]?.id||null;
+      tbSaveState(); tbRenderCatList();
+    });
+
+    row.appendChild(dotWrap); row.appendChild(inp); row.appendChild(del);
+    list.appendChild(row);
+  });
+}
+
+function tbAddCategory() {
+  const name = document.getElementById('tb-new-cat-name').value.trim();
+  if (!name) return;
+  const color = document.getElementById('tb-new-cat-color').value;
+  const id = 'c'+Date.now();
+  tbCategories.push({id, name, color});
+  tbSaveState();
+  document.getElementById('tb-new-cat-name').value='';
+  tbRenderCatList();
+}
+
+// Close color pickers when clicking elsewhere in cat modal
+document.getElementById('tb-cat-modal').addEventListener('click', () => {
+  document.querySelectorAll('.tb-color-picker-popup').forEach(p=>p.classList.remove('show'));
+});
+
+// ── Init ────────────────────────────────────
+tbRender();
+// Auto scroll to 8am on load
+setTimeout(()=>{
+  const wrap = document.getElementById('tb-timeline-wrap');
+  if (wrap) wrap.scrollTop = 8*HOUR_H - 20;
+},100);
+// Update now line every minute
+setInterval(()=>{tbUpdateNowLine();}, 60000);
+
+// Expose for page switch
+window.tbOnShow = function() { tbRender(); setTimeout(()=>{
+  const wrap = document.getElementById('tb-timeline-wrap');
+  if(wrap) wrap.scrollTop = 8*HOUR_H-20;
+},80); };
+
+// Expose onclick-needed functions to global scope
+window.tbChangeDay    = tbChangeDay;
+window.tbGoToday      = tbGoToday;
+window.tbCloseModal   = tbCloseModal;
+window.tbSaveBlock    = tbSaveBlock;
+window.tbDeleteBlock  = tbDeleteBlock;
+window.tbOpenCatModal = tbOpenCatModal;
+window.tbCloseCatModal= tbCloseCatModal;
+window.tbAddCategory  = tbAddCategory;
+
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════════
+   PAGE SWITCH
+══════════════════════════════════════════ */
+function gotoPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name !== 'cork') closeColorPicker();
+  if (name === 'timeblock' && window.tbOnShow) window.tbOnShow();
+}
+
+/* ══════════════════════════════════════════
+   PAGE 1 — MANDALA GRID
+══════════════════════════════════════════ */
+const SG = [
+  {n:'H',r:1,c:1,cl:'cH'},{n:'A',r:1,c:4,cl:'cA'},{n:'D',r:1,c:7,cl:'cD'},
+  {n:'G',r:4,c:1,cl:'cG'},{n:'' ,r:4,c:4,cl:'cM'},{n:'C',r:4,c:7,cl:'cC'},
+  {n:'F',r:7,c:1,cl:'cF'},{n:'B',r:7,c:4,cl:'cB'},{n:'E',r:7,c:7,cl:'cE'},
+];
+const LM = [['2','3','4'],['1','','5'],['8','7','6']];
+(function buildGrid() {
+  const grid = document.getElementById('big-grid');
+  const info = Array.from({length:9}, () => Array(9).fill(0).map(() => ({code:'',cl:''})));
+  SG.forEach(sg => {
+    for (let dr=0;dr<3;dr++) for (let dc=0;dc<3;dc++) {
+      info[sg.r-1+dr][sg.c-1+dc] = {
+        code: (dr===1&&dc===1) ? sg.n : sg.n+LM[dr][dc],
+        cl:   (dr===1&&dc===1) ? sg.cl : ''
+      };
+    }
+  });
+  for (let r=0;r<9;r++) for (let c=0;c<9;c++) {
+    const cell = document.createElement('div');
+    cell.className = 'm-cell' + (c===3||c===6?' bl':'') + (r===3||r===6?' bt':'');
+    const {code,cl} = info[r][c];
+    if (cl) cell.classList.add(cl);
+    const cd = document.createElement('div'); cd.className='cell-code'; cd.textContent=code; cell.appendChild(cd);
+    const ta = document.createElement('textarea');
+    const key = 'mc-'+r+'-'+c;
+    try { ta.value = localStorage.getItem(key)||''; } catch(e){}
+    ta.addEventListener('input', () => { try { localStorage.setItem(key, ta.value); } catch(e){} });
+    cell.appendChild(ta); grid.appendChild(cell);
+  }
+})();
+
+/* ══════════════════════════════════════════
+   PAGE 2 — CORK / STICKY NOTES
+══════════════════════════════════════════ */
+let topZ=20, uid=0;
+const container = document.getElementById('sticky-container');
+const PIN_CLR = {sy:'#c8a010',sb:'#2070a0',sp:'#b02060',sg:'#187838',sw:'#777'};
+const STICKY_COLORS = [
+  {cls:'sy', bg:'#fdf876', label:'黃'},
+  {cls:'sb', bg:'#c8e8f8', label:'藍'},
+  {cls:'sp', bg:'#fcd0e0', label:'粉'},
+  {cls:'sg', bg:'#c8f0cc', label:'綠'},
+  {cls:'sw', bg:'#fefefe', label:'白'},
+];
+
+// Color picker toggle
+let pickerOpen = false;
+function toggleColorPicker() {
+  pickerOpen = !pickerOpen;
+  document.getElementById('color-picker-popup').classList.toggle('show', pickerOpen);
+  document.getElementById('add-sticky-btn').classList.toggle('open', pickerOpen);
+}
+function closeColorPicker() {
+  pickerOpen = false;
+  document.getElementById('color-picker-popup').classList.remove('show');
+  document.getElementById('add-sticky-btn').classList.remove('open');
+}
+// Close picker when clicking outside
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('add-sticky-wrap');
+  if (wrap && !wrap.contains(e.target)) closeColorPicker();
+});
+
+function changeColor(el, newCls) {
+  STICKY_COLORS.forEach(c => el.classList.remove(c.cls));
+  el.classList.add(newCls);
+  // Update pin color
+  const pc = PIN_CLR[newCls] || '#c44';
+  const pin = el.querySelector('.s-pin');
+  if (pin) {
+    pin.querySelectorAll('circle')[0].setAttribute('fill', pc);
+    pin.querySelector('line').setAttribute('stroke', pc);
+  }
+}
+
+function addSticky(cls, px, py, initText, initRot, initImgSrc) {
+  const W = window.innerWidth, H = window.innerHeight - 50;
+  const x = (px != null) ? px : 20 + Math.random()*(W-220);
+  const y = (py != null) ? py : 50 + Math.random()*(H-300);
+  const rot = (initRot != null) ? parseFloat(initRot) : (Math.random()-.5)*9;
+  const id = ++uid;
+  const pc = PIN_CLR[cls]||'#c44';
+
+  const el = document.createElement('div');
+  el.className = 'sticky ' + cls;
+  el.style.left = x+'px'; el.style.top = y+'px';
+  el.style.transform = 'rotate('+rot+'deg)';
+  el.style.zIndex = ++topZ;
+
+  // Build color dots for header
+  const dotSwatches = STICKY_COLORS.map(c =>
+    '<div class="s-cp-swatch" style="background:'+c.bg+'" data-cls="'+c.cls+'" title="'+c.label+'"></div>'
+  ).join('');
+
+  el.innerHTML =
+    '<svg class="s-pin" viewBox="0 0 22 25" fill="none">' +
+      '<circle cx="11" cy="9" r="7" fill="'+pc+'"/>' +
+      '<circle cx="9" cy="7" r="2.5" fill="rgba(255,255,255,.38)"/>' +
+      '<line x1="11" y1="15.5" x2="11" y2="25" stroke="'+pc+'" stroke-width="3" stroke-linecap="round"/>' +
+    '</svg>' +
+    '<div class="s-head">' +
+      '<div class="s-color-dots">' +
+        '<div class="s-dot dot-y"></div>' +
+        '<div class="s-dot dot-b"></div>' +
+        '<div class="s-dot dot-p"></div>' +
+        '<div class="s-color-popup">' + dotSwatches + '</div>' +
+      '</div>' +
+      '<button class="s-del">✕</button>' +
+    '</div>' +
+    '<div class="s-body">' +
+      '<textarea class="s-ta" placeholder="寫下你的想法…">'+(initText||'')+'</textarea>' +
+      '<div class="s-img" id="simg-'+id+'">' +
+        '<div class="s-img-hint"><div class="s-img-hint-icon">🖼</div><div>點擊上傳照片</div></div>' +
+        '<button class="s-img-del">✕</button>' +
+      '</div>' +
+      '<input type="file" class="s-file" id="sfile-'+id+'" accept="image/*">' +
+    '</div>';
+
+  // Raise on interact
+  el.addEventListener('mousedown', () => { el.style.zIndex = ++topZ; });
+  el.addEventListener('touchstart', () => { el.style.zIndex = ++topZ; }, {passive:true});
+
+  // Delete
+  el.querySelector('.s-del').addEventListener('click', e => { e.stopPropagation(); el.remove(); saveStickyState(); });
+
+  // Color dots: show popup on click
+  const colorDots = el.querySelector('.s-color-dots');
+  const colorPopup = el.querySelector('.s-color-popup');
+  let colorPopupOpen = false;
+  colorDots.addEventListener('click', e => {
+    e.stopPropagation();
+    colorPopupOpen = !colorPopupOpen;
+    colorPopup.classList.toggle('show', colorPopupOpen);
+  });
+  colorPopup.querySelectorAll('.s-cp-swatch').forEach(sw => {
+    sw.addEventListener('click', e => {
+      e.stopPropagation();
+      changeColor(el, sw.dataset.cls);
+      colorPopupOpen = false;
+      colorPopup.classList.remove('show');
+      saveStickyState();
+    });
+  });
+  // Close color popup when clicking outside sticky
+  document.addEventListener('click', () => {
+    colorPopupOpen = false; colorPopup.classList.remove('show');
+  });
+
+  // Block drag/text from textarea
+  const ta = el.querySelector('.s-ta');
+  ta.addEventListener('mousedown', e => e.stopPropagation());
+  ta.addEventListener('touchstart', e => e.stopPropagation(), {passive:true});
+
+  // Drag from header
+  const head = el.querySelector('.s-head');
+  function onDragStart(sx, sy) {
+    const ox = parseFloat(el.style.left)||0, oy = parseFloat(el.style.top)||0;
+    el.style.transform='rotate(0deg)'; el.style.zIndex=++topZ;
+    function onMove(e) {
+      const cx=e.touches?e.touches[0].clientX:e.clientX, cy=e.touches?e.touches[0].clientY:e.clientY;
+      el.style.left=(ox+cx-sx)+'px'; el.style.top=(oy+cy-sy)+'px';
+    }
+    function onEnd() {
+      el.style.transform='rotate('+((Math.random()-.5)*5)+'deg)';
+      document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onEnd);
+      document.removeEventListener('touchmove',onMove); document.removeEventListener('touchend',onEnd);
+      saveStickyState();
+    }
+    document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onEnd);
+    document.addEventListener('touchmove',onMove,{passive:false}); document.addEventListener('touchend',onEnd);
+  }
+  head.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('s-del')||e.target.classList.contains('s-color-dots')||e.target.closest('.s-color-dots')) return;
+    e.preventDefault(); onDragStart(e.clientX, e.clientY);
+  });
+  head.addEventListener('touchstart', e => {
+    if (e.target.classList.contains('s-del')||e.target.closest('.s-color-dots')) return;
+    onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+  }, {passive:true});
+
+  // Drag from pin
+  const pin = el.querySelector('.s-pin');
+  pin.addEventListener('mousedown', e => {
+    e.preventDefault(); e.stopPropagation(); onDragStart(e.clientX, e.clientY);
+  });
+  pin.addEventListener('touchstart', e => {
+    e.stopPropagation(); onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+  }, {passive:true});
+
+  // Image upload
+  const imgSlot = el.querySelector('#simg-'+id);
+  const fileInp  = el.querySelector('#sfile-'+id);
+  imgSlot.addEventListener('click', e => {
+    if (e.target.classList.contains('s-img-del')) return;
+    fileInp.click();
+  });
+  fileInp.addEventListener('change', () => {
+    const f=fileInp.files[0]; if(!f) return;
+    const rd=new FileReader();
+    rd.onload = ev => {
+      imgSlot.innerHTML='<img src="'+ev.target.result+'" alt=""><button class="s-img-del" style="display:flex">✕</button>';
+      imgSlot.querySelector('.s-img-del').addEventListener('click', e2 => {
+        e2.stopPropagation();
+        imgSlot.innerHTML='<div class="s-img-hint"><div class="s-img-hint-icon">🖼</div><div>點擊上傳照片</div></div><button class="s-img-del">✕</button>';
+        imgSlot.querySelector('.s-img-del').addEventListener('click', e3=>e3.stopPropagation());
+        saveStickyState();
+      });
+      saveStickyState();
+    };
+    rd.readAsDataURL(f);
+  });
+  el.querySelector('.s-img-del').addEventListener('click', e=>e.stopPropagation());
+
+  // Restore image if provided
+  if (initImgSrc) {
+    imgSlot.innerHTML='<img src="'+initImgSrc+'" alt=""><button class="s-img-del" style="display:flex">✕</button>';
+    imgSlot.querySelector('.s-img-del').addEventListener('click', e2 => {
+      e2.stopPropagation();
+      imgSlot.innerHTML='<div class="s-img-hint"><div class="s-img-hint-icon">🖼</div><div>點擊上傳照片</div></div><button class="s-img-del">✕</button>';
+      imgSlot.querySelector('.s-img-del').addEventListener('click', e3=>e3.stopPropagation());
+      saveStickyState();
+    });
+  }
+
+  container.appendChild(el);
+  saveStickyState();
+}
+
+// Default stickies handled by initStickyLoad() below
+
+/* ══════════════════════════════════════════
+   PAGE 3 — MIND MAP
+══════════════════════════════════════════ */
+const mmSvg    = document.getElementById('mm-svg');
+const mmCanvas = document.getElementById('mm-canvas');
+let mmNodes=[], mmEdges=[], mmSelected=null, mmDragging=null, mmDragOff={x:0,y:0}, mmNextId=1;
+
+const MM_COLORS = ['#e8a045','#4a7c8e','#7c4a8e','#8e7c4a','#4a8e6a','#8e4a5a','#4a5a8e','#6a8e4a'];
+
+function mmGetCenter() {
+  const r = mmCanvas.getBoundingClientRect();
+  return {x: r.width/2, y: r.height/2};
+}
+
+function mmCreateNode(text, x, y, parentId, depth) {
+  const id = mmNextId++;
+  const el = document.createElement('div');
+  el.className = 'mm-node' + (parentId==null?' root':'');
+  el.dataset.id = id;
+  el.style.left = x+'px'; el.style.top = y+'px';
+  const col = MM_COLORS[depth % MM_COLORS.length];
+  el.innerHTML =
+    '<div class="mm-node-inner" style="'+(depth>0?'border-color:'+col:'')+'">'+
+      '<button class="mm-node-del">✕</button>'+
+      '<span class="mm-node-text">'+text+'</span>'+
+      '<button class="mm-node-add">＋</button>'+
+    '</div>';
+
+  const textEl = el.querySelector('.mm-node-text');
+  const addBtn = el.querySelector('.mm-node-add');
+  const delBtn = el.querySelector('.mm-node-del');
+
+  textEl.addEventListener('dblclick', e => {
+    e.stopPropagation(); textEl.contentEditable='true'; textEl.focus(); mmSelect(id);
+  });
+  textEl.addEventListener('blur', () => { textEl.contentEditable='false'; });
+  textEl.addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();textEl.blur();} });
+
+  addBtn.addEventListener('click', e => { e.stopPropagation(); mmSelect(id); mmAddChild(id); });
+  delBtn.addEventListener('click', e => { e.stopPropagation(); mmDelete(id); });
+
+  el.addEventListener('mousedown', e => {
+    if (e.target===addBtn||e.target===delBtn||e.target===textEl) return;
+    e.preventDefault(); mmSelect(id);
+    mmDragging = el;
+    const rect = el.getBoundingClientRect(), cr = mmCanvas.getBoundingClientRect();
+    mmDragOff = {x: e.clientX - (rect.left+rect.width/2-cr.left), y: e.clientY - (rect.top+rect.height/2-cr.top)};
+  });
+  el.addEventListener('click', e => {
+    if (e.target===addBtn||e.target===delBtn) return; mmSelect(id);
+  });
+
+  mmCanvas.appendChild(el);
+  mmNodes.push({id, parentId, depth, el, x, y});
+  if (parentId!=null) mmEdges.push({from:parentId, to:id, color:col});
+  mmDrawEdges();
+  return id;
+}
+
+function mmSelect(id) {
+  mmNodes.forEach(n => n.el.classList.remove('selected'));
+  mmSelected = id;
+  const nd = mmNodes.find(n=>n.id===id);
+  if (nd) nd.el.classList.add('selected');
+}
+
+function mmAddChild(parentId) {
+  const parent = mmNodes.find(n=>n.id===parentId); if(!parent) return;
+  const siblings = mmNodes.filter(n=>n.parentId===parentId);
+  const angle = (siblings.length*65 - 30) * Math.PI/180;
+  const dist = parent.depth===0 ? 160 : 130;
+  const px=parseFloat(parent.el.style.left), py=parseFloat(parent.el.style.top);
+  const newId = mmCreateNode('新節點', px+Math.cos(angle)*dist, py+Math.sin(angle)*dist, parentId, parent.depth+1);
+  mmSelect(newId);
+  const nn = mmNodes.find(n=>n.id===newId);
+  if (nn) { const t=nn.el.querySelector('.mm-node-text'); t.contentEditable='true'; t.focus(); document.execCommand('selectAll',false,null); }
+}
+
+function mmDelete(id) {
+  const toDelete=[];
+  function collect(nid){toDelete.push(nid); mmNodes.filter(n=>n.parentId===nid).forEach(c=>collect(c.id));}
+  collect(id);
+  toDelete.forEach(nid=>{const nd=mmNodes.find(n=>n.id===nid); if(nd) nd.el.remove();});
+  mmNodes = mmNodes.filter(n=>!toDelete.includes(n.id));
+  mmEdges = mmEdges.filter(e=>!toDelete.includes(e.from)&&!toDelete.includes(e.to));
+  mmSelected=null; mmDrawEdges();
+}
+
+function mmDrawEdges() {
+  mmSvg.innerHTML='';
+  mmEdges.forEach(edge=>{
+    const fn=mmNodes.find(n=>n.id===edge.from), tn=mmNodes.find(n=>n.id===edge.to);
+    if(!fn||!tn) return;
+    const fx=parseFloat(fn.el.style.left), fy=parseFloat(fn.el.style.top);
+    const tx=parseFloat(tn.el.style.left), ty=parseFloat(tn.el.style.top);
+    const mx=(fx+tx)/2;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d','M'+fx+','+fy+' C'+mx+','+fy+' '+mx+','+ty+' '+tx+','+ty);
+    path.setAttribute('stroke',edge.color); path.setAttribute('stroke-width','2');
+    path.setAttribute('fill','none'); path.setAttribute('stroke-opacity','0.55');
+    mmSvg.appendChild(path);
+  });
+}
+
+// Global drag move/up
+document.addEventListener('mousemove', e=>{
+  if (!mmDragging) return;
+  const cr=mmCanvas.getBoundingClientRect();
+  const x=e.clientX-cr.left-mmDragOff.x, y=e.clientY-cr.top-mmDragOff.y;
+  mmDragging.style.left=x+'px'; mmDragging.style.top=y+'px';
+  const nd=mmNodes.find(n=>n.el===mmDragging); if(nd){nd.x=x;nd.y=y;}
+  mmDrawEdges();
+});
+document.addEventListener('mouseup',()=>{mmDragging=null;});
+
+// Click canvas to deselect
+mmCanvas.addEventListener('click', e=>{
+  if(e.target===mmCanvas){mmNodes.forEach(n=>n.el.classList.remove('selected'));mmSelected=null;}
+});
+
+function mmAutoLayout() {
+  if(!mmNodes.length) return;
+  const root=mmNodes.find(n=>n.parentId==null); if(!root) return;
+  const cr=mmCanvas.getBoundingClientRect();
+  const cx=cr.width/2, cy=cr.height/2;
+  function layout(nid, x, y, a0, a1, dist){
+    const nd=mmNodes.find(n=>n.id===nid); if(!nd) return;
+    nd.el.style.left=x+'px'; nd.el.style.top=y+'px'; nd.x=x; nd.y=y;
+    const children=mmNodes.filter(n=>n.parentId===nid); if(!children.length) return;
+    const step=(a1-a0)/children.length;
+    children.forEach((ch,i)=>{
+      const a=a0+step*i+step/2;
+      layout(ch.id, x+Math.cos(a)*dist, y+Math.sin(a)*dist, a-Math.PI/4, a+Math.PI/4, dist*.82);
+    });
+  }
+  layout(root.id, cx, cy, 0, Math.PI*2, 170);
+  mmDrawEdges();
+}
+
+function mmAddChildToSelected() {
+  if(mmSelected!=null) mmAddChild(mmSelected);
+  else {const r=mmNodes.find(n=>n.parentId==null); if(r) mmAddChild(r.id);}
+}
+
+function mmClearAll() {
+  if(!confirm('確定要清除所有節點嗎？')) return;
+  mmNodes.forEach(n=>n.el.remove()); mmNodes=[]; mmEdges=[]; mmNextId=1; mmSelected=null;
+  mmSvg.innerHTML='';
+  // Re-init root
+  const cr=mmCanvas.getBoundingClientRect();
+  mmCreateNode('核心主題', cr.width/2||window.innerWidth/2, (cr.height||window.innerHeight-50)/2, null, 0);
+}
+
+// Init mind map root node
+(function mmInit(){
+  const cr=mmCanvas.getBoundingClientRect();
+  const cx = cr.width  || window.innerWidth;
+  const cy = cr.height || (window.innerHeight-50);
+  // Load saved mind map, or create default root
+  const saved = (() => { try { return JSON.parse(localStorage.getItem('mm_nodes')||'null'); } catch(e){ return null; } })();
+  if (saved && saved.length) {
+    saved.forEach(n => mmCreateNode(n.text, n.x, n.y, n.parentId, n.depth));
+    mmNextId = Math.max(...mmNodes.map(n=>n.id)) + 1;
+  } else {
+    mmCreateNode('核心主題', cx/2, cy/2, null, 0);
+  }
+})();
+
+// Auto-save mind map on any change
+function mmSaveState() {
+  try {
+    const data = mmNodes.map(n => ({
+      id: n.id, parentId: n.parentId, depth: n.depth,
+      text: n.el.querySelector('.mm-node-text').textContent,
+      x: n.x, y: n.y
+    }));
+    localStorage.setItem('mm_nodes', JSON.stringify(data));
+  } catch(e){}
+}
+
+/* ══════════════════════════════════════════
+   SAVE / EXPORT / IMPORT SYSTEM
+══════════════════════════════════════════ */
+
+// ── Mandala left fields: save on input ──
+(function initMandalaFields() {
+  const fields = [
+    {id:'ml-date', key:'ml_date'},
+    {id:'ml-title', key:'ml_title'},
+    {id:'ml-name', key:'ml_name'},
+    {id:'ml-memo', key:'ml_memo'},
+  ];
+  fields.forEach(({id, key}) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try { el.value = localStorage.getItem(key) || ''; } catch(e){}
+    el.addEventListener('input', () => { try { localStorage.setItem(key, el.value); } catch(e){} });
+  });
+})();
+
+// ── Sticky notes: save state ──
+let stickyData = []; // kept in sync
+
+function saveStickyState() {
+  try {
+    const data = [];
+    document.querySelectorAll('#sticky-container .sticky').forEach(el => {
+      const cls = ['sy','sb','sp','sg','sw'].find(c=>el.classList.contains(c)) || 'sy';
+      const ta = el.querySelector('.s-ta');
+      const img = el.querySelector('.s-img img');
+      data.push({
+        cls,
+        x: parseFloat(el.style.left)||0,
+        y: parseFloat(el.style.top)||0,
+        rot: (el.style.transform.match(/rotate\(([^)]+)\)/) || [,'0deg'])[1],
+        text: ta ? ta.value : '',
+        imgSrc: img ? img.src : ''
+      });
+    });
+    localStorage.setItem('sticky_data', JSON.stringify(data));
+  } catch(e){}
+}
+
+function loadStickyState() {
+  try {
+    const data = JSON.parse(localStorage.getItem('sticky_data') || 'null');
+    if (!data || !data.length) return false;
+    // Clear default stickies first
+    document.querySelectorAll('#sticky-container .sticky').forEach(e=>e.remove());
+    uid = 0;
+    data.forEach(d => {
+      addSticky(d.cls, d.x, d.y, d.text, d.rot, d.imgSrc);
+    });
+    return true;
+  } catch(e){ return false; }
+}
+
+// ── Hook sticky save into interactions ──
+// We'll patch addSticky to auto-save after creation & interactions
+const _origAddSticky = addSticky;
+
+// Auto-save mind map - patch create/delete
+const _origMmCreateNode = mmCreateNode;
+const _origMmDelete = mmDelete;
+
+// Save mind map whenever nodes change
+function mmAutoSave() { mmSaveState(); }
+
+// ── Save menu toggle ──
+let saveMenuOpen = false;
+function toggleSaveMenu(btn) {
+  saveMenuOpen = !saveMenuOpen;
+  const menu = document.getElementById('save-menu');
+  menu.style.display = saveMenuOpen ? 'block' : 'none';
+  btn.classList.toggle('active', saveMenuOpen);
+}
+document.addEventListener('click', e => {
+  const menu = document.getElementById('save-menu');
+  const btn = document.getElementById('save-btn');
+  if (menu && btn && !menu.contains(e.target) && e.target !== btn) {
+    menu.style.display = 'none';
+    saveMenuOpen = false;
+    btn.classList.remove('active');
+  }
+});
+
+// ── Collect ALL data into one object ──
+function collectAllData() {
+  // Mandala cells
+  const cells = {};
+  for (let r=0;r<9;r++) for (let c=0;c<9;c++) {
+    const k = 'mc-'+r+'-'+c;
+    const v = localStorage.getItem(k);
+    if (v) cells[k] = v;
+  }
+  // Mandala fields
+  const fields = {};
+  ['ml_date','ml_title','ml_name','ml_memo'].forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v) fields[k] = v;
+  });
+  // Sticky notes
+  const stickies = [];
+  document.querySelectorAll('#sticky-container .sticky').forEach(el => {
+    const cls = ['sy','sb','sp','sg','sw'].find(c=>el.classList.contains(c)) || 'sy';
+    const ta = el.querySelector('.s-ta');
+    const img = el.querySelector('.s-img img');
+    stickies.push({
+      cls,
+      x: parseFloat(el.style.left)||0,
+      y: parseFloat(el.style.top)||0,
+      rot: (el.style.transform.match(/rotate\(([^)]+)\)/) || [,'0deg'])[1],
+      text: ta ? ta.value : '',
+      imgSrc: img ? img.src : ''
+    });
+  });
+  // Mind map
+  const mindmap = mmNodes.map(n => ({
+    id: n.id, parentId: n.parentId, depth: n.depth,
+    text: n.el.querySelector('.mm-node-text').textContent,
+    x: n.x, y: n.y
+  }));
+  // Time block
+  const tbCats   = JSON.parse(localStorage.getItem('tb_cats')  || '[]');
+  const tbBlk    = JSON.parse(localStorage.getItem('tb_blocks')|| '[]');
+  const tbNextId = localStorage.getItem('tb_nextId') || '1';
+
+  return { version:1, cells, fields, stickies, mindmap, tbCats, tbBlk, tbNextId };
+}
+
+// ── Export ──
+function exportData() {
+  saveStickyState(); mmSaveState();
+  const data = collectAllData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = 'winplus_backup_'+date+'.json';
+  a.click(); URL.revokeObjectURL(url);
+  toggleSaveMenu(document.getElementById('save-btn'));
+  showToast('✅ 備份已匯出！');
+}
+
+// ── Import ──
+function importData(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!confirm('確定要載入備份？目前的資料將被覆蓋。')) return;
+      restoreAllData(data);
+      showToast('✅ 備份已匯入！');
+    } catch(err) {
+      alert('檔案格式錯誤，無法匯入。');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+  toggleSaveMenu(document.getElementById('save-btn'));
+}
+
+// ── Restore ──
+function restoreAllData(data) {
+  // Mandala cells
+  if (data.cells) {
+    Object.entries(data.cells).forEach(([k,v]) => localStorage.setItem(k, v));
+    // Re-render mandala textareas
+    document.querySelectorAll('#big-grid .m-cell textarea').forEach(ta => {
+      const idx = Array.from(ta.closest('#big-grid').querySelectorAll('textarea')).indexOf(ta);
+      const r=Math.floor(idx/9), c=idx%9;
+      ta.value = data.cells['mc-'+r+'-'+c] || '';
+    });
+  }
+  // Mandala fields
+  if (data.fields) {
+    ['ml_date','ml_title','ml_name','ml_memo'].forEach((k,i) => {
+      if (data.fields[k] != null) {
+        localStorage.setItem(k, data.fields[k]);
+        const ids = ['ml-date','ml-title','ml-name','ml-memo'];
+        const el = document.getElementById(ids[i]);
+        if (el) el.value = data.fields[k];
+      }
+    });
+  }
+  // Sticky notes
+  if (data.stickies) {
+    document.querySelectorAll('#sticky-container .sticky').forEach(e=>e.remove());
+    uid = 0;
+    data.stickies.forEach(d => addSticky(d.cls, d.x, d.y, d.text, d.rot, d.imgSrc));
+    saveStickyState();
+  }
+  // Mind map
+  if (data.mindmap && data.mindmap.length) {
+    mmNodes.forEach(n=>n.el.remove()); mmNodes=[]; mmEdges=[]; mmNextId=1; mmSelected=null; mmSvg.innerHTML='';
+    data.mindmap.forEach(n => mmCreateNode(n.text, n.x, n.y, n.parentId, n.depth));
+    mmNextId = Math.max(...mmNodes.map(n=>n.id)) + 1;
+    mmDrawEdges();
+    mmSaveState();
+  }
+  // Time block
+  if (data.tbCats)   localStorage.setItem('tb_cats',   JSON.stringify(data.tbCats));
+  if (data.tbBlk)    localStorage.setItem('tb_blocks', JSON.stringify(data.tbBlk));
+  if (data.tbNextId) localStorage.setItem('tb_nextId', data.tbNextId);
+  if (window.tbOnShow) window.tbOnShow();
+}
+
+// ── Clear all ──
+function clearAllData() {
+  if (!confirm('確定要清除全部資料？此動作無法復原。')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+// ── Toast notification ──
+function showToast(msg) {
+  let t = document.getElementById('wp-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'wp-toast';
+    t.style.cssText = `position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+      background:#222;color:#fff;padding:9px 20px;border-radius:20px;font-size:.8rem;
+      font-family:'Noto Sans TC',sans-serif;z-index:99999;opacity:0;
+      transition:opacity .25s;pointer-events:none;white-space:nowrap;`;
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2200);
+}
+
+// ── Auto-save on page interactions ──
+// Sticky: save whenever textarea changes or drag ends
+document.getElementById('sticky-container').addEventListener('input', () => saveStickyState());
+document.addEventListener('mouseup', () => {
+  // Save sticky positions after any drag
+  if (document.querySelectorAll('#sticky-container .sticky').length) saveStickyState();
+});
+
+// Mind map: save after node changes (patch mmDrawEdges which is called after every change)
+const _origMmDrawEdges = mmDrawEdges;
+mmDrawEdges = function() { _origMmDrawEdges(); mmSaveState(); };
+
+// ── Load sticky notes on start ──
+(function initStickyLoad() {
+  const hasSaved = loadStickyState();
+  if (!hasSaved) {
+    // Show default stickies only on first load
+    addSticky('sy',  40,  60, '今天的目標：');
+    addSticky('sp', 260,  90, '靈感 ✨');
+    addSticky('sb', 480,  55, '待辦事項');
+    addSticky('sg', 160, 310, '');
+  }
+})();
+</script>
+</body>
+</html>
