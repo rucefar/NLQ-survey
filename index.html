@@ -42,35 +42,106 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Noto San
   pointer-events: none;
   z-index: 1;
 }
-.page.active { 
-  display: block;
+.page.active {
+  display: block; /* fallback; overridden per-page below */
   visibility: visible;
   pointer-events: auto;
   z-index: 10;
 }
+/* Per-page display overrides (higher specificity beats .page.active) */
+#page-mandala.active    { display: flex; }
+#page-timeblock.active  { display: flex; }
+#page-cork.active       { display: block; }
+#page-mindmap.active    { display: block; }
 
 /* ══════════════════════════════════════════
-   PAGE 1 — 曼陀羅九宮格
+   PAGE 1 — 曼陀羅九宮格（響應式）
 ══════════════════════════════════════════ */
-#page-mandala { background: #fff; overflow: auto; display: flex; align-items: center; justify-content: center; }
-.mandala-wrapper { display: flex; gap: 14px; align-items: flex-start; padding: 12px; min-width: max-content; max-width: 90vw; max-height: 90vh; }
-.mandala-left { display: flex; flex-direction: column; padding: 8px; width: 148px; flex-shrink: 0; }
-.mandala-brand { text-align: center; margin-bottom: 14px; }
-.mandala-brand-title {
-  font-family: 'Zen Maru Gothic', sans-serif; font-size: 1.75rem; font-weight: 700;
-  background: linear-gradient(135deg, #c9783c, #e8b845, #4a7c8e);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.15;
+#page-mandala {
+  background: #fff; overflow: auto;
+  align-items: center; justify-content: center;
 }
-.left-field { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; }
-.left-dot { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: #fff; }
+
+:root {
+  --grid-size: min(
+    clamp(252px, 58vw, 680px),
+    clamp(252px, calc(100vh - 170px), 680px)
+  );
+  --cell-size: calc(var(--grid-size) / 9);
+  --left-w: clamp(90px, 13vw, 165px);
+}
+
+.mandala-wrapper {
+  display: flex;
+  gap: clamp(6px, 1.5vw, 20px);
+  align-items: flex-start;
+  padding: clamp(8px, 2vw, 20px);
+}
+.mandala-left {
+  display: flex; flex-direction: column; padding: 6px;
+  width: var(--left-w); flex-shrink: 0;
+}
+.mandala-brand { text-align: center; margin-bottom: clamp(8px, 1.5vh, 18px); }
+.mandala-brand-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: clamp(1rem, 2.8vw, 1.75rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, #c9783c, #e8b845, #4a7c8e);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.15;
+}
+.left-field {
+  display: flex; align-items: center;
+  gap: clamp(4px, 0.8vw, 9px);
+  margin-bottom: clamp(5px, 1.2vh, 13px);
+}
+.left-dot {
+  width:  clamp(20px, 3vw, 34px);
+  height: clamp(20px, 3vw, 34px);
+  border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(.48rem, 1vw, .68rem); font-weight: 700; color: #fff;
+}
 .d-date{background:#4ab8b8} .d-ttl{background:#a8c44a} .d-name{background:#e85a3c} .d-memo{background:#7c5ab8}
-.left-input { flex: 1; border: none; border-bottom: 1.5px solid #ddd; background: transparent; font-family: 'Noto Sans TC', sans-serif; font-size: .73rem; outline: none; padding: 2px 0; color: #333; }
+.left-input {
+  flex: 1; border: none; border-bottom: 1.5px solid #ddd;
+  background: transparent; font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(.58rem, 1.2vw, .78rem);
+  outline: none; padding: 2px 0; color: #333;
+}
 .left-input::placeholder { color: #bbb; }
-.big-grid { display: grid; grid-template-columns: repeat(9, minmax(40px, 1fr)); grid-template-rows: repeat(9, minmax(40px, 1fr)); border: 2.5px solid #222; background: #222; gap: 1px; max-width: 600px; max-height: 600px; aspect-ratio: 1; }
-.m-cell { width: 56px; height: 56px; background: #fff; position: relative; overflow: hidden; }
-.m-cell.bl { border-left: 2.5px solid #222; } .m-cell.bt { border-top: 2.5px solid #222; }
-.m-cell textarea { position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; resize: none; font-family: 'Noto Sans TC', sans-serif; font-size: .58rem; color: #333; padding: 14px 3px 3px 3px; text-align: center; line-height: 1.35; }
-.cell-code { position: absolute; top: 2px; left: 3px; font-size: .5rem; color: rgba(0,0,0,.3); pointer-events: none; font-weight: 700; z-index: 1; }
+
+.big-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows:    repeat(9, 1fr);
+  border: 2.5px solid #222; background: #222; gap: 1px;
+  width: var(--grid-size); height: var(--grid-size);
+  flex-shrink: 0;
+}
+.m-cell {
+  background: #fff; position: relative; overflow: hidden;
+}
+.m-cell.bl { border-left: 2.5px solid #222; }
+.m-cell.bt { border-top:  2.5px solid #222; }
+.m-cell textarea {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  background: transparent; border: none; outline: none; resize: none;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: clamp(.42rem, 1vw, .62rem);
+  color: #333;
+  padding: clamp(9px, 1.6vw, 15px) 2px 2px 2px;
+  text-align: center; line-height: 1.35;
+}
+.cell-code { position: absolute; top: 2px; left: 3px; font-size: clamp(.38rem, 0.9vw, .52rem); color: rgba(0,0,0,.3); pointer-events: none; font-weight: 700; z-index: 1; }
+
+/* 超窄手機：左欄移到九宮格下方 */
+@media (max-width: 480px) {
+  .mandala-wrapper { flex-direction: column; align-items: center; }
+  .mandala-left { width: var(--grid-size); flex-direction: row; flex-wrap: wrap; gap: 6px; padding: 4px 0; }
+  .mandala-brand { display: none; }
+  .left-field { margin-bottom: 0; flex: 1 1 45%; min-width: 120px; }
+}
 .cA{background:#f5e6b0} .cA .cell-code{color:#b8900a} .cB{background:#f5c0a8} .cB .cell-code{color:#c05030}
 .cC{background:#b0dff0} .cC .cell-code{color:#1a7aaa} .cD{background:#b0dff0} .cD .cell-code{color:#1a7aaa}
 .cE{background:#f5c0d8} .cE .cell-code{color:#b03070} .cF{background:#f5c0d8} .cF .cell-code{color:#b03070}
@@ -129,10 +200,28 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Noto San
 
 /* ── STICKY NOTE ── */
 .sticky {
-  position: absolute; width: 178px; display: flex; flex-direction: column;
+  position: absolute; width: 178px; min-width: 140px; min-height: 160px;
+  display: flex; flex-direction: column;
   border-radius: 2px; cursor: grab; user-select: none;
   box-shadow: 4px 6px 16px rgba(0,0,0,.4), 1px 1px 3px rgba(0,0,0,.2);
 }
+
+/* Resize handle: bottom-right corner */
+.s-resize {
+  position: absolute; bottom: 0; right: 0;
+  width: 18px; height: 18px; cursor: nwse-resize; z-index: 20;
+  display: flex; align-items: flex-end; justify-content: flex-end;
+  padding: 3px;
+}
+.s-resize::after {
+  content: '';
+  display: block; width: 10px; height: 10px;
+  border-right: 2.5px solid rgba(0,0,0,.25);
+  border-bottom: 2.5px solid rgba(0,0,0,.25);
+  border-radius: 0 0 2px 0;
+  transition: border-color .15s;
+}
+.sticky:hover .s-resize::after { border-color: rgba(0,0,0,.5); }
 .sticky.sy{background:#fdf876} .sticky.sb{background:#c8e8f8}
 .sticky.sp{background:#fcd0e0} .sticky.sg{background:#c8f0cc} .sticky.sw{background:#fefefe}
 
@@ -178,18 +267,20 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Noto San
 }
 .s-del:hover { background: rgba(210,0,0,.55); color: #fff; }
 
-.s-body { flex: 1; display: flex; flex-direction: column; padding: 7px; gap: 6px; }
+.s-body { flex: 1; display: flex; flex-direction: column; padding: 7px; gap: 6px; overflow: hidden; }
 .s-ta {
-  width: 100%; min-height: 78px; background: transparent; border: none; outline: none; resize: none;
+  width: 100%; flex: 1; background: transparent; border: none; outline: none; resize: none;
   font-family: 'Caveat', cursive; font-size: 1.05rem; color: #222; line-height: 1.5; cursor: text;
+  min-height: 40px;
 }
 .s-ta::placeholder { color: rgba(0,0,0,.22); font-size: .85rem; }
 .s-img {
-  width: 100%; min-height: 60px; background: rgba(0,0,0,.07); border-radius: 2px;
+  width: 100%; background: rgba(0,0,0,.07); border-radius: 2px;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; overflow: hidden; position: relative; flex-shrink: 0;
+  cursor: pointer; overflow: hidden; position: relative;
+  flex-shrink: 0; min-height: 52px;
 }
-.s-img img { width: 100%; max-height: 120px; object-fit: cover; display: block; }
+.s-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .s-img-hint { display: flex; flex-direction: column; align-items: center; gap: 2px; color: rgba(0,0,0,.28); font-size: .63rem; pointer-events: none; }
 .s-img-hint-icon { font-size: 1.2rem; }
 .s-img-del {
@@ -279,9 +370,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Noto San
 ══════════════════════════════════════════ */
 #page-timeblock {
   background: #f8f7f5;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
+  flex-direction: column;
 }
 
 /* Top bar */
@@ -1189,6 +1279,7 @@ function gotoPage(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   btn.classList.add('active');
+
   if (name !== 'cork') closeColorPicker();
   if (name === 'timeblock' && window.tbOnShow) window.tbOnShow();
 }
@@ -1271,7 +1362,7 @@ function changeColor(el, newCls) {
   }
 }
 
-function addSticky(cls, px, py, initText, initRot, initImgSrc) {
+function addSticky(cls, px, py, initText, initRot, initImgSrc, initWidth, initHeight) {
   const W = window.innerWidth, H = window.innerHeight - 50;
   const x = (px != null) ? px : 20 + Math.random()*(W-220);
   const y = (py != null) ? py : 50 + Math.random()*(H-300);
@@ -1312,7 +1403,13 @@ function addSticky(cls, px, py, initText, initRot, initImgSrc) {
         '<button class="s-img-del">✕</button>' +
       '</div>' +
       '<input type="file" class="s-file" id="sfile-'+id+'" accept="image/*">' +
-    '</div>';
+    '</div>' +
+    '<div class="s-resize"></div>';
+
+  // Restore saved size if provided, else set sensible default height
+  if (initWidth)  el.style.width  = initWidth  + 'px';
+  if (initHeight) el.style.height = initHeight + 'px';
+  else            el.style.height = '220px';
 
   // Raise on interact
   el.addEventListener('mousedown', () => { el.style.zIndex = ++topZ; });
@@ -1385,6 +1482,47 @@ function addSticky(cls, px, py, initText, initRot, initImgSrc) {
     e.stopPropagation(); onDragStart(e.touches[0].clientX, e.touches[0].clientY);
   }, {passive:true});
 
+  // Resize from bottom-right handle
+  const resizeHandle = el.querySelector('.s-resize');
+  resizeHandle.addEventListener('mousedown', e => {
+    e.preventDefault(); e.stopPropagation();
+    el.style.zIndex = ++topZ;
+    const startX = e.clientX, startY = e.clientY;
+    const startW = el.offsetWidth, startH = el.offsetHeight;
+    function onResizeMove(ev) {
+      const newW = Math.max(140, startW + ev.clientX - startX);
+      const newH = Math.max(160, startH + ev.clientY - startY);
+      el.style.width  = newW + 'px';
+      el.style.height = newH + 'px';
+    }
+    function onResizeUp() {
+      saveStickyState();
+      document.removeEventListener('mousemove', onResizeMove);
+      document.removeEventListener('mouseup',   onResizeUp);
+    }
+    document.addEventListener('mousemove', onResizeMove);
+    document.addEventListener('mouseup',   onResizeUp);
+  });
+  resizeHandle.addEventListener('touchstart', e => {
+    e.preventDefault(); e.stopPropagation();
+    el.style.zIndex = ++topZ;
+    const startX = e.touches[0].clientX, startY = e.touches[0].clientY;
+    const startW = el.offsetWidth, startH = el.offsetHeight;
+    function onResizeMove(ev) {
+      const newW = Math.max(140, startW + ev.touches[0].clientX - startX);
+      const newH = Math.max(160, startH + ev.touches[0].clientY - startY);
+      el.style.width  = newW + 'px';
+      el.style.height = newH + 'px';
+    }
+    function onResizeUp() {
+      saveStickyState();
+      document.removeEventListener('touchmove', onResizeMove);
+      document.removeEventListener('touchend',  onResizeUp);
+    }
+    document.addEventListener('touchmove', onResizeMove, {passive:false});
+    document.addEventListener('touchend',  onResizeUp);
+  }, {passive:false});
+
   // Image upload
   const imgSlot = el.querySelector('#simg-'+id);
   const fileInp  = el.querySelector('#sfile-'+id);
@@ -1392,15 +1530,23 @@ function addSticky(cls, px, py, initText, initRot, initImgSrc) {
     if (e.target.classList.contains('s-img-del')) return;
     fileInp.click();
   });
+  // Helper: expand img slot to fill remaining space when image present
+  function setImgExpanded(hasImg) {
+    imgSlot.style.flex    = hasImg ? '1' : '0 0 52px';
+    imgSlot.style.height  = hasImg ? '' : '52px';
+  }
+
   fileInp.addEventListener('change', () => {
     const f=fileInp.files[0]; if(!f) return;
     const rd=new FileReader();
     rd.onload = ev => {
       imgSlot.innerHTML='<img src="'+ev.target.result+'" alt=""><button class="s-img-del" style="display:flex">✕</button>';
+      setImgExpanded(true);
       imgSlot.querySelector('.s-img-del').addEventListener('click', e2 => {
         e2.stopPropagation();
         imgSlot.innerHTML='<div class="s-img-hint"><div class="s-img-hint-icon">🖼</div><div>點擊上傳照片</div></div><button class="s-img-del">✕</button>';
         imgSlot.querySelector('.s-img-del').addEventListener('click', e3=>e3.stopPropagation());
+        setImgExpanded(false);
         saveStickyState();
       });
       saveStickyState();
@@ -1412,12 +1558,16 @@ function addSticky(cls, px, py, initText, initRot, initImgSrc) {
   // Restore image if provided
   if (initImgSrc) {
     imgSlot.innerHTML='<img src="'+initImgSrc+'" alt=""><button class="s-img-del" style="display:flex">✕</button>';
+    setImgExpanded(true);
     imgSlot.querySelector('.s-img-del').addEventListener('click', e2 => {
       e2.stopPropagation();
       imgSlot.innerHTML='<div class="s-img-hint"><div class="s-img-hint-icon">🖼</div><div>點擊上傳照片</div></div><button class="s-img-del">✕</button>';
       imgSlot.querySelector('.s-img-del').addEventListener('click', e3=>e3.stopPropagation());
+      setImgExpanded(false);
       saveStickyState();
     });
+  } else {
+    setImgExpanded(false);
   }
 
   container.appendChild(el);
@@ -1642,7 +1792,11 @@ function saveStickyState() {
         y: parseFloat(el.style.top)||0,
         rot: (el.style.transform.match(/rotate\(([^)]+)\)/) || [,'0deg'])[1],
         text: ta ? ta.value : '',
-        imgSrc: img ? img.src : ''
+        imgSrc: img ? img.src : '',
+        w: el.offsetWidth  || null,
+        h: el.offsetHeight || null,
+        w: el.offsetWidth  || null,
+        h: el.offsetHeight || null,
       });
     });
     localStorage.setItem('sticky_data', JSON.stringify(data));
@@ -1653,11 +1807,10 @@ function loadStickyState() {
   try {
     const data = JSON.parse(localStorage.getItem('sticky_data') || 'null');
     if (!data || !data.length) return false;
-    // Clear default stickies first
     document.querySelectorAll('#sticky-container .sticky').forEach(e=>e.remove());
     uid = 0;
     data.forEach(d => {
-      addSticky(d.cls, d.x, d.y, d.text, d.rot, d.imgSrc);
+      addSticky(d.cls, d.x, d.y, d.text, d.rot, d.imgSrc, d.w, d.h);
     });
     return true;
   } catch(e){ return false; }
@@ -1796,7 +1949,7 @@ function restoreAllData(data) {
   if (data.stickies) {
     document.querySelectorAll('#sticky-container .sticky').forEach(e=>e.remove());
     uid = 0;
-    data.stickies.forEach(d => addSticky(d.cls, d.x, d.y, d.text, d.rot, d.imgSrc));
+    data.stickies.forEach(d => addSticky(d.cls, d.x, d.y, d.text, d.rot, d.imgSrc, d.w, d.h));
     saveStickyState();
   }
   // Mind map
