@@ -398,9 +398,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 </div>
 
 <div id="liofan-view" class="app-view">
-    <button class="back-btn" style="position: absolute; top: 1rem; left: 1rem;" onclick="switchApp('home')">← 回首頁</button>
+    <button class="back-btn" style="position: absolute; top: 1rem; left: 1rem; z-index: 100;" onclick="switchApp('home')">← 回首頁</button>
     
-    <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 10px; align-items: center;">
+    <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 10px; align-items: center; z-index: 100;">
         <span class="cloud-status">☁️ 已登入</span>
         <button class="back-btn" style="position:static;" onclick="window.logout()">登出</button>
     </div>
@@ -1053,28 +1053,27 @@ nbLoad(); nbRenderList(); if (nbNotes.length > 0) { const latest = [...nbNotes].
     location.reload();
   };
 
-  // 雲端防卡頓儲存機制 (Debounce)
+// 雲端防卡頓儲存機制 (Debounce)
   let cloudTimer = null;
   window.triggerCloudSave = () => {
     if (!window.currentUserUid) return;
     
-    const statusEls = document.querySelectorAll('.cloud-status');
-    statusEls.forEach(el => el.textContent = '☁️ 儲存中...');
+    // 移除「儲存中...」的文字干擾，讓它安靜在背景執行
     
     clearTimeout(cloudTimer);
     cloudTimer = setTimeout(async () => {
       try {
-        // 呼叫原本寫好的 collectAllData() 取得所有應用程式資料
         const fullData = window.collectAllData ? window.collectAllData() : null;
         if (fullData) {
             await setDoc(doc(db, "users", window.currentUserUid), fullData);
-            statusEls.forEach(el => el.textContent = '☁️ 已自動備份至雲端');
+            // 存檔成功也不用特別顯示，維持畫面清爽
         }
       } catch(e) {
         console.error("雲端存檔失敗：", e);
-        statusEls.forEach(el => el.textContent = '⚠️ 雲端存檔失敗');
+        const statusEls = document.querySelectorAll('.cloud-status');
+        statusEls.forEach(el => el.textContent = '⚠️ 雲端連線異常');
       }
-    }, 2000); // 停止輸入 2 秒後上傳
+    }, 2000); // 停止輸入 2 秒後安靜上傳
   };
 </script>
 </body>
