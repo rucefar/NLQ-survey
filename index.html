@@ -370,7 +370,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     </div>
 </div>
 
-<div id="home-view" class="app-view">
+<div id="home-view" class="app-view active">
     <header class="header">
         <h1>Mindful Core, Digital Leverage.</h1>
         <p>『心有定見，行有高效』— WinPlus+個人成長系統</p>
@@ -1014,7 +1014,10 @@ nbLoad(); nbRenderList(); if (nbNotes.length > 0) { const latest = [...nbNotes].
       window.currentUserUid = user.uid;
       document.getElementById('login-overlay').style.display = 'none';
       document.getElementById('user-profile-name').textContent = user.displayName;
-      
+
+      // 👇 補上這一行，確保登入成功後強制切換到首頁
+      switchApp('home');
+
       const statusEls = document.querySelectorAll('.cloud-status');
       statusEls.forEach(el => el.textContent = '☁️ 正在讀取雲端資料...');
 
