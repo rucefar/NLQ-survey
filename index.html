@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://lh3.googleusercontent.com; frame-src 'self' https://rucefar.github.io https://accounts.google.com https://winplus-6fe62.firebaseapp.com; connect-src https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://lh3.googleusercontent.com; frame-src 'self' https://rucefar.github.io https://accounts.google.com https://winplus-6fe62.firebaseapp.com; connect-src https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com;">
 <title>WinPlus+ | 自我成長手冊</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Caveat:wght@400;600&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 /* ══════════════════════════════════════════
    全域基礎設定與登入畫面
@@ -38,14 +39,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 }
 .login-box h1 { font-family: 'Noto Serif TC', serif; color: #2d3436; margin-bottom: 1rem; font-weight: 900; }
 .login-box p { color: #636e72; font-size: 0.9rem; line-height: 1.6; }
-.login-btn {
-    background: #fff; color: #333; border: 1px solid #ddd; padding: 12px 24px; border-radius: 8px;
-    font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-    margin-top: 2rem; width: 100%; transition: all 0.2s; font-family: 'Noto Sans TC', sans-serif; font-weight: 500;
-}
-.login-btn:hover { background: #f8f9fa; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.login-btn img { width: 20px; height: 20px; }
 
 /* 雲端狀態與使用者資訊 */
 .cloud-status { font-size: 0.75rem; color: #888; margin-left: 10px; font-weight: 500; }
@@ -475,10 +468,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         <h1>WinPlus+</h1>
         <p>數位戰鬥與成長空間</p>
         <div style="margin-top:15px; font-size:0.85rem; color:#888;">請登入以自動同步並保護您的專屬資料</div>
-        <button id="login-btn" class="login-btn" onclick="window.loginWithGoogle()">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-            使用 Google 帳號登入
-        </button>
+        
+        <div id="google-btn-container" style="display: flex; justify-content: center; margin-top: 2rem; min-height: 40px;"></div>
+        
         <div id="login-error" style="margin-top:12px; font-size:0.8rem; color:#e85a5a; min-height:1.2em;"></div>
     </div>
 </div>
@@ -1558,12 +1550,12 @@ window.clearAllData = function() { if (!confirm('確定要清除全部資料？�
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithCredential, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyArBQTUSpEk2VfLMSe1lLDbhBDNEzZJgtA",
-    authDomain: "rucefar.github.io",   // ← 改成與網站同域，解決跨域 sessionStorage 問題
+    authDomain: "rucefar.github.io",   
     projectId: "winplus-6fe62",
     storageBucket: "winplus-6fe62.firebasestorage.app",
     messagingSenderId: "635721093721",
@@ -1573,7 +1565,6 @@ window.clearAllData = function() { if (!confirm('確定要清除全部資料？�
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const provider = new GoogleAuthProvider();
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -1607,30 +1598,56 @@ window.clearAllData = function() { if (!confirm('確定要清除全部資料？�
     }
   });
 
-  // ── Google 登入（Popup）──
-  // GitHub Pages 架設的靜態網站無法使用 signInWithRedirect：
-  // Safari 16.1+ / Chrome 115+ / Firefox 109+ 封鎖第三方 cookie，
-  // 導致跨域 iframe（github.io ↔ firebaseapp.com）無法傳遞 auth 狀態，
-  // 必須改用 signInWithPopup。
-  // Popup 只要從使用者手勢（onclick）直接觸發就不會被瀏覽器封鎖。
-  window.loginWithGoogle = async () => {
-    const btn = document.getElementById('login-btn');
-    const errEl = document.getElementById('login-error');
-    if (btn) { btn.disabled = true; btn.textContent = '登入中...'; }
-    if (errEl) errEl.textContent = '';
+  // ==========================================
+  // Google One Tap / GIS 登入邏輯
+  // ==========================================
 
-    try {
-      await signInWithPopup(auth, provider);
-      // 成功後 onAuthStateChanged 會自動觸發，不需要額外處理
-    } catch (error) {
-      console.error("登入失敗：", error);
-      const googleIcon = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width:20px;height:20px;">';
-      if (btn) { btn.disabled = false; btn.innerHTML = googleIcon + ' 使用 Google 帳號登入'; }
-      // 使用者自己關掉 popup 不算錯誤，不顯示訊息
-      if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-        if (errEl) errEl.textContent = '登入失敗（' + error.code + '），請再試一次。';
+  // 將處理憑證的函式掛載到全域，供 Google GIS 呼叫
+  window.handleCredentialResponse = async (response) => {
+      const errEl = document.getElementById('login-error');
+      if (errEl) errEl.textContent = '驗證中，請稍候...';
+
+      try {
+          // 將 Google 回傳的 ID Token 包裝成 Firebase 聽得懂的憑證
+          const credential = GoogleAuthProvider.credential(response.credential);
+          
+          // 使用該憑證登入 Firebase
+          await signInWithCredential(auth, credential);
+          
+      } catch (error) {
+          console.error("Firebase 憑證登入失敗：", error);
+          if (errEl) errEl.textContent = '登入失敗（' + error.code + '），請再試一次。';
       }
-    }
+  };
+
+  // 當網頁載入完成時，初始化 Google 原生登入按鈕
+  window.onload = function () {
+      // 初始化 GIS
+      google.accounts.id.initialize({
+          client_id: "635721093721-ebdobeukugpou646db9kt6ij873ejorb.apps.googleusercontent.com",
+          callback: window.handleCredentialResponse,
+          context: "use" 
+      });
+
+      // 在指定的 div 渲染出 Google 官方防阻擋按鈕
+      const btnContainer = document.getElementById("google-btn-container");
+      if (btnContainer) {
+          google.accounts.id.renderButton(
+              btnContainer,
+              { 
+                  theme: "outline", 
+                  size: "large", 
+                  type: "standard", 
+                  shape: "rectangular",
+                  text: "signin_with",
+                  logo_alignment: "left",
+                  width: 250
+              }
+          );
+      }
+
+      // 選擇性功能：在手機底部滑出超順暢的 One Tap 登入提示 (Bottom Sheet)
+      google.accounts.id.prompt(); 
   };
 
   window.logout = async () => {
