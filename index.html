@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline' https://www.gstatic.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com; connect-src https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://lh3.googleusercontent.com; frame-src 'self' https://rucefar.github.io https://accounts.google.com https://winplus-6fe62.firebaseapp.com; connect-src https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com;">
 <title>WinPlus+ | 自我成長手冊</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Caveat:wght@400;600&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
 <style>
@@ -1563,7 +1563,7 @@ window.clearAllData = function() { if (!confirm('確定要清除全部資料？�
 
   const firebaseConfig = {
     apiKey: "AIzaSyArBQTUSpEk2VfLMSe1lLDbhBDNEzZJgtA",
-    authDomain: "winplus-6fe62.firebaseapp.com",
+    authDomain: "rucefar.github.io",   // ← 改成與網站同域，解決跨域 sessionStorage 問題
     projectId: "winplus-6fe62",
     storageBucket: "winplus-6fe62.firebasestorage.app",
     messagingSenderId: "635721093721",
