@@ -455,6 +455,28 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
   .nb-item { width: 100px; }
   .nb-item-preview, .nb-item-date { display: none; }
 }
+
+#crm-desc {
+    resize: vertical;      
+    min-height: 80px;      
+    max-height: 300px;     
+    width: 100%;           
+    display: block;
+    transition: none;      
+    font-family: 'Noto Sans TC', sans-serif;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.biz-modal {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; 
+    max-height: 90vh; /* 確保彈窗不會超出手機螢幕 */
+}
+
 </style>
 </head>
 <body>
