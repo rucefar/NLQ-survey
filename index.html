@@ -1595,27 +1595,53 @@ window.collectAllData = function() {
 }
 
 window.restoreAllData = function(data) {
-  // 將復原邏輯包裝起來，等待網頁元素完全準備好才執行
   const execRestore = () => {
+      if (!data) return;
+
+      // 1. 曼陀羅 (Mandala)
       try {
           if (data.cells) { Object.entries(data.cells).forEach(([k,v]) => localStorage.setItem(k, v)); document.querySelectorAll('#big-grid .m-cell textarea').forEach(ta => { const idx = Array.from(ta.closest('#big-grid').querySelectorAll('textarea')).indexOf(ta); const r=Math.floor(idx/9), c=idx%9; ta.value = data.cells['mc-'+r+'-'+c] || ''; }); }
+      } catch(e) { console.error("Mandala cells error:", e); }
+
+      try {
           if (data.fields) { ['ml_date','ml_title','ml_name','ml_memo'].forEach((k,i) => { if (data.fields[k] != null) { localStorage.setItem(k, data.fields[k]); const ids = ['ml-date','ml-title','ml-name','ml-memo']; const el = document.getElementById(ids[i]); if (el) el.value = data.fields[k]; } }); }
-          
-          if (data.stickies) { localStorage.setItem('sticky_data', JSON.stringify(data.stickies)); window.loadStickyState(); }
-          if (data.mindmap) { localStorage.setItem('mm_nodes', JSON.stringify(data.mindmap)); if(typeof window.mmLoadState === 'function') window.mmLoadState(); }
-          if (data.tbCats) { localStorage.setItem('tb_cats', JSON.stringify(data.tbCats)); }
-          if (data.tbBlk) { localStorage.setItem('tb_blocks', JSON.stringify(data.tbBlk)); }
-          if (data.tbNextId) { localStorage.setItem('tb_nextId', data.tbNextId); }
-          if (typeof window.tbOnShow === 'function') { window.tbOnShow(); }
-          if (data.notebook && typeof window.NotebookApp.restoreNotes === 'function') { window.NotebookApp.restoreNotes(data.notebook); }
+      } catch(e) { console.error("Mandala fields error:", e); }
+      
+      // 2. 便條紙 (Stickies)
+      try {
+          if (data.stickies) { localStorage.setItem('sticky_data', JSON.stringify(data.stickies)); if (typeof window.loadStickyState === 'function') window.loadStickyState(); }
+      } catch(e) { console.error("Stickies error:", e); }
+
+      // 3. 組織網路圖 (Mindmap)
+      try {
+          if (data.mindmap) { localStorage.setItem('mm_nodes', JSON.stringify(data.mindmap)); if (typeof window.mmLoadState === 'function') window.mmLoadState(); }
+      } catch(e) { console.error("Mindmap error:", e); }
+
+      // 4. 時間塊 (Timeblock)
+      try {
+          if (data.tbCats) { window.tbCategories = data.tbCats; localStorage.setItem('tb_cats', JSON.stringify(data.tbCats)); }
+          if (data.tbBlk) { window.tbBlocks = data.tbBlk; localStorage.setItem('tb_blocks', JSON.stringify(data.tbBlk)); }
+          if (data.tbNextId) { window.tbNextBlockId = parseInt(data.tbNextId) || 1; localStorage.setItem('tb_nextId', data.tbNextId); }
+          if (typeof window.tbOnShow === 'function') window.tbOnShow();
+      } catch(e) { console.error("Timeblock error:", e); }
+
+      // 5. 筆記本 (Notebook)
+      try {
+          if (data.notebook && typeof window.NotebookApp !== 'undefined' && typeof window.NotebookApp.restoreNotes === 'function') { window.NotebookApp.restoreNotes(data.notebook); }
+      } catch(e) { console.error("Notebook error:", e); }
+
+      // 6. 21天日記 (Liofan)
+      try {
           if (data.liofan) { Object.entries(data.liofan).forEach(([k,v]) => localStorage.setItem(k, v)); if (typeof window.showDay === 'function') window.showDay(window.liofanDay || 1); }
-          if (data.bizCrm) { window.bizCrm = data.bizCrm; localStorage.setItem('biz_crm', JSON.stringify(window.bizCrm)); window.renderCrm(); }
-      } catch(err) {
-          console.error("DOM 復原時發生錯誤: ", err);
-      }
+      } catch(e) { console.error("Liofan error:", e); }
+
+      // 7. CRM 名單
+      try {
+          if (data.bizCrm) { window.bizCrm = data.bizCrm; localStorage.setItem('biz_crm', JSON.stringify(window.bizCrm)); if (typeof window.renderCrm === 'function') window.renderCrm(); }
+      } catch(e) { console.error("CRM error:", e); }
   };
 
-  // 確保 DOM 已完全載入，避免找不到元素導致整個程式崩潰
+  // 確保 DOM 載入完畢才貼上資料，避免找不到元素導致當機
   if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', execRestore);
   } else {
@@ -1662,7 +1688,6 @@ window.restoreAllData = function(data) {
     };
 
     if (user) {
-        // 同樣確保 DOM 載入後再進行畫面與資料操作
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initUser);
         } else {
