@@ -328,7 +328,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #tb-cat-modal-overlay { z-index: 9600; }
 .biz-modal, #tb-modal, #tb-cat-modal { background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; box-shadow: 0 12px 48px rgba(0,0,0,0.22); font-family: 'Noto Sans TC', sans-serif; }
 #tb-cat-modal { max-height: 80vh; overflow-y: auto; }
-.biz-modal { max-height: 90vh; overflow-y: auto; }
+.biz-modal { max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; }
 .biz-modal h3, #tb-modal h3, #tb-cat-modal h3 { font-size: .95rem; font-weight: 700; color: #222; margin-bottom: 16px; }
 
 .tb-modal-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
@@ -459,22 +459,15 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #crm-desc {
     resize: vertical;      
     min-height: 80px;      
-    max-height: 300px;     
+    max-height: 250px;     
     width: 100%;           
     display: block;
     transition: none;      
-    font-family: 'Noto Sans TC', sans-serif;
+    font-family: inherit;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 8px;
     margin-top: 5px;
-}
-
-.biz-modal {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto; 
-    max-height: 90vh;
 }
 </style>
 </head>
@@ -485,7 +478,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         <h1>WinPlus+</h1>
         <p>數位戰鬥與成長空間</p>
         <div style="margin-top:15px; font-size:0.85rem; color:#888;">請登入以自動同步並保護您的專屬資料</div>
+        
         <div id="google-btn-container" style="display: flex; justify-content: center; margin-top: 2rem; min-height: 40px;"></div>
+        
         <div id="login-error" style="margin-top:12px; font-size:0.8rem; color:#e85a5a; min-height:1.2em;"></div>
     </div>
 </div>
@@ -495,6 +490,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         <h1>Mindful Core, Digital Leverage.</h1>
         <p>『心有定見，行有高效』— WinPlus+個人成長系統</p>
     </header>
+
     <main class="container">
         <div class="card liofan" onclick="window.switchApp('liofan')">
             <div class="icon">🖋️</div>
@@ -502,6 +498,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <p>透過二十一天抄寫與每日「三省錄」，<br>實踐斷惡修善，掌握立命之學。</p>
             <div class="tag">心靈修養・立命之學</div>
         </div>
+
         <div class="card winplus" onclick="window.switchApp('winplus')">
             <div class="icon">🚀</div>
             <h2>WinPlus+ 戰鬥手扎</h2>
@@ -509,6 +506,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <div class="tag">生產力・行動管理</div>
         </div>
     </main>
+
     <footer class="footer">
         © 2026 Arnold Yea | 致力於個人成長、寫作與教育的數位實驗室
     </footer>
@@ -516,24 +514,30 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 
 <div id="liofan-view" class="app-view">
     <button class="back-btn" style="position: absolute; top: 1rem; left: 1rem; z-index: 100;" onclick="window.switchApp('home')">← 回首頁</button>
+
     <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 10px; align-items: center; z-index: 100;">
         <span class="cloud-status">☁️ 尚未登入</span>
         <button class="logout-btn" onclick="window.logout()">登出</button>
     </div>
+
     <header class="site-header">
       <div class="title-cn">21天感恩與復盤日記</div>
       <div class="title-sub">斷惡修善 · 掌握立命之學</div>
     </header>
+
     <div class="week-nav">
       <button class="week-btn active" onclick="window.showWeek(1)">第一週｜立命</button>
       <button class="week-btn" onclick="window.showWeek(2)">第二週｜改過</button>
       <button class="week-btn" onclick="window.showWeek(3)">第三週｜積善</button>
     </div>
+
     <div class="progress-bar-wrap">
       <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       <div class="progress-text" id="progressText">0 / 21 天</div>
     </div>
+
     <div class="day-pills" id="dayPills"></div>
+
     <div class="journal-card" id="journalCard">
       <div class="card-inner">
         <div class="day-badge">
@@ -543,15 +547,19 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <div class="day-title" id="dayTitle">立命的宣言</div>
           </div>
         </div>
+
         <div class="wisdom-box"><span class="wisdom-label">✦ 今日智慧精華</span><span id="wisdomText"></span></div>
         <div><span class="orig-label">原文閱讀</span><div class="original-text" id="origText"></div></div>
+        
         <div class="section-label">✍ 靜心抄寫</div>
         <textarea class="copywrite-area" id="mindfulCopy" placeholder="請在此靜心抄寫上方原文..." onchange="window.saveDay()"></textarea>
+
         <div class="date-row">
           手帳日期：<input class="date-input" id="inputYear" placeholder="年" maxlength="4" onchange="window.saveDay()">年
           <input class="date-input" id="inputMonth" placeholder="月" maxlength="2" style="width:50px" onchange="window.saveDay()">月
           <input class="date-input" id="inputDay" placeholder="日" maxlength="2" style="width:50px" onchange="window.saveDay()">日
         </div>
+
         <div class="section-label">✍ 省思隨筆｜三件可以做得更好的事</div>
         <div class="reflection-block">
           <div class="reflection-item">
@@ -567,6 +575,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <textarea class="refl-textarea" id="copywrite3" placeholder="寫下具體的情境與反思……" onchange="window.saveDay()"></textarea>
           </div>
         </div>
+
         <div class="section-label">🙏 感恩日記</div>
         <div class="reflection-block">
           <div class="reflection-item">
@@ -582,6 +591,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <input class="refl-input" id="refl3" placeholder="……" onchange="window.saveDay()">
           </div>
         </div>
+
         <div class="section-label">🎯 明日成功行動計畫</div>
         <div class="action-block">
           <div class="action-desc">明日我計畫安排要做的事：</div>
@@ -589,6 +599,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
           <div class="action-item"><span class="action-icon">◎</span><input class="action-input" id="action2" placeholder="行動二……" onchange="window.saveDay()"></div>
           <div class="action-item"><span class="action-icon">◎</span><input class="action-input" id="action3" placeholder="行動三……" onchange="window.saveDay()"></div>
         </div>
+
         <div class="mood-row">
           <span class="mood-label-text">今日感受：</span>
           <button class="mood-btn" onclick="window.selectMood(this); window.saveDay();">還在摸索</button>
@@ -597,12 +608,14 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
           <button class="mood-btn" onclick="window.selectMood(this); window.saveDay();">清明深入</button>
           <button class="mood-btn" onclick="window.selectMood(this); window.saveDay();">有所突破</button>
         </div>
+
         <div class="save-row">
           <button class="btn-clear" onclick="window.clearDay()">清除</button>
           <button class="btn-save" onclick="window.saveDay()">儲存今日記錄</button>
         </div>
       </div>
     </div>
+
     <div id="weekReviewSection" style="display:none; padding:0 1rem;">
       <div class="week-review" style="max-width:800px; margin:0 auto 2rem;">
         <div class="review-title" id="reviewTitle">第一週回顧｜立命</div>
@@ -619,6 +632,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         </div>
       </div>
     </div>
+
 </div>
 
 <div id="winplus-view" class="app-view">
@@ -631,6 +645,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
       <button class="tab-btn"       onclick="window.gotoPage('mindmap',this)">🕸 組織網路圖</button>
       <button class="tab-btn"       onclick="window.gotoPage('timeblock',this)">🕐 時間塊</button>
       <button class="tab-btn"       onclick="window.gotoPage('notebook',this)">📓 筆記本</button>
+      
       <span class="cloud-status">☁️ 尚未登入</span>
       <div class="user-profile" id="user-profile-name"></div>
       <button class="logout-btn" onclick="window.logout()">登出</button>
@@ -690,7 +705,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     </div>
 
     <div class="page" id="page-mindmap">
-      <div class="mm-hint">點選節點 · 拖曳移動 · 點 ＋ 新增子節點 · 直接點擊編輯文字</div>
+      <div class="mm-hint">點選節點 · 拖曳移動 · 點 ＋ 新增子節點 · 雙擊編輯文字</div>
       <svg id="mm-svg"></svg>
       <div id="mm-canvas"></div>
       <div class="mm-toolbar">
@@ -791,6 +806,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
                 <option value="I">I 象限思維 (投資)</option>
             </select>
         </div>
+        
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="form-group" style="margin-bottom:8px;"><label>F (家庭)</label><input type="text" id="crm-f" placeholder="家庭狀況..."></div>
             <div class="form-group" style="margin-bottom:8px;"><label>O (工作)</label><input type="text" id="crm-o" placeholder="職業/滿意度..."></div>
@@ -799,7 +815,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <div class="form-group" style="margin-bottom:8px;"><label>H (健康)</label><input type="text" id="crm-h" placeholder="健康/困擾..."></div>
             <div class="form-group" style="margin-bottom:8px;"><label>D (夢想)</label><input type="text" id="crm-d" placeholder="目標/夢想..."></div>
         </div>
+
         <div class="form-group" style="margin-top:8px;"><label>跟進重點</label><textarea id="crm-desc" rows="3" placeholder="例如：對增加被動收入有興趣..."></textarea></div>
+        
         <div style="display:flex; gap:10px; margin-top:20px;">
             <button class="biz-action-btn" style="flex:1; background:#ccc; color:#333;" onclick="window.bizCloseCrmModal()">取消</button>
             <button class="biz-action-btn" style="flex:1;" onclick="window.bizAddCrm()">儲存名單</button>
@@ -853,6 +871,7 @@ window.gotoPage = function(name, btn) {
   btn.classList.add('active');
   if (name !== 'cork' && typeof window.closeColorPicker === 'function') window.closeColorPicker();
   if (name === 'timeblock' && typeof window.tbOnShow === 'function') window.tbOnShow();
+  if (name === 'mindmap' && typeof window.mmLoadState === 'function') window.mmLoadState(); // 加入切換時載入心智圖
 }
 
 window.showWPToast = function(msg) { 
@@ -1009,9 +1028,10 @@ window.bizDelCrm = function(id) {
     window.bizCrm = window.bizCrm.filter(c => c.id != id);
     window.saveBiz(); window.renderCrm();
 }
+document.addEventListener('DOMContentLoaded', () => { window.renderCrm(); });
 
 /* ══════════════════════════════════════════
-   21天日記邏輯 (保持不變，略...)
+   21天日記邏輯 
 ══════════════════════════════════════════ */
 window.LIOFAN_DATA = [
   { week:1, title:"立命的宣言", wisdom:"所謂「立命」，就是我要創造命運，而不是讓命運來束縛我。", orig:"所謂「立命」，就是我要創造命運，\n而不是讓命運來束縛我。\n\n了凡先生把自己親身經歷的改命歷程，\n寫下來告訴兒子：\n一個人應該竭力行善，「勿以善小而不為」，\n也必須努力斷惡，「勿以惡小而為之」。\n\n能夠做到這樣，命運就一定會改變。\n所謂「斷惡修善，災消福來」——\n這不是一句口號，\n而是改造命運最根本的原理。" },
@@ -1037,7 +1057,8 @@ window.LIOFAN_DATA = [
   { week:3, title:"造福，全在自己", wisdom:"保持謙虛、存好心、落實積德，命運與福報由自己決定。", orig:"舉頭三尺，一定有神明在監察著人的行為。\n\n所以，存好心，約束一切不善的行為，不得罪天地鬼神；同時保持謙虛，不驕傲，不自滿，讓天地鬼神時時憐憫我——這才是福報能夠持續流入的根基。\n\n謙虛的人，肯向別人學習，看到別人的善行就去效法，所能累積的善行因此沒有窮盡。這對一個真心想要進德修業的人，是絕對不可缺少的。\n\n造福這件事，全在自己。自己真心想造，就一定造得成。\n\n把求福的心，落實在積德行善上，盡心盡力地去做——命運與福報，就都能夠由自己決定了。" }
 ];
 
-window.liofanDay = 1; window.liofanWeek = 1;
+window.liofanDay = 1;
+window.liofanWeek = 1;
 
 window.buildPills = function() {
   const container = document.getElementById('dayPills');
@@ -1126,7 +1147,7 @@ window.saveDay = function() {
     mood
   };
   localStorage.setItem(`day_${window.liofanDay}`, JSON.stringify(data));
-  window.showWPToast('✅ 已儲存！'); window.updateProgress(); window.buildPills();
+    window.showWPToast('✅ 已儲存！'); window.updateProgress(); window.buildPills();
   if (window.triggerCloudSave) window.triggerCloudSave();
 };
 
@@ -1157,7 +1178,13 @@ window.updateProgress = function() {
   if(txt) txt.textContent = `${done} / 21 天`;
 }
 
-/* Time Block 邏輯 (保持不變，略...) */
+document.addEventListener('DOMContentLoaded', () => {
+    window.buildPills(); window.updateProgress(); window.showDay(1);
+});
+
+/* ══════════════════════════════════════════
+   Time Block 邏輯 
+══════════════════════════════════════════ */
 window.HOUR_H = 60; window.START_HOUR = 0; window.END_HOUR = 24;
 window.tbCurrentDate = new Date(); window.tbCurrentDate.setHours(0,0,0,0);
 window.tbCategories = JSON.parse(localStorage.getItem('tb_cats') || 'null') || [
@@ -1281,10 +1308,23 @@ window.tbAddCategory = function() {
 
 window.tbOnShow = function() { window.tbRender(); setTimeout(()=>{ const wrap = document.getElementById('tb-timeline-wrap'); if(wrap) wrap.scrollTop = 8*window.HOUR_H-20; },80); };
 
-/* 曼陀羅 & 靈感發想 */
+/* ══════════════════════════════════════════
+   曼陀羅 & 靈感發想
+══════════════════════════════════════════ */
 const SG = [ {n:'H',r:1,c:1,cl:'cH'},{n:'A',r:1,c:4,cl:'cA'},{n:'D',r:1,c:7,cl:'cD'}, {n:'G',r:4,c:1,cl:'cG'},{n:'' ,r:4,c:4,cl:'cM'},{n:'C',r:4,c:7,cl:'cC'}, {n:'F',r:7,c:1,cl:'cF'},{n:'B',r:7,c:4,cl:'cB'},{n:'E',r:7,c:7,cl:'cE'} ]; 
 const LM = [['2','3','4'],['1','','5'],['8','7','6']];
 const CLM = [['H','A','D'],['G','','C'],['F','B','E']]; 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('big-grid'); 
+    const info = Array.from({length:9}, () => Array(9).fill(0).map(() => ({code:'',cl:''}))); 
+    SG.forEach(sg => { for (let dr=0;dr<3;dr++) for (let dc=0;dc<3;dc++) { info[sg.r-1+dr][sg.c-1+dc] = { code: (dr===1&&dc===1) ? sg.n : (sg.n === '' ? CLM[dr][dc] : sg.n+LM[dr][dc]), cl: (dr===1&&dc===1) ? sg.cl : '' }; } }); 
+    for (let r=0;r<9;r++) for (let c=0;c<9;c++) { const cell = document.createElement('div'); cell.className = 'm-cell' + (c===3||c===6?' bl':'') + (r===3||r===6?' bt':''); const {code,cl} = info[r][c]; if (cl) cell.classList.add(cl); const cd = document.createElement('div'); cd.className='cell-code'; cd.textContent=code; cell.appendChild(cd); const ta = document.createElement('textarea'); const key = 'mc-'+r+'-'+c; try { ta.value = localStorage.getItem(key)||''; } catch(e){} ta.addEventListener('input', () => { try { localStorage.setItem(key, ta.value); if(window.triggerCloudSave) window.triggerCloudSave(); } catch(e){} }); cell.appendChild(ta); grid.appendChild(cell); } 
+    
+    // 初始化時間塊當前線
+    window.tbRender(); setTimeout(()=>{ const wrap = document.getElementById('tb-timeline-wrap'); if (wrap) wrap.scrollTop = 8*window.HOUR_H - 20; },100); 
+    setInterval(()=>{window.tbUpdateNowLine();}, 60000);
+});
 
 window.topZ=20; window.uid=0; 
 window.PIN_CLR = {sy:'#c8a010',sb:'#2070a0',sp:'#b02060',sg:'#187838',sw:'#777'}; 
@@ -1324,11 +1364,12 @@ window.addSticky = function(cls, px, py, initText, initRot, initImgSrc, initWidt
         setImgExpanded(true); imgSlot.querySelector('.s-img-del').addEventListener('click', e2 => { e2.stopPropagation(); resetSlot(); });
     }
     fileInp.addEventListener('change', () => { const f=fileInp.files[0]; if(!f) return; const rd=new FileReader(); rd.onload = ev => { setSlotImg(ev.target.result); window.saveStickyState(); }; rd.readAsDataURL(f); }); el.querySelector('.s-img-del').addEventListener('click', e=>e.stopPropagation()); if (initImgSrc) { setSlotImg(initImgSrc); } else { setImgExpanded(false); } 
-    document.getElementById('sticky-container').appendChild(el); 
-    window.saveStickyState(); 
+    document.getElementById('sticky-container').appendChild(el); window.saveStickyState(); 
 }
 
-/* 筆記本 & 同步 */
+/* ══════════════════════════════════════════
+   筆記本 & 同步邏輯
+══════════════════════════════════════════ */
 window.NotebookApp = {
     notes: [],
     currentId: null,
@@ -1392,7 +1433,6 @@ window.mmSaveState = function() {
     if (window.triggerCloudSave) window.triggerCloudSave();
 };
 
-// 單獨負責畫線的函數（讓拖拉時不影響文字輸入框的 focus）
 window.mmDrawLines = function() {
     const svg = document.getElementById('mm-svg');
     if (!svg) return;
@@ -1406,7 +1446,7 @@ window.mmDrawLines = function() {
                 line.setAttribute("y1", node.y);
                 line.setAttribute("x2", parent.x);
                 line.setAttribute("y2", parent.y);
-                line.setAttribute("stroke", "#ddd");
+                line.setAttribute("stroke", "rgba(26,26,46,0.2)");
                 line.setAttribute("stroke-width", "2");
                 svg.appendChild(line);
             }
@@ -1433,7 +1473,6 @@ window.mmRender = function() {
             ${node.id !== 'root' ? '<button class="mm-node-del">✕</button>' : ''}
         `;
 
-        // 點擊事件：只加上 selected 樣式，不再觸發重新渲染 (避免游標消失)
         el.addEventListener('mousedown', (e) => {
             if (e.target.tagName === 'BUTTON') return;
             if (window.mmSelectedId !== node.id) {
@@ -1443,7 +1482,6 @@ window.mmRender = function() {
             }
         });
 
-        // 監聽文字輸入事件：即時存檔，不用等點擊外面才存
         const textSpan = el.querySelector('.mm-node-text');
         textSpan.addEventListener('input', () => {
             node.text = textSpan.innerText;
@@ -1458,7 +1496,6 @@ window.mmRender = function() {
             });
         }
 
-        // 拖曳邏輯：只更新座標並重畫線，不重畫整個畫面
         let isDragging = false;
         el.addEventListener('mousedown', (e) => {
             if (e.target.classList.contains('mm-node-text') || e.target.tagName === 'BUTTON') return;
@@ -1507,7 +1544,6 @@ window.mmAddChildToSelected = function() {
     window.mmRender();
 };
 
-// 修復：真正的自動輻射狀排版
 window.mmAutoLayout = function() {
     const root = window.mmNodes.find(n => n.id === 'root');
     if(!root) return;
@@ -1515,33 +1551,34 @@ window.mmAutoLayout = function() {
     const W = window.innerWidth || 800;
     const H = window.innerHeight || 600;
     root.x = W / 2;
-    root.y = H / 2;
+    root.y = Math.max(100, H / 3);
     
-    // 第一層子節點排版 (圓形)
     const level1 = window.mmNodes.filter(n => n.parentId === 'root');
     if(level1.length > 0) {
-        const angle1 = (2 * Math.PI) / level1.length;
-        const r1 = 160; // 距離核心的半徑
+        const angleStep = (2 * Math.PI) / level1.length;
+        const radius1 = 180;
         level1.forEach((n1, i) => {
-            n1.x = root.x + r1 * Math.cos(i * angle1);
-            n1.y = root.y + r1 * Math.sin(i * angle1);
+            const angle = i * angleStep;
+            n1.x = root.x + radius1 * Math.cos(angle);
+            n1.y = root.y + radius1 * Math.sin(angle);
             
-            // 第二層子節點排版 (扇形散開)
             const level2 = window.mmNodes.filter(n => n.parentId === n1.id);
             if(level2.length > 0) {
-                const angle2 = Math.PI / (level2.length + 1);
-                const baseAngle = Math.atan2(n1.y - root.y, n1.x - root.x) - Math.PI/2;
-                const r2 = 140;
+                const spread = Math.PI / 1.5; 
+                const startAngle = angle - spread / 2;
+                const l2Step = spread / Math.max(1, level2.length - 1);
+                const radius2 = 160;
                 level2.forEach((n2, j) => {
-                    n2.x = n1.x + r2 * Math.cos(baseAngle + (j+1) * angle2);
-                    n2.y = n1.y + r2 * Math.sin(baseAngle + (j+1) * angle2);
+                    const a2 = level2.length === 1 ? angle : startAngle + j * l2Step;
+                    n2.x = n1.x + radius2 * Math.cos(a2);
+                    n2.y = n1.y + radius2 * Math.sin(a2);
                 });
             }
         });
     }
     
-    window.mmRender();
     window.mmSaveState();
+    window.mmRender();
 };
 
 window.mmClearAll = function() {
@@ -1570,17 +1607,9 @@ window.mmDeleteNode = function(id) {
     window.mmRender();
 };
 
-// 系統核心初始化：確保在任何操作前，DOM 已經填滿 localStorage 的舊資料，防止覆蓋
-document.addEventListener('DOMContentLoaded', () => {
-    // 時間塊初始化
-    window.tbRender(); setTimeout(()=>{ const wrap = document.getElementById('tb-timeline-wrap'); if (wrap) wrap.scrollTop = 8*window.HOUR_H - 20; },100); 
-    setInterval(()=>{window.tbUpdateNowLine();}, 60000);
-    
-    // 初始化便條紙與組織圖，確保開場資料不會空白
-    if (typeof window.loadStickyState === 'function') window.loadStickyState();
-    if (typeof window.mmLoadState === 'function') window.mmLoadState();
-});
-
+/* ══════════════════════════════════════════
+   雲端同步打包與解包 (防護罩版本)
+══════════════════════════════════════════ */
 window.collectAllData = function() {
   const cells = {}; for (let r=0;r<9;r++) for (let c=0;c<9;c++) { const k = 'mc-'+r+'-'+c; const v = localStorage.getItem(k); if (v) cells[k] = v; }
   const fields = {}; ['ml_date','ml_title','ml_name','ml_memo'].forEach(k => { const v = localStorage.getItem(k); if (v) fields[k] = v; });
@@ -1590,62 +1619,37 @@ window.collectAllData = function() {
   const liofan = {}; for (let i = 1; i <= 21; i++) { const d = localStorage.getItem(`day_${i}`); if (d) liofan[`day_${i}`] = d; } for (let i = 1; i <= 3; i++) { const r = localStorage.getItem(`review_week${i}`); if (r) liofan[`review_week${i}`] = r; }
   const bizCrmData = JSON.parse(localStorage.getItem('biz_crm') || '[]');
   return { version:7, cells, fields, stickies, mindmap, tbCats, tbBlk, tbNextId, notebook: window.NotebookApp.getAllNotes(), liofan, bizCrm: bizCrmData };
-}
+};
 
 window.restoreAllData = function(data) {
   const execRestore = () => {
       if (!data) return;
-
-      // 1. 曼陀羅 (Mandala)
       try {
           if (data.cells) { Object.entries(data.cells).forEach(([k,v]) => localStorage.setItem(k, v)); document.querySelectorAll('#big-grid .m-cell textarea').forEach(ta => { const idx = Array.from(ta.closest('#big-grid').querySelectorAll('textarea')).indexOf(ta); const r=Math.floor(idx/9), c=idx%9; ta.value = data.cells['mc-'+r+'-'+c] || ''; }); }
-      } catch(e) { console.error("Mandala cells error:", e); }
-
-      try {
           if (data.fields) { ['ml_date','ml_title','ml_name','ml_memo'].forEach((k,i) => { if (data.fields[k] != null) { localStorage.setItem(k, data.fields[k]); const ids = ['ml-date','ml-title','ml-name','ml-memo']; const el = document.getElementById(ids[i]); if (el) el.value = data.fields[k]; } }); }
-      } catch(e) { console.error("Mandala fields error:", e); }
-      
-      // 2. 便條紙 (Stickies) - 加入獨立防護
-      try {
+          
           if (data.stickies) { localStorage.setItem('sticky_data', JSON.stringify(data.stickies)); if (typeof window.loadStickyState === 'function') window.loadStickyState(); }
-      } catch(e) { console.error("Stickies error:", e); }
-
-      // 3. 組織網路圖 (Mindmap) - 加入獨立防護
-      try {
-          if (data.mindmap) { localStorage.setItem('mm_nodes', JSON.stringify(data.mindmap)); if (typeof window.mmLoadState === 'function') window.mmLoadState(); }
-      } catch(e) { console.error("Mindmap error:", e); }
-
-      // 4. 時間塊 (Timeblock)
-      try {
-          if (data.tbCats) { window.tbCategories = data.tbCats; localStorage.setItem('tb_cats', JSON.stringify(data.tbCats)); }
-          if (data.tbBlk) { window.tbBlocks = data.tbBlk; localStorage.setItem('tb_blocks', JSON.stringify(data.tbBlk)); }
-          if (data.tbNextId) { window.tbNextBlockId = parseInt(data.tbNextId) || 1; localStorage.setItem('tb_nextId', data.tbNextId); }
+          if (data.mindmap) { localStorage.setItem('mm_nodes', JSON.stringify(data.mindmap)); if(typeof window.mmLoadState === 'function') window.mmLoadState(); }
+          
+          if (data.tbCats) { localStorage.setItem('tb_cats', JSON.stringify(data.tbCats)); window.tbCategories = data.tbCats; }
+          if (data.tbBlk) { localStorage.setItem('tb_blocks', JSON.stringify(data.tbBlk)); window.tbBlocks = data.tbBlk; }
+          if (data.tbNextId) { localStorage.setItem('tb_nextId', data.tbNextId); window.tbNextBlockId = parseInt(data.tbNextId) || 1; }
           if (typeof window.tbOnShow === 'function') window.tbOnShow();
-      } catch(e) { console.error("Timeblock error:", e); }
-
-      // 5. 筆記本 (Notebook)
-      try {
-          if (data.notebook && typeof window.NotebookApp !== 'undefined' && typeof window.NotebookApp.restoreNotes === 'function') { window.NotebookApp.restoreNotes(data.notebook); }
-      } catch(e) { console.error("Notebook error:", e); }
-
-      // 6. 21天日記 (Liofan)
-      try {
+          
+          if (data.notebook && typeof window.NotebookApp.restoreNotes === 'function') window.NotebookApp.restoreNotes(data.notebook);
           if (data.liofan) { Object.entries(data.liofan).forEach(([k,v]) => localStorage.setItem(k, v)); if (typeof window.showDay === 'function') window.showDay(window.liofanDay || 1); }
-      } catch(e) { console.error("Liofan error:", e); }
-
-      // 7. CRM 名單
-      try {
-          if (data.bizCrm) { window.bizCrm = data.bizCrm; localStorage.setItem('biz_crm', JSON.stringify(window.bizCrm)); if (typeof window.renderCrm === 'function') window.renderCrm(); }
-      } catch(e) { console.error("CRM error:", e); }
+          if (data.bizCrm) { window.bizCrm = data.bizCrm; localStorage.setItem('biz_crm', JSON.stringify(window.bizCrm)); window.renderCrm(); }
+      } catch(err) {
+          console.error("DOM 復原時發生錯誤: ", err);
+      }
   };
 
-  // 確保 DOM 載入完畢才貼上資料，避免找不到元素導致當機
   if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', execRestore);
   } else {
       execRestore();
   }
-}
+};
 </script>
 
 <script type="module">
@@ -1728,7 +1732,6 @@ window.restoreAllData = function(data) {
               }
           );
       }
-      // 啟動 One Tap 提示
       google.accounts.id.prompt(); 
   };
 
