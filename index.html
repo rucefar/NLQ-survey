@@ -1606,7 +1606,57 @@ window.mmDeleteNode = function(id) {
     window.mmSaveState();
     window.mmRender();
 };
+/* ══════════════════════════════════════════
+   補回遺失的：便條紙儲存與讀取邏輯
+══════════════════════════════════════════ */
+window.saveStickyState = function() {
+    const stickies = [];
+    document.querySelectorAll('.sticky').forEach(el => {
+        // 抓取顏色標籤
+        const cls = Array.from(el.classList).find(c => ['sy','sb','sp','sg','sw'].includes(c)) || 'sy';
+        
+        // 抓取位置
+        const x = parseFloat(el.style.left) || 0;
+        const y = parseFloat(el.style.top) || 0;
+        
+        // 抓取旋轉角度
+        let rot = 0;
+        const transform = el.style.transform;
+        if (transform && transform.includes('rotate')) {
+            const match = transform.match(/rotate\(([-0-9.]+)deg\)/);
+            if (match) rot = parseFloat(match[1]);
+        }
+        
+        // 抓取尺寸
+        const width = parseFloat(el.style.width) || null;
+        const height = parseFloat(el.style.height) || null;
+        
+        // 抓取內容與圖片
+        const text = el.querySelector('.s-ta').value || '';
+        const imgEl = el.querySelector('.s-img img');
+        const imgSrc = imgEl ? imgEl.src : null;
 
+        stickies.push({ cls, x, y, rot, width, height, text, imgSrc });
+    });
+    
+    // 寫入本地端並觸發雲端同步
+    localStorage.setItem('sticky_data', JSON.stringify(stickies));
+    if (window.triggerCloudSave) window.triggerCloudSave();
+};
+
+window.loadStickyState = function() {
+    const container = document.getElementById('sticky-container');
+    if (!container) return;
+    
+    // 清空現有便條紙，避免重複生成
+    container.innerHTML = ''; 
+    
+    // 讀取並重新生成
+    const saved = JSON.parse(localStorage.getItem('sticky_data') || '[]');
+    saved.forEach(s => {
+        window.addSticky(s.cls, s.x, s.y, s.text, s.rot, s.imgSrc, s.width, s.height);
+    });
+};
 /* ══════════════════════════════════════════
    雲端同步打包與解包 (防護罩版本)
 ══════════════════════════════════════════ */
