@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://lh3.googleusercontent.com; frame-src 'self' https://rucefar.github.io https://accounts.google.com https://winplus-6fe62.firebaseapp.com; connect-src https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com https://unpkg.com; style-src 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://lh3.googleusercontent.com https://*.tile.openstreetmap.org https://unpkg.com; frame-src 'self' https://rucefar.github.io https://accounts.google.com https://winplus-6fe62.firebaseapp.com; connect-src https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com https://www.googleapis.com https://nominatim.openstreetmap.org;">
 <title>WinPlus+ | 自我成長手冊</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&family=Caveat:wght@400;600&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 /* ══════════════════════════════════════════
@@ -619,6 +620,20 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     border-radius: 8px;
     margin-top: 5px;
 }
+
+/* ══════════════════════════════════════════
+   地圖系統 CSS
+══════════════════════════════════════════ */
+#home-view .card.map-card { border-top: 6px solid #27ae60; }
+#home-view .card.map-card .icon { color: #27ae60; }
+#home-view .map-card .tag { background: rgba(39,174,96,0.1); color: #27ae60; }
+
+#map-view { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: #f4f1ea; display: none; flex-direction: column; }
+#map-view.active { display: flex; }
+.map-topbar { background: #1e1e1e; height: 50px; display: flex; align-items: center; padding: 0 16px; gap: 12px; flex-shrink: 0; }
+#map-container { flex: 1; width: 100%; z-index: 1; }
+.map-refresh-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer; margin-left: 10px; }
+.map-refresh-btn:hover { background: rgba(255,255,255,0.2); }
 </style>
 </head>
 <body>
@@ -662,6 +677,13 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <p>系統化管理新夥伴的90天跟進歷程，<br>記錄服務引導、課程參與與產品體驗。</p>
             <div class="tag">夥伴培育・跟進管理</div>
         </div>
+
+        <div class="card map-card" onclick="window.switchApp('map')">
+            <div class="icon">🗺️</div>
+            <h2>客戶跟進地圖</h2>
+            <p>將 90 天夥伴名單視覺化，<br>精準掌握區域分佈，提升出門拜訪效率。</p>
+            <div class="tag">區域管理・效率提升</div>
+        </div>
     </main>
 
     <footer class="footer">
@@ -669,7 +691,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     </footer>
 </div>
 
-<!-- ══ 90天夥伴跟進系統 VIEW ══ -->
 <div id="ninety-view" class="app-view">
   <div class="n-topbar">
     <button class="n-back" onclick="window.switchApp('home')">← 回首頁</button>
@@ -678,7 +699,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     <button class="logout-btn" onclick="window.logout()">登出</button>
   </div>
 
-  <!-- 列表頁 -->
   <div id="n-list-page">
     <div class="n-content">
       <div class="n-summary-bar">
@@ -700,7 +720,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     </div>
   </div>
 
-  <!-- 表單頁 -->
   <div id="n-form-page" style="display:none">
     <div class="n-form-wrap">
       <div class="n-form-topbar">
@@ -752,6 +771,16 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     </div>
   </div>
   <div class="n-toast" id="n-toast"></div>
+</div>
+
+<div id="map-view" class="app-view">
+    <div class="map-topbar">
+        <button class="n-back" onclick="window.switchApp('home')">← 回首頁</button>
+        <span style="color: #fff; font-family: 'Noto Serif TC', serif; font-size: 0.95rem; font-weight: 700;">✦ 客戶跟進地圖</span>
+        <button class="map-refresh-btn" onclick="window.initMap(true)">重新整理座標</button>
+        <span id="map-status" style="color: #e8a045; margin-left: auto; font-size: 0.85rem;">等待載入...</span>
+    </div>
+    <div id="map-container"></div>
 </div>
 
 <div id="liofan-view" class="app-view">
@@ -1085,6 +1114,8 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
   </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
 /* ── 全域工具函式 ── */
 window.nbEscape = function(str) {
@@ -1104,6 +1135,7 @@ window.switchApp = function(appId) {
     document.getElementById(appId + '-view').classList.add('active');
     if (appId === 'winplus' && typeof window.tbOnShow === 'function') window.tbOnShow();
     if (appId === 'winplus' && typeof window.renderCrm === 'function') window.renderCrm(); 
+    if (appId === 'map' && typeof window.initMap === 'function') window.initMap();
 }
 
 window.gotoPage = function(name, btn) {
@@ -1113,7 +1145,7 @@ window.gotoPage = function(name, btn) {
   btn.classList.add('active');
   if (name !== 'cork' && typeof window.closeColorPicker === 'function') window.closeColorPicker();
   if (name === 'timeblock' && typeof window.tbOnShow === 'function') window.tbOnShow();
-  if (name === 'mindmap' && typeof window.mmLoadState === 'function') window.mmLoadState(); // 加入切換時載入心智圖
+  if (name === 'mindmap' && typeof window.mmLoadState === 'function') window.mmLoadState(); 
 }
 
 window.showWPToast = function(msg) { 
@@ -1128,6 +1160,315 @@ window.showWPToast = function(msg) {
   clearTimeout(t._timer); 
   t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2200); 
 }
+
+/* ══════════════════════════════════════════
+   地圖系統邏輯 (終極三段式 + 無標點符號高辨識版)
+══════════════════════════════════════════ */
+window.mapInstance = null;
+window.mapMarkers = [];
+window.isMapLoading = false;
+
+window.initMap = async function(forceRefresh = false) {
+    const statusEl = document.getElementById('map-status');
+    
+    // 1. 初始化地圖介面
+    if (!window.mapInstance) {
+        window.mapInstance = L.map('map-container').setView([25.147, 121.399], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(window.mapInstance);
+    } else {
+        window.mapInstance.invalidateSize();
+    }
+
+    if (window.isMapLoading) return; 
+    
+    // 防呆機制：如果已經有標記，且沒有要求強制更新，就直接返回
+    if (!forceRefresh && window.mapMarkers.length > 0) {
+        statusEl.textContent = `已載入 ${window.mapMarkers.length} 位客戶 (若有新增客戶請點擊上方「重新整理座標」)`;
+        return;
+    }
+
+    window.isMapLoading = true;
+    
+    // 清除舊標記
+    window.mapMarkers.forEach(m => window.mapInstance.removeLayer(m));
+    window.mapMarkers = [];
+
+    // 抓取 90天夥伴系統 中的客戶資料
+    const customers = window.nGetCustomers ? window.nGetCustomers() : JSON.parse(localStorage.getItem('crm90_v3') || '[]');
+    const customersWithAddress = customers.filter(c => c.address && c.address.trim() !== '');
+
+    if (customersWithAddress.length === 0) {
+        statusEl.textContent = '⚠️ 名單中沒有具備「地址」的客戶資料 (請先至90天系統填寫)';
+        window.isMapLoading = false;
+        return;
+    }
+
+    statusEl.textContent = `找到 ${customersWithAddress.length} 筆地址，正在呼叫圖資 API 定位...`;
+    const stageNames = ['1–30 天', '31–60 天', '61–90 天'];
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    let loadedCount = 0;
+
+    for (const c of customersWithAddress) {
+        try {
+            statusEl.textContent = `正在定位：${c.name}...`;
+            let lat = null, lon = null;
+
+            // ── 終極三段式搜尋策略 ──
+            let searchQueries = [
+                c.address, // 1. 原始完整地址 (e.g. 新北市三重區碧華街294巷)
+                c.address.replace(/[0-9０-９]+[巷弄號樓Ff].*/, ''), // 2. 拔除巷弄號碼 (e.g. 新北市三重區碧華街)
+                (c.address.match(/.*?[縣市].*?[區鄉鎮市].*?[路街大道段]/) || [])[0] // 3. 強制擷取到路街名
+            ];
+            
+            // 去除陣列中的空值與重複項
+            searchQueries = [...new Set(searchQueries)].filter(q => q && q.trim() !== '');
+
+            for (let addr of searchQueries) {
+                if (lat && lon) break; 
+                
+                // 改用「台灣 + 空格 + 地址」，移除容易導致外國 API 判斷錯誤的逗號
+                let query = encodeURIComponent("台灣 " + addr);
+                let res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`, {
+                    headers: { 'Accept-Language': 'zh-TW' }
+                });
+                let data = await res.json();
+
+                if (data && data.length > 0) {
+                    lat = data[0].lat;
+                    lon = data[0].lon;
+                }
+                
+                // 免費 API 限制每秒請求 1 次
+                await delay(1200); 
+            }
+
+            if (lat && lon) {
+                const popupContent = `
+                    <b style="font-size:1.1em; color:#1a5fb4;">${window.nbEscape ? window.nbEscape(c.name) : c.name}</b><br>
+                    <span style="font-size:0.9em; color:#666;">跟進階段：${stageNames[c.stage] || '未知'}</span><br>
+                    <hr style="border:0; border-top:1px solid #eee; margin:5px 0;">
+                    <span style="font-size:0.9em;">原始地址：${window.nbEscape ? window.nbEscape(c.address) : c.address}</span>
+                `;
+                const marker = L.marker([lat, lon]).addTo(window.mapInstance).bindPopup(popupContent);
+                window.mapMarkers.push(marker);
+                loadedCount++;
+            } else {
+                console.warn(`徹底無法定位地址: ${c.address}`);
+            }
+            
+        } catch (err) {
+            console.error("API Error", err);
+        }
+    }
+    
+    if (loadedCount > 0) {
+        statusEl.textContent = `定位完成！共成功載入 ${loadedCount} 位客戶標記`;
+        const group = new L.featureGroup(window.mapMarkers);
+        window.mapInstance.fitBounds(group.getBounds().pad(0.1));
+    } else {
+        statusEl.textContent = `⚠️ 定位失敗：免費地圖圖資無法辨識您輸入的地址格式`;
+    }
+    
+    window.isMapLoading = false;
+};
+
+/* ══════════════════════════════════════════
+   90天夥伴跟進系統 JS (修復遺失的部分)
+══════════════════════════════════════════ */
+(function() {
+  const SERVICES = ['一對一 OPP','會場 OPP','與上手 DD 認識','參觀體驗館','營養評估','生命密碼','會自己訂貨','會用信用卡'];
+  const COURSES  = ['健康管理45課程','寰宇菁英會','U+PLUS','海外特攻營','誓師大會','安麗年會','BTC','產品總導讀','百萬年薪俱樂部'];
+  const PRODUCTS = [
+    { label:'家潔/個人護理', color:'blue',   items:['SA8','LOC','洗碟精','金屬','金剛刷','牙膏','牙刷','蜜乳','浴露','蜂皂'] },
+    { label:'營養保健',      color:'green',  items:['魚油','VitC','酵素','鈣鎂','卵磷脂','營養早餐'] },
+    { label:'美容護理',      color:'pink',   items:['染髮','潔膚','卸妝乳','抗皺','煥膚'] },
+    { label:'高科技',        color:'indigo', items:['刮痧','淨水器','空氣清淨機','不沾鍋','金鍋'] }
+  ];
+  const STAGE_NAMES = ['1–30 天','31–60 天','61–90 天'];
+  const STAGE_CLS   = ['n-s1','n-s2','n-s3'];
+
+  let nCustomers = [];
+  let nCurrentId = null;
+  let nSearchQ   = '';
+
+  function nSaveLocal() {
+    localStorage.setItem('crm90_v3', JSON.stringify(nCustomers));
+    if (window.triggerCloudSave) window.triggerCloudSave();
+  }
+
+  window.nLoadCustomers = function(data) {
+    nCustomers = data && Array.isArray(data) ? data : [];
+    window.nRenderList();
+  };
+  
+  window.nGetCustomers = function() { return nCustomers; };
+
+  function nInitData() {
+    try { nCustomers = JSON.parse(localStorage.getItem('crm90_v3') || '[]'); } catch(e) { nCustomers = []; }
+  }
+
+  function nInitials(name) { return name ? name.slice(0,2) : '??'; }
+  function nProgressDots(svs) {
+    const n = Math.round((svs.length / SERVICES.length) * 8);
+    let h = '';
+    for (let i=0;i<8;i++) h += `<div class="n-pdot${i<n?' on':''}"></div>`;
+    return h;
+  }
+
+  window.nRenderList = function() {
+    const filtered = nSearchQ ? nCustomers.filter(c => c.name.includes(nSearchQ)) : nCustomers;
+    let html = '';
+    for (let s=0;s<3;s++) {
+      const grp = filtered.filter(c => c.stage === s);
+      html += `<div class="n-stage-block ${STAGE_CLS[s]}">
+        <div class="n-stage-hdr">
+          <span class="n-stage-lbl">${STAGE_NAMES[s]}</span>
+          <span class="n-stage-cnt">${grp.length} 位</span>
+          <div class="n-stage-line"></div>
+        </div>
+        <div class="n-grid">`;
+      grp.forEach(c => {
+        html += `<div class="n-ccard" onclick="nOpenEdit(${c.id})">
+          <div class="n-avatar">${nInitials(c.name)}</div>
+          <div class="n-cname">${window.nbEscape ? window.nbEscape(c.name) : c.name}</div>
+          <div class="n-cmeta">${c.date||''}${c.dd?'<br>DD: '+window.nbEscape(c.dd):''}</div>
+          <div class="n-pdots">${nProgressDots(c.services||[])}</div>
+        </div>`;
+      });
+      html += `<button class="n-add-card" onclick="nOpenNew(${s})"><span style="font-size:20px;line-height:1">+</span><span>新增客戶</span></button>
+        </div></div>`;
+    }
+    const blocks = document.getElementById('n-stage-blocks');
+    if (blocks) blocks.innerHTML = html;
+    for (let s=0;s<3;s++) {
+      const el = document.getElementById('n-cnt'+s);
+      if (el) el.textContent = nCustomers.filter(c=>c.stage===s).length;
+    }
+  };
+
+  window.nFilterCustomers = function(q) { nSearchQ = q; window.nRenderList(); };
+
+  window.nOpenNew = function(stage) {
+    nCurrentId = null;
+    document.getElementById('n-form-title').textContent = '新增客戶';
+    document.getElementById('n-delete-btn').style.display = 'none';
+    nClearForm();
+    nSetStageToggle(stage);
+    nBuildFormUI({ stage, services:[], courses:[], products:[] });
+    nShowForm();
+  };
+
+  window.nOpenEdit = function(id) {
+    const c = nCustomers.find(x => x.id === id);
+    if (!c) return;
+    nCurrentId = id;
+    document.getElementById('n-form-title').textContent = c.name || '客戶資料';
+    document.getElementById('n-delete-btn').style.display = 'block';
+    nSetStageToggle(c.stage||0);
+    nBuildFormUI(c);
+    document.getElementById('nf-name').value    = c.name||'';
+    document.getElementById('nf-date').value    = c.date||'';
+    document.getElementById('nf-dd').value      = c.dd||'';
+    document.getElementById('nf-address').value = c.address||'';
+    document.getElementById('nf-reason').value  = c.reason||'';
+    nShowForm();
+  };
+
+  function nShowForm() {
+    document.getElementById('n-list-page').style.display = 'none';
+    document.getElementById('n-form-page').style.display = 'block';
+    const view = document.getElementById('ninety-view');
+    if(view) view.scrollTop = 0;
+  }
+
+  window.nGoBack = function() {
+    document.getElementById('n-form-page').style.display = 'none';
+    document.getElementById('n-list-page').style.display = 'block';
+    window.nRenderList();
+  };
+
+  function nClearForm() {
+    ['nf-name','nf-date','nf-dd','nf-address','nf-reason'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  }
+
+  function nSetStageToggle(s) {
+    document.querySelectorAll('.n-stg-btn').forEach((b,i) => b.classList.toggle('active', i===s));
+  }
+
+  window.nSetStage = function(s, btn) {
+    document.querySelectorAll('.n-stg-btn').forEach((b,i) => b.classList.toggle('active', i===s));
+  };
+
+  function nBuildFormUI(data) {
+    const sv = data.services||[], co = data.courses||[], pr = data.products||[];
+    document.getElementById('n-service-checks').innerHTML = SERVICES.map(s =>
+      `<div class="n-chk${sv.includes(s)?' on':''}" onclick="this.classList.toggle('on')">
+        <div class="n-chk-box"><span class="n-chk-mark">✓</span></div><span>${s}</span></div>`
+    ).join('');
+    document.getElementById('n-course-tags').innerHTML = COURSES.map(c =>
+      `<span class="n-tag purple${co.includes(c)?' on':''}" onclick="this.classList.toggle('on')">${c}</span>`
+    ).join('');
+    document.getElementById('n-product-tags').innerHTML = PRODUCTS.map(g =>
+      `<div class="n-tag-sec"><div class="n-tag-sec-lbl">${g.label}</div><div class="n-tags">${
+        g.items.map(item => `<span class="n-tag ${g.color}${pr.includes(item)?' on':''}" onclick="this.classList.toggle('on')">${item}</span>`).join('')
+      }</div></div>`
+    ).join('');
+  }
+
+  function nGetSelectedStage() {
+    return [...document.querySelectorAll('.n-stg-btn')].findIndex(b => b.classList.contains('active'));
+  }
+
+  window.nSaveCustomer = function() {
+    const name = document.getElementById('nf-name').value.trim();
+    if (!name) { nShowToast('請填寫姓名','#b03030'); return; }
+    const data = {
+      name, date: document.getElementById('nf-date').value,
+      dd: document.getElementById('nf-dd').value.trim(),
+      address: document.getElementById('nf-address').value.trim(),
+      reason: document.getElementById('nf-reason').value.trim(),
+      stage: nGetSelectedStage(),
+      services: [...document.querySelectorAll('#n-service-checks .n-chk.on')].map(el => el.querySelector('span').textContent),
+      courses:  [...document.querySelectorAll('#n-course-tags .n-tag.on')].map(el => el.textContent),
+      products: [...document.querySelectorAll('#n-product-tags .n-tag.on')].map(el => el.textContent),
+    };
+    if (nCurrentId) {
+      const idx = nCustomers.findIndex(c => c.id === nCurrentId);
+      nCustomers[idx] = { ...nCustomers[idx], ...data };
+    } else {
+      const newId = nCustomers.length ? Math.max(...nCustomers.map(c=>c.id))+1 : 1;
+      nCustomers.push({ id: newId, ...data });
+    }
+    nSaveLocal();
+    nShowToast('已儲存 ✓');
+    setTimeout(window.nGoBack, 700);
+  };
+
+  window.nDeleteCustomer = function() {
+    if (!nCurrentId) return;
+    if (!confirm('確定要刪除此客戶的所有資料？')) return;
+    nCustomers = nCustomers.filter(c => c.id !== nCurrentId);
+    nSaveLocal();
+    nShowToast('已刪除');
+    setTimeout(window.nGoBack, 500);
+  };
+
+  function nShowToast(msg, color) {
+    const t = document.getElementById('n-toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.style.background = color || '#0e7d5a';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    nInitData();
+    window.nRenderList();
+  });
+})();
 
 /* ══════════════════════════════════════════
    CRM 看板邏輯
@@ -1563,7 +1904,6 @@ document.addEventListener('DOMContentLoaded', () => {
     SG.forEach(sg => { for (let dr=0;dr<3;dr++) for (let dc=0;dc<3;dc++) { info[sg.r-1+dr][sg.c-1+dc] = { code: (dr===1&&dc===1) ? sg.n : (sg.n === '' ? CLM[dr][dc] : sg.n+LM[dr][dc]), cl: (dr===1&&dc===1) ? sg.cl : '' }; } }); 
     for (let r=0;r<9;r++) for (let c=0;c<9;c++) { const cell = document.createElement('div'); cell.className = 'm-cell' + (c===3||c===6?' bl':'') + (r===3||r===6?' bt':''); const {code,cl} = info[r][c]; if (cl) cell.classList.add(cl); const cd = document.createElement('div'); cd.className='cell-code'; cd.textContent=code; cell.appendChild(cd); const ta = document.createElement('textarea'); const key = 'mc-'+r+'-'+c; try { ta.value = localStorage.getItem(key)||''; } catch(e){} ta.addEventListener('input', () => { try { localStorage.setItem(key, ta.value); if(window.triggerCloudSave) window.triggerCloudSave(); } catch(e){} }); cell.appendChild(ta); grid.appendChild(cell); } 
     
-    // 初始化時間塊當前線
     window.tbRender(); setTimeout(()=>{ const wrap = document.getElementById('tb-timeline-wrap'); if (wrap) wrap.scrollTop = 8*window.HOUR_H - 20; },100); 
     setInterval(()=>{window.tbUpdateNowLine();}, 60000);
 });
@@ -1613,10 +1953,7 @@ window.addSticky = function(cls, px, py, initText, initRot, initImgSrc, initWidt
    筆記本 & 同步邏輯
 ══════════════════════════════════════════ */
 window.NotebookApp = {
-    notes: [],
-    currentId: null,
-    nextId: 1,
-    saveTimer: null,
+    notes: [], currentId: null, nextId: 1, saveTimer: null,
     load: function() { try { const saved = JSON.parse(localStorage.getItem('nb_notes') || 'null'); if (saved && saved.notes) { this.notes = saved.notes; this.nextId = saved.nextId || (this.notes.length + 1); } } catch(e) {} },
     save: function() { try { localStorage.setItem('nb_notes', JSON.stringify({ notes: this.notes, nextId: this.nextId })); if(window.triggerCloudSave) window.triggerCloudSave(); } catch(e) {} },
     scheduleSave: function() { clearTimeout(this.saveTimer); document.getElementById('nb-save-status').textContent = '儲存中…'; this.saveTimer = setTimeout(() => { this.save(); document.getElementById('nb-save-status').textContent = '已儲存'; }, 800); },
@@ -1648,24 +1985,15 @@ window.NotebookApp = {
 };
 
 /* ══════════════════════════════════════════
-   組織網路圖 (Mind Map) 完美修復版
+   組織網路圖 (Mind Map)
 ══════════════════════════════════════════ */
 window.mmNodes = [];
 window.mmSelectedId = null;
 
 window.mmLoadState = function() {
     const saved = JSON.parse(localStorage.getItem('mm_nodes') || '[]');
-    if (saved.length > 0) {
-        window.mmNodes = saved;
-    } else {
-        window.mmNodes = [{
-            id: 'root',
-            text: '核心目標',
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
-            parentId: null,
-            isRoot: true
-        }];
+    if (saved.length > 0) { window.mmNodes = saved; } else {
+        window.mmNodes = [{ id: 'root', text: '核心目標', x: window.innerWidth / 2, y: window.innerHeight / 2, parentId: null, isRoot: true }];
     }
     window.mmRender();
 };
@@ -1684,12 +2012,8 @@ window.mmDrawLines = function() {
             const parent = window.mmNodes.find(n => n.id === node.parentId);
             if (parent) {
                 const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", node.x);
-                line.setAttribute("y1", node.y);
-                line.setAttribute("x2", parent.x);
-                line.setAttribute("y2", parent.y);
-                line.setAttribute("stroke", "rgba(26,26,46,0.2)");
-                line.setAttribute("stroke-width", "2");
+                line.setAttribute("x1", node.x); line.setAttribute("y1", node.y); line.setAttribute("x2", parent.x); line.setAttribute("y2", parent.y);
+                line.setAttribute("stroke", "rgba(26,26,46,0.2)"); line.setAttribute("stroke-width", "2");
                 svg.appendChild(line);
             }
         }
@@ -1705,15 +2029,9 @@ window.mmRender = function() {
     window.mmNodes.forEach(node => {
         const el = document.createElement('div');
         el.className = 'mm-node' + (node.id === 'root' ? ' root' : '') + (node.id === window.mmSelectedId ? ' selected' : '');
-        el.style.left = node.x + 'px';
-        el.style.top = node.y + 'px';
+        el.style.left = node.x + 'px'; el.style.top = node.y + 'px';
         
-        el.innerHTML = `
-            <div class="mm-node-inner">
-                <span class="mm-node-text" contenteditable="true">${window.nbEscape ? window.nbEscape(node.text) : node.text}</span>
-            </div>
-            ${node.id !== 'root' ? '<button class="mm-node-del">✕</button>' : ''}
-        `;
+        el.innerHTML = `<div class="mm-node-inner"><span class="mm-node-text" contenteditable="true">${window.nbEscape ? window.nbEscape(node.text) : node.text}</span></div>${node.id !== 'root' ? '<button class="mm-node-del">✕</button>' : ''}`;
 
         el.addEventListener('mousedown', (e) => {
             if (e.target.tagName === 'BUTTON') return;
@@ -1725,46 +2043,20 @@ window.mmRender = function() {
         });
 
         const textSpan = el.querySelector('.mm-node-text');
-        textSpan.addEventListener('input', () => {
-            node.text = textSpan.innerText;
-            window.mmSaveState();
-        });
+        textSpan.addEventListener('input', () => { node.text = textSpan.innerText; window.mmSaveState(); });
 
         const delBtn = el.querySelector('.mm-node-del');
-        if (delBtn) {
-            delBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                window.mmDeleteNode(node.id);
-            });
-        }
+        if (delBtn) { delBtn.addEventListener('click', (e) => { e.stopPropagation(); window.mmDeleteNode(node.id); }); }
 
         let isDragging = false;
         el.addEventListener('mousedown', (e) => {
             if (e.target.classList.contains('mm-node-text') || e.target.tagName === 'BUTTON') return;
             isDragging = true;
-            const startX = e.clientX - node.x;
-            const startY = e.clientY - node.y;
-            
-            function onMouseMove(ev) {
-                if(!isDragging) return;
-                node.x = ev.clientX - startX;
-                node.y = ev.clientY - startY;
-                el.style.left = node.x + 'px';
-                el.style.top = node.y + 'px';
-                window.mmDrawLines();
-            }
-            
-            function onMouseUp() {
-                isDragging = false;
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-                window.mmSaveState();
-            }
-            
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
+            const startX = e.clientX - node.x; const startY = e.clientY - node.y;
+            function onMouseMove(ev) { if(!isDragging) return; node.x = ev.clientX - startX; node.y = ev.clientY - startY; el.style.left = node.x + 'px'; el.style.top = node.y + 'px'; window.mmDrawLines(); }
+            function onMouseUp() { isDragging = false; document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); window.mmSaveState(); }
+            document.addEventListener('mousemove', onMouseMove); document.addEventListener('mouseup', onMouseUp);
         });
-
         canvas.appendChild(el);
     });
 };
@@ -1773,115 +2065,63 @@ window.mmAddChildToSelected = function() {
     const parentId = window.mmSelectedId || 'root';
     const parent = window.mmNodes.find(n => n.id === parentId);
     if(!parent) return;
-    const newNode = {
-        id: 'mm_' + Date.now().toString(),
-        text: '新節點',
-        x: parent.x + 120,
-        y: parent.y + (Math.random() - 0.5) * 100,
-        parentId: parentId
-    };
+    const newNode = { id: 'mm_' + Date.now().toString(), text: '新節點', x: parent.x + 120, y: parent.y + (Math.random() - 0.5) * 100, parentId: parentId };
     window.mmNodes.push(newNode);
-    window.mmSelectedId = newNode.id;
-    window.mmSaveState();
-    window.mmRender();
+    window.mmSelectedId = newNode.id; window.mmSaveState(); window.mmRender();
 };
 
 window.mmAutoLayout = function() {
-    const root = window.mmNodes.find(n => n.id === 'root');
-    if(!root) return;
-    
-    const W = window.innerWidth || 800;
-    const H = window.innerHeight || 600;
-    root.x = W / 2;
-    root.y = Math.max(100, H / 3);
-    
+    const root = window.mmNodes.find(n => n.id === 'root'); if(!root) return;
+    const W = window.innerWidth || 800; const H = window.innerHeight || 600;
+    root.x = W / 2; root.y = Math.max(100, H / 3);
     const level1 = window.mmNodes.filter(n => n.parentId === 'root');
     if(level1.length > 0) {
-        const angleStep = (2 * Math.PI) / level1.length;
-        const radius1 = 180;
+        const angleStep = (2 * Math.PI) / level1.length; const radius1 = 180;
         level1.forEach((n1, i) => {
-            const angle = i * angleStep;
-            n1.x = root.x + radius1 * Math.cos(angle);
-            n1.y = root.y + radius1 * Math.sin(angle);
-            
+            const angle = i * angleStep; n1.x = root.x + radius1 * Math.cos(angle); n1.y = root.y + radius1 * Math.sin(angle);
             const level2 = window.mmNodes.filter(n => n.parentId === n1.id);
             if(level2.length > 0) {
-                const spread = Math.PI / 1.5; 
-                const startAngle = angle - spread / 2;
-                const l2Step = spread / Math.max(1, level2.length - 1);
-                const radius2 = 160;
-                level2.forEach((n2, j) => {
-                    const a2 = level2.length === 1 ? angle : startAngle + j * l2Step;
-                    n2.x = n1.x + radius2 * Math.cos(a2);
-                    n2.y = n1.y + radius2 * Math.sin(a2);
-                });
+                const spread = Math.PI / 1.5; const startAngle = angle - spread / 2; const l2Step = spread / Math.max(1, level2.length - 1); const radius2 = 160;
+                level2.forEach((n2, j) => { const a2 = level2.length === 1 ? angle : startAngle + j * l2Step; n2.x = n1.x + radius2 * Math.cos(a2); n2.y = n1.y + radius2 * Math.sin(a2); });
             }
         });
     }
-    
-    window.mmSaveState();
-    window.mmRender();
+    window.mmSaveState(); window.mmRender();
 };
 
 window.mmClearAll = function() {
     if (!confirm('確定要清除所有節點並重置嗎？')) return;
-    localStorage.removeItem('mm_nodes');
-    window.mmLoadState();
+    localStorage.removeItem('mm_nodes'); window.mmLoadState();
     if (window.triggerCloudSave) window.triggerCloudSave();
 };
 
 window.mmDeleteNode = function(id) {
     if(id === 'root') return;
-    const idsToDelete = new Set([id]);
-    let added = true;
-    while(added) {
-        added = false;
-        window.mmNodes.forEach(n => {
-            if(n.parentId && idsToDelete.has(n.parentId) && !idsToDelete.has(n.id)) {
-                idsToDelete.add(n.id);
-                added = true;
-            }
-        });
-    }
+    const idsToDelete = new Set([id]); let added = true;
+    while(added) { added = false; window.mmNodes.forEach(n => { if(n.parentId && idsToDelete.has(n.parentId) && !idsToDelete.has(n.id)) { idsToDelete.add(n.id); added = true; } }); }
     window.mmNodes = window.mmNodes.filter(n => !idsToDelete.has(n.id));
     if(window.mmSelectedId === id || idsToDelete.has(window.mmSelectedId)) window.mmSelectedId = 'root';
-    window.mmSaveState();
-    window.mmRender();
+    window.mmSaveState(); window.mmRender();
 };
+
 /* ══════════════════════════════════════════
-   補回遺失的：便條紙儲存與讀取邏輯
+   便條紙儲存與讀取邏輯
 ══════════════════════════════════════════ */
 window.saveStickyState = function() {
     const stickies = [];
     document.querySelectorAll('.sticky').forEach(el => {
-        // 抓取顏色標籤
         const cls = Array.from(el.classList).find(c => ['sy','sb','sp','sg','sw'].includes(c)) || 'sy';
-        
-        // 抓取位置
         const x = parseFloat(el.style.left) || 0;
         const y = parseFloat(el.style.top) || 0;
-        
-        // 抓取旋轉角度
-        let rot = 0;
-        const transform = el.style.transform;
-        if (transform && transform.includes('rotate')) {
-            const match = transform.match(/rotate\(([-0-9.]+)deg\)/);
-            if (match) rot = parseFloat(match[1]);
-        }
-        
-        // 抓取尺寸
+        let rot = 0; const transform = el.style.transform;
+        if (transform && transform.includes('rotate')) { const match = transform.match(/rotate\(([-0-9.]+)deg\)/); if (match) rot = parseFloat(match[1]); }
         const width = parseFloat(el.style.width) || null;
         const height = parseFloat(el.style.height) || null;
-        
-        // 抓取內容與圖片
         const text = el.querySelector('.s-ta').value || '';
         const imgEl = el.querySelector('.s-img img');
         const imgSrc = imgEl ? imgEl.src : null;
-
         stickies.push({ cls, x, y, rot, width, height, text, imgSrc });
     });
-    
-    // 寫入本地端並觸發雲端同步
     localStorage.setItem('sticky_data', JSON.stringify(stickies));
     if (window.triggerCloudSave) window.triggerCloudSave();
 };
@@ -1889,222 +2129,13 @@ window.saveStickyState = function() {
 window.loadStickyState = function() {
     const container = document.getElementById('sticky-container');
     if (!container) return;
-    
-    // 清空現有便條紙，避免重複生成
     container.innerHTML = ''; 
-    
-    // 讀取並重新生成
     const saved = JSON.parse(localStorage.getItem('sticky_data') || '[]');
-    saved.forEach(s => {
-        window.addSticky(s.cls, s.x, s.y, s.text, s.rot, s.imgSrc, s.width, s.height);
-    });
+    saved.forEach(s => { window.addSticky(s.cls, s.x, s.y, s.text, s.rot, s.imgSrc, s.width, s.height); });
 };
-/* ══════════════════════════════════════════
-   90天夥伴跟進系統 JS
-══════════════════════════════════════════ */
-(function() {
-  const SERVICES = ['一對一 OPP','會場 OPP','與上手 DD 認識','參觀體驗館','營養評估','生命密碼','會自己訂貨','會用信用卡'];
-  const COURSES  = ['健康管理45課程','寰宇菁英會','U+PLUS','海外特攻營','誓師大會','安麗年會','BTC','產品總導讀','百萬年薪俱樂部'];
-  const PRODUCTS = [
-    { label:'家潔/個人護理', color:'blue',   items:['SA8','LOC','洗碟精','金屬','金剛刷','牙膏','牙刷','蜜乳','浴露','蜂皂'] },
-    { label:'營養保健',      color:'green',  items:['魚油','VitC','酵素','鈣鎂','卵磷脂','營養早餐'] },
-    { label:'美容護理',      color:'pink',   items:['染髮','潔膚','卸妝乳','抗皺','煥膚'] },
-    { label:'高科技',        color:'indigo', items:['刮痧','淨水器','空氣清淨機','不沾鍋','金鍋'] }
-  ];
-  const STAGE_NAMES = ['1–30 天','31–60 天','61–90 天'];
-  const STAGE_CLS   = ['n-s1','n-s2','n-s3'];
-
-  let nCustomers = [];
-  let nCurrentId = null;
-  let nSearchQ   = '';
-
-  // ── 資料存取 ──
-  function nSaveLocal() {
-    localStorage.setItem('crm90_v3', JSON.stringify(nCustomers));
-    if (window.triggerCloudSave) window.triggerCloudSave();
-  }
-  window.nLoadCustomers = function(data) {
-    nCustomers = data && Array.isArray(data) ? data : [];
-    nRenderList();
-  };
-  window.nGetCustomers = function() { return nCustomers; };
-
-  function nInitData() {
-    try { nCustomers = JSON.parse(localStorage.getItem('crm90_v3') || '[]'); } catch(e) { nCustomers = []; }
-    if (!nCustomers.length) {
-      nCustomers = [
-        { id:1, name:'王小明', date:'2025-03-10', dd:'李大華', reason:'改善健康狀況', stage:0, services:['一對一 OPP','與上手 DD 認識'], courses:['BTC'], products:['SA8','魚油'] },
-        { id:2, name:'陳美玲', date:'2025-02-15', dd:'李大華', reason:'增加收入來源', stage:1, services:['一對一 OPP','會場 OPP','參觀體驗館','營養評估'], courses:['健康管理45課程','BTC'], products:['VitC','牙膏'] },
-        { id:3, name:'林志偉', date:'2025-01-20', dd:'張三',   reason:'事業發展',   stage:2, services:SERVICES.slice(0,6), courses:['BTC','產品總導讀'], products:['魚油','VitC','SA8'] },
-      ];
-      nSaveLocal();
-    }
-  }
-
-  // ── 渲染列表 ──
-  function nInitials(name) { return name ? name.slice(0,2) : '??'; }
-  function nProgressDots(svs) {
-    const n = Math.round((svs.length / SERVICES.length) * 8);
-    let h = '';
-    for (let i=0;i<8;i++) h += `<div class="n-pdot${i<n?' on':''}"></div>`;
-    return h;
-  }
-
-  window.nRenderList = function() {
-    const filtered = nSearchQ ? nCustomers.filter(c => c.name.includes(nSearchQ)) : nCustomers;
-    let html = '';
-    for (let s=0;s<3;s++) {
-      const grp = filtered.filter(c => c.stage === s);
-      html += `<div class="n-stage-block ${STAGE_CLS[s]}">
-        <div class="n-stage-hdr">
-          <span class="n-stage-lbl">${STAGE_NAMES[s]}</span>
-          <span class="n-stage-cnt">${grp.length} 位</span>
-          <div class="n-stage-line"></div>
-        </div>
-        <div class="n-grid">`;
-      grp.forEach(c => {
-        html += `<div class="n-ccard" onclick="nOpenEdit(${c.id})">
-          <div class="n-avatar">${nInitials(c.name)}</div>
-          <div class="n-cname">${c.name}</div>
-          <div class="n-cmeta">${c.date||''}${c.dd?'<br>DD: '+c.dd:''}</div>
-          <div class="n-pdots">${nProgressDots(c.services||[])}</div>
-        </div>`;
-      });
-      html += `<button class="n-add-card" onclick="nOpenNew(${s})"><span style="font-size:20px;line-height:1">+</span><span>新增客戶</span></button>
-        </div></div>`;
-    }
-    document.getElementById('n-stage-blocks').innerHTML = html;
-    for (let s=0;s<3;s++) {
-      const el = document.getElementById('n-cnt'+s);
-      if (el) el.textContent = nCustomers.filter(c=>c.stage===s).length;
-    }
-  };
-
-  window.nFilterCustomers = function(q) { nSearchQ = q; nRenderList(); };
-
-  // ── 開啟表單 ──
-  window.nOpenNew = function(stage) {
-    nCurrentId = null;
-    document.getElementById('n-form-title').textContent = '新增客戶';
-    document.getElementById('n-delete-btn').style.display = 'none';
-    nClearForm();
-    nSetStageToggle(stage);
-    nBuildFormUI({ stage, services:[], courses:[], products:[] });
-    nShowForm();
-  };
-
-  window.nOpenEdit = function(id) {
-    const c = nCustomers.find(x => x.id === id);
-    if (!c) return;
-    nCurrentId = id;
-    document.getElementById('n-form-title').textContent = c.name || '客戶資料';
-    document.getElementById('n-delete-btn').style.display = 'block';
-    nSetStageToggle(c.stage||0);
-    nBuildFormUI(c);
-    document.getElementById('nf-name').value    = c.name||'';
-    document.getElementById('nf-date').value    = c.date||'';
-    document.getElementById('nf-dd').value      = c.dd||'';
-    document.getElementById('nf-address').value = c.address||'';
-    document.getElementById('nf-reason').value  = c.reason||'';
-    nShowForm();
-  };
-
-  function nShowForm() {
-    document.getElementById('n-list-page').style.display = 'none';
-    document.getElementById('n-form-page').style.display = 'block';
-    document.getElementById('ninety-view').scrollTop = 0;
-  }
-
-  window.nGoBack = function() {
-    document.getElementById('n-form-page').style.display = 'none';
-    document.getElementById('n-list-page').style.display = 'block';
-    nRenderList();
-  };
-
-  function nClearForm() {
-    ['nf-name','nf-date','nf-dd','nf-address','nf-reason'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  }
-
-  function nSetStageToggle(s) {
-    document.querySelectorAll('.n-stg-btn').forEach((b,i) => b.classList.toggle('active', i===s));
-  }
-
-  window.nSetStage = function(s, btn) {
-    document.querySelectorAll('.n-stg-btn').forEach((b,i) => b.classList.toggle('active', i===s));
-  };
-
-  function nBuildFormUI(data) {
-    const sv = data.services||[], co = data.courses||[], pr = data.products||[];
-    document.getElementById('n-service-checks').innerHTML = SERVICES.map(s =>
-      `<div class="n-chk${sv.includes(s)?' on':''}" onclick="this.classList.toggle('on')">
-        <div class="n-chk-box"><span class="n-chk-mark">✓</span></div><span>${s}</span></div>`
-    ).join('');
-    document.getElementById('n-course-tags').innerHTML = COURSES.map(c =>
-      `<span class="n-tag purple${co.includes(c)?' on':''}" onclick="this.classList.toggle('on')">${c}</span>`
-    ).join('');
-    document.getElementById('n-product-tags').innerHTML = PRODUCTS.map(g =>
-      `<div class="n-tag-sec"><div class="n-tag-sec-lbl">${g.label}</div><div class="n-tags">${
-        g.items.map(item => `<span class="n-tag ${g.color}${pr.includes(item)?' on':''}" onclick="this.classList.toggle('on')">${item}</span>`).join('')
-      }</div></div>`
-    ).join('');
-  }
-
-  function nGetSelectedStage() {
-    return [...document.querySelectorAll('.n-stg-btn')].findIndex(b => b.classList.contains('active'));
-  }
-
-  window.nSaveCustomer = function() {
-    const name = document.getElementById('nf-name').value.trim();
-    if (!name) { nShowToast('請填寫姓名','#b03030'); return; }
-    const data = {
-      name, date: document.getElementById('nf-date').value,
-      dd: document.getElementById('nf-dd').value.trim(),
-      address: document.getElementById('nf-address').value.trim(),
-      reason: document.getElementById('nf-reason').value.trim(),
-      stage: nGetSelectedStage(),
-      services: [...document.querySelectorAll('#n-service-checks .n-chk.on')].map(el => el.querySelector('span').textContent),
-      courses:  [...document.querySelectorAll('#n-course-tags .n-tag.on')].map(el => el.textContent),
-      products: [...document.querySelectorAll('#n-product-tags .n-tag.on')].map(el => el.textContent),
-    };
-    if (nCurrentId) {
-      const idx = nCustomers.findIndex(c => c.id === nCurrentId);
-      nCustomers[idx] = { ...nCustomers[idx], ...data };
-    } else {
-      const newId = nCustomers.length ? Math.max(...nCustomers.map(c=>c.id))+1 : 1;
-      nCustomers.push({ id: newId, ...data });
-    }
-    nSaveLocal();
-    nShowToast('已儲存 ✓');
-    setTimeout(nGoBack, 700);
-  };
-
-  window.nDeleteCustomer = function() {
-    if (!nCurrentId) return;
-    if (!confirm('確定要刪除此客戶的所有資料？')) return;
-    nCustomers = nCustomers.filter(c => c.id !== nCurrentId);
-    nSaveLocal();
-    nShowToast('已刪除');
-    setTimeout(nGoBack, 500);
-  };
-
-  function nShowToast(msg, color) {
-    const t = document.getElementById('n-toast');
-    if (!t) return;
-    t.textContent = msg;
-    t.style.background = color || '#0e7d5a';
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2200);
-  }
-
-  // ── 初始化 ──
-  document.addEventListener('DOMContentLoaded', function() {
-    nInitData();
-    nRenderList();
-  });
-})();
 
 /* ══════════════════════════════════════════
-   雲端同步打包與解包 (防護罩版本)
+   雲端同步打包與解包 
 ══════════════════════════════════════════ */
 window.collectAllData = function() {
   const cells = {}; for (let r=0;r<9;r++) for (let c=0;c<9;c++) { const k = 'mc-'+r+'-'+c; const v = localStorage.getItem(k); if (v) cells[k] = v; }
@@ -2115,6 +2146,7 @@ window.collectAllData = function() {
   const liofan = {}; for (let i = 1; i <= 21; i++) { const d = localStorage.getItem(`day_${i}`); if (d) liofan[`day_${i}`] = d; } for (let i = 1; i <= 3; i++) { const r = localStorage.getItem(`review_week${i}`); if (r) liofan[`review_week${i}`] = r; }
   const bizCrmData = JSON.parse(localStorage.getItem('biz_crm') || '[]');
   const ninety90 = window.nGetCustomers ? window.nGetCustomers() : JSON.parse(localStorage.getItem('crm90_v3') || '[]');
+  
   return { version:8, cells, fields, stickies, mindmap, tbCats, tbBlk, tbNextId, notebook: window.NotebookApp.getAllNotes(), liofan, bizCrm: bizCrmData, ninety90 };
 };
 
