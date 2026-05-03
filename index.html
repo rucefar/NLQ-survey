@@ -54,7 +54,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 ══════════════════════════════════════════ */
 #home-view {
     --bg-color: #f4f1ea; --text-main: #2d3436; 
-    --accent-review: #8b2020; --accent-winplus: #e8a045;
+    --accent-review: #8b2020; --accent-winplus: #e8a045; --accent-hundred: #c8a96e;
     --glass: rgba(255, 255, 255, 0.8); --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     font-family: 'Noto Sans TC', sans-serif; color: var(--text-main); min-height: 100vh; flex-direction: column; align-items: center; justify-content: center;
     padding: 2rem 1rem;
@@ -70,6 +70,8 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #home-view .card.review-card .icon { color: var(--accent-review); }
 #home-view .card.winplus { border-top: 6px solid var(--accent-winplus); }
 #home-view .card.winplus .icon { color: var(--accent-winplus); }
+#home-view .card.hundred { border-top: 6px solid var(--accent-hundred); background: linear-gradient(180deg, rgba(200,169,110,0.05), var(--glass)); }
+#home-view .card.hundred .icon { color: var(--accent-hundred); }
 #home-view .card:hover { transform: translateY(-12px); box-shadow: 0 20px 50px rgba(0,0,0,0.12); background: rgba(255, 255, 255, 0.95); }
 #home-view .icon { font-size: 4rem; margin-bottom: 2rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1)); }
 #home-view .card h2 { font-size: 1.8rem; margin-bottom: 1.2rem; transition: var(--transition); font-family: 'Noto Serif TC', serif; font-weight: 700; }
@@ -77,6 +79,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #home-view .tag { margin-top: auto; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 #home-view .review-card .tag { background: rgba(139, 32, 32, 0.1); color: var(--accent-review); }
 #home-view .winplus .tag { background: rgba(232, 160, 69, 0.1); color: var(--accent-winplus); }
+#home-view .hundred .tag { background: rgba(200, 169, 110, 0.1); color: var(--accent-hundred); }
 #home-view .footer { margin-top: 4rem; text-align: center; font-size: 0.85rem; color: #999; letter-spacing: 0.05em; }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -232,15 +235,10 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .n-toast { position: fixed; bottom: 24px; right: 24px; padding: 11px 20px; border-radius: var(--n-radius-sm); font-size: 13px; font-weight: 600; color: white; box-shadow: 0 4px 16px rgba(0,0,0,0.10); opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 0.25s, transform 0.25s; z-index: 9999; }
 .n-toast.show { opacity: 1; transform: translateY(0); }
 
-/* ── REVIEW VIEW CSS (取代原本的 LIOFAN) ── */
+/* ── REVIEW VIEW CSS (邁向目標複盤日誌) ── */
 #review-view {
-  --r-primary: #b59871;
-  --r-success: #8dae8c;
-  --r-bg: #f5f1eb;
-  --r-text: #4a4036;
-  --r-card-bg: rgba(255, 255, 255, 0.9);
-  background: linear-gradient(135deg, var(--r-bg) 0%, #e6dfd3 100%);
-  color: var(--r-text);
+  --r-primary: #b59871; --r-success: #8dae8c; --r-bg: #f5f1eb; --r-text: #4a4036; --r-card-bg: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, var(--r-bg) 0%, #e6dfd3 100%); color: var(--r-text);
   min-height: 100vh; position: relative; overflow-y: auto; padding-bottom: 2rem;
 }
 #review-view .r-container { max-width: 850px; margin: 60px auto 20px; background: var(--r-card-bg); padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
@@ -265,6 +263,66 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #review-view button.outline-btn:hover { background: var(--r-primary); color: #fff; }
 #review-view #r-timer { font-size: 2.5em; font-weight: 800; color: var(--r-primary); text-align: center; margin-top: 10px; font-family: monospace;}
 #review-view .export-msg { color: var(--r-success); font-size: 14px; margin-top: 10px; display: none; font-weight: bold;}
+
+/* ── HUNDRED VIEW CSS (百戰成功圖) ── */
+#hundred-view {
+  --h-gold: #c8a96e; --h-gold-light: #e8d5a3; --h-gold-dark: #8a6a30;
+  --h-bg: #0f0c08; --h-bg2: #1a1510; --h-bg3: #221d14;
+  --h-text: #f0e6d0; --h-text-muted: #9a8a6a;
+  --h-border: rgba(200, 169, 110, 0.25); --h-border-strong: rgba(200, 169, 110, 0.5);
+  --h-check-color: #c8a96e; --h-cell-hover: rgba(200, 169, 110, 0.08); --h-cell-checked: rgba(200, 169, 110, 0.12);
+  
+  background: var(--h-bg); color: var(--h-text); min-height: 100vh;
+  display: none; flex-direction: column; align-items: center; padding: 60px 20px 60px;
+  position: relative; overflow-x: hidden; font-family: 'Noto Sans TC', sans-serif;
+}
+#hundred-view.active { display: flex; }
+#hundred-view::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(200,169,110,0.07) 0%, transparent 70%), radial-gradient(ellipse 40% 30% at 80% 80%, rgba(200,169,110,0.04) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+#hundred-view .noise { position: absolute; inset: 0; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+#hundred-view .h-container { width: 100%; max-width: 760px; position: relative; z-index: 1; margin: 0 auto; }
+#hundred-view .header { text-align: center; margin-bottom: 36px; animation: fadeDown 0.8s ease both; }
+#hundred-view .header-deco { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 20px; }
+#hundred-view .deco-line { height: 1px; width: 60px; background: linear-gradient(90deg, transparent, var(--h-gold)); }
+#hundred-view .deco-line.right { background: linear-gradient(90deg, var(--h-gold), transparent); }
+#hundred-view .deco-diamond { width: 6px; height: 6px; background: var(--h-gold); transform: rotate(45deg); }
+#hundred-view h1 { font-family: 'Noto Serif TC', serif; font-size: clamp(28px, 5vw, 42px); font-weight: 700; letter-spacing: 8px; color: var(--h-gold-light); text-shadow: 0 0 40px rgba(200,169,110,0.3); margin-bottom: 20px; margin-top: 0; }
+#hundred-view .description { font-size: 13px; color: var(--h-text-muted); line-height: 2; letter-spacing: 0.5px; max-width: 500px; margin: 0 auto 20px; }
+#hundred-view .slogan { font-family: 'Noto Serif TC', serif; font-size: clamp(16px, 3vw, 22px); font-weight: 600; letter-spacing: 6px; color: var(--h-gold); border: 1px solid var(--h-border-strong); display: inline-block; padding: 10px 32px; position: relative; }
+#hundred-view .slogan::before, #hundred-view .slogan::after { content: ''; position: absolute; width: 8px; height: 8px; border-color: var(--h-gold); border-style: solid; }
+#hundred-view .slogan::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+#hundred-view .slogan::after  { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+#hundred-view .stats-bar { display: flex; justify-content: center; gap: 40px; margin-bottom: 28px; animation: fadeDown 0.8s 0.2s ease both; }
+#hundred-view .stat { text-align: center; }
+#hundred-view .stat-num { font-family: 'Noto Serif TC', serif; font-size: 28px; font-weight: 700; color: var(--h-gold); line-height: 1; transition: all 0.3s ease; }
+#hundred-view .stat-label { font-size: 11px; color: var(--h-text-muted); letter-spacing: 2px; margin-top: 4px; }
+#hundred-view .stat-divider { width: 1px; background: var(--h-border); align-self: stretch; }
+#hundred-view .progress-wrap { margin-bottom: 28px; animation: fadeDown 0.8s 0.3s ease both; }
+#hundred-view .progress-track { height: 3px; background: var(--h-bg3); border-radius: 2px; overflow: hidden; position: relative; }
+#hundred-view .progress-fill { height: 100%; background: linear-gradient(90deg, var(--h-gold-dark), var(--h-gold), var(--h-gold-light)); border-radius: 2px; width: 0%; transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; }
+#hundred-view .progress-fill::after { content: ''; position: absolute; right: 0; top: -2px; width: 7px; height: 7px; background: var(--h-gold-light); border-radius: 50%; box-shadow: 0 0 8px var(--h-gold); }
+#hundred-view .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--h-text-muted); margin-top: 8px; letter-spacing: 1px; }
+#hundred-view .grid-wrap { border: 1px solid var(--h-border-strong); position: relative; animation: fadeUp 0.8s 0.4s ease both; background: var(--h-bg2); padding: 1px; }
+#hundred-view .grid-wrap::before { content: ''; position: absolute; inset: -1px; border: 1px solid transparent; background: linear-gradient(135deg, rgba(200,169,110,0.4), transparent 40%, transparent 60%, rgba(200,169,110,0.2)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; pointer-events: none; }
+#hundred-view table.grid { width: 100%; border-collapse: collapse; table-layout: fixed; }
+#hundred-view table.grid td { border: 1px solid var(--h-border); text-align: center; vertical-align: middle; cursor: pointer; position: relative; height: 56px; transition: background 0.15s ease; overflow: hidden; }
+#hundred-view table.grid td:hover:not(.platinum) { background: var(--h-cell-hover); border-color: var(--h-border-strong); }
+#hundred-view table.grid td.checked { background: var(--h-cell-checked); }
+#hundred-view table.grid td.checked:hover { background: rgba(200, 169, 110, 0.18); }
+#hundred-view .cell-num { font-size: 11px; color: var(--h-text-muted); position: absolute; top: 4px; left: 5px; line-height: 1; user-select: none; transition: opacity 0.2s; font-family: 'Noto Sans TC', sans-serif; }
+#hundred-view td.checked .cell-num { opacity: 0.4; }
+#hundred-view .cell-check { font-size: 20px; color: var(--h-check-color); font-weight: 600; opacity: 0; transform: scale(0.5) rotate(-10deg); transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); display: block; line-height: 1; }
+#hundred-view td.checked .cell-check { opacity: 1; transform: scale(1) rotate(0deg); }
+#hundred-view td.platinum { background: linear-gradient(135deg, var(--h-gold-dark), var(--h-gold), var(--h-gold-light)); cursor: default; position: relative; }
+#hundred-view td.platinum::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent); }
+#hundred-view .platinum-text { font-family: 'Noto Serif TC', serif; font-size: 15px; font-weight: 700; color: var(--h-bg); letter-spacing: 2px; position: relative; z-index: 1; }
+#hundred-view .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--h-bg2); border: 1px solid var(--h-border-strong); color: var(--h-gold-light); font-family: 'Noto Serif TC', serif; font-size: 14px; letter-spacing: 2px; padding: 12px 28px; z-index: 100; opacity: 0; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); white-space: nowrap; pointer-events: none; }
+#hundred-view .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#hundred-view .complete-banner { display: none; text-align: center; padding: 24px; margin-top: 20px; border: 1px solid var(--h-border-strong); background: linear-gradient(135deg, rgba(200,169,110,0.08), transparent); animation: fadeUp 0.6s ease both; }
+#hundred-view .complete-banner.show { display: block; }
+#hundred-view .complete-banner p { font-family: 'Noto Serif TC', serif; font-size: 18px; color: var(--h-gold-light); letter-spacing: 3px; }
+#hundred-view .reset-btn { margin-top: 24px; display: flex; justify-content: center; animation: fadeUp 0.8s 0.5s ease both; }
+#hundred-view button.reset { background: transparent; border: 1px solid var(--h-border); color: var(--h-text-muted); font-family: 'Noto Sans TC', sans-serif; font-size: 12px; letter-spacing: 3px; padding: 10px 28px; cursor: pointer; transition: all 0.2s ease; }
+#hundred-view button.reset:hover { border-color: var(--h-border-strong); color: var(--h-gold); background: var(--h-cell-hover); }
 
 /* ── WINPLUS VIEW CSS ── */
 #winplus-view { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Noto Sans TC', sans-serif; background: #fff; }
@@ -464,6 +522,14 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <p>將 90 天夥伴名單視覺化，<br>精準掌握區域分佈，提升出門拜訪效率。</p>
             <div class="tag">區域管理・效率提升</div>
         </div>
+        
+        <!-- 新增：百戰成功圖 -->
+        <div class="card hundred" onclick="window.switchApp('hundred')">
+            <div class="icon">🛡️</div>
+            <h2>百戰成功圖</h2>
+            <p>將每一次的拒絕轉化為前進的動力。<br>記錄 100 次展示，成功踏上白金之路。</p>
+            <div class="tag">挫折轉化・白金之路</div>
+        </div>
     </main>
 
     <footer class="footer">
@@ -528,24 +594,26 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
               </select>
             </div>
             <div class="n-field"><label>加入日期</label><input type="date" id="nf-date"></div>
-            <div class="n-field"><label>上線 DD</label><input type="text" id="nf-dd" placeholder="上線 DD 姓名"></div>
+            <div class="n-field"><label>上手白金/上線推薦人</label><input type="text" id="nf-dd" placeholder="上手白金/上線推薦人姓名"></div>
             <div class="n-field"><label>居住地址</label><input type="text" id="nf-address" placeholder="請輸入居住地址"></div>
           </div>
           <div class="n-card n-card-dark">
             <div class="n-card-title">跟進與觀念溝通方向</div>
             <div class="n-field"><label>動機與目標</label><textarea id="nf-reason" placeholder="紀錄跟進與溝通的方向、目標…"></textarea></div>
           </div>
-          <div class="n-card n-card-dark" style="background: #2a2035; border-color: #4a3555;">
-            <div class="n-card-title" style="color: #d4a5e0; border-color: #9b59b6;">客戶資訊 FORMHD</div>
-            <div class="n-field"><label style="color: #a88cb8;">F (家庭)</label><textarea id="nf-form-f" placeholder="家庭狀況..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
-            <div class="n-field"><label style="color: #a88cb8;">O (職業)</label><textarea id="nf-form-o" placeholder="職業/滿意度..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
-            <div class="n-field"><label style="color: #a88cb8;">R (休閒)</label><textarea id="nf-form-r" placeholder="興趣/嗜好..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
-            <div class="n-field"><label style="color: #a88cb8;">M (金錢)</label><textarea id="nf-form-m" placeholder="財務狀況..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
-            <div class="n-field"><label style="color: #a88cb8;">H (健康)</label><textarea id="nf-form-h" placeholder="健康/困擾..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
-            <div class="n-field"><label style="color: #a88cb8;">D (夢想)</label><textarea id="nf-form-d" placeholder="目標/夢想..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
-          </div>
         </div>
         <div>
+          <div class="n-card n-card-dark" style="background: #2a2035; border-color: #4a3555;">
+            <div class="n-card-title" style="color: #d4a5e0; border-color: #9b59b6;">客戶資訊 FORMHD</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="n-field" style="margin-bottom:0;"><label style="color: #a88cb8;">F (家庭)</label><textarea id="nf-form-f" placeholder="家庭狀況..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+              <div class="n-field" style="margin-bottom:0;"><label style="color: #a88cb8;">O (職業)</label><textarea id="nf-form-o" placeholder="職業/滿意度..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+              <div class="n-field" style="margin-bottom:0;"><label style="color: #a88cb8;">R (休閒)</label><textarea id="nf-form-r" placeholder="興趣/嗜好..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+              <div class="n-field" style="margin-bottom:0;"><label style="color: #a88cb8;">M (金錢)</label><textarea id="nf-form-m" placeholder="財務狀況..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+              <div class="n-field" style="margin-bottom:0;"><label style="color: #a88cb8;">H (健康)</label><textarea id="nf-form-h" placeholder="健康/困擾..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+              <div class="n-field" style="margin-bottom:0;"><label style="color: #a88cb8;">D (夢想)</label><textarea id="nf-form-d" placeholder="目標/夢想..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+            </div>
+          </div>
           <div class="n-card">
             <div class="n-card-title">學習與跟進項目</div>
             <div class="n-check-grid" id="n-service-checks"></div>
@@ -738,6 +806,74 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     </div>
 </div>
 
+<div id="hundred-view" class="app-view">
+  <button class="back-btn" style="position: absolute; top: 1rem; left: 1rem; z-index: 100; background: rgba(0,0,0,0.4); border: 1px solid var(--h-gold); color: var(--h-gold-light); padding: 6px 12px; cursor: pointer; font-family: 'Noto Sans TC', sans-serif; font-size: 0.8rem; border-radius: 4px; transition: all 0.2s;" onclick="window.switchApp('home')">← 回首頁</button>
+  <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 10px; align-items: center; z-index: 100;">
+      <span class="cloud-status" style="font-size: 0.75rem; color: #888;">☁️ 尚未登入</span>
+      <button class="logout-btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 12px; padding: 4px 10px; cursor: pointer; font-size: 0.75rem; transition: background 0.2s;" onclick="window.logout()">登出</button>
+  </div>
+
+  <div class="noise"></div>
+  <div class="h-container">
+    <div class="header">
+      <div class="header-deco">
+        <div class="deco-line"></div>
+        <div class="deco-diamond"></div>
+        <div class="deco-line right"></div>
+      </div>
+      <h1>百戰成功表</h1>
+      <p class="description">
+        每一次當您展示市場計畫不成功的時候，就在下面方格打一個 ✓。<br>
+        您將會發覺，在還沒有將這些方格全部填滿 ✓ 之前，您已經是一位直系直銷商了。<br>
+        要成為白金您最多碰到 100 次挫折而已，何樂而不為呢？
+      </p>
+      <div class="slogan">DO IT NOW!</div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-num" id="h-checked-count">0</div>
+        <div class="stat-label">已記錄</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num" id="h-remain-count">100</div>
+        <div class="stat-label">剩餘</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num" id="h-pct-count">0%</div>
+        <div class="stat-label">進度</div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div class="progress-fill" id="h-progress-fill"></div>
+      </div>
+      <div class="progress-label">
+        <span>0</span>
+        <span>白金之路</span>
+        <span>100</span>
+      </div>
+    </div>
+
+    <div class="grid-wrap">
+      <table class="grid" id="h-grid"></table>
+    </div>
+
+    <div class="complete-banner" id="h-complete-banner">
+      <p>🏆 恭喜！您已完成百戰，白金在望！</p>
+    </div>
+
+    <div class="reset-btn">
+      <button class="reset" onclick="window.hResetAll()">RESET ALL</button>
+    </div>
+  </div>
+  <div class="toast" id="h-toast"></div>
+</div>
+
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
@@ -773,6 +909,101 @@ window.showWPToast = function(msg) {
   clearTimeout(t._timer); 
   t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2200); 
 }
+
+/* ══════════════════════════════════════════
+   百戰成功圖 邏輯
+══════════════════════════════════════════ */
+(function(){
+  window.hundredState = JSON.parse(localStorage.getItem('hundred_state') || '{}');
+  
+  const rows = [
+    [91,92,93,94,95,96,97,98,99,'白金'],
+    [81,82,83,84,85,86,87,88,89,90],
+    [71,72,73,74,75,76,77,78,79,80],
+    [61,62,63,64,65,66,67,68,69,70],
+    [51,52,53,54,55,56,57,58,59,60],
+    [41,42,43,44,45,46,47,48,49,50],
+    [31,32,33,34,35,36,37,38,39,40],
+    [21,22,23,24,25,26,27,28,29,30],
+    [11,12,13,14,15,16,17,18,19,20],
+    [1,2,3,4,5,6,7,8,9,10],
+  ];
+
+  const milestones = {10:'突破10次，持續前進！', 25:'四分之一完成，繼續加油！', 50:'已達半程里程碑！', 75:'75次！白金近在眼前！', 100:'百戰已滿！您已踏上白金之路！'};
+  let hToastTimer;
+
+  window.hRenderGrid = function() {
+    const grid = document.getElementById('h-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    rows.forEach(row => {
+      const tr = document.createElement('tr');
+      row.forEach(val => {
+        const td = document.createElement('td');
+        if (val === '白金') {
+          td.className = 'platinum';
+          td.innerHTML = '<span class="platinum-text">白金</span>';
+        } else {
+          td.innerHTML = `<span class="cell-num">${val}</span><span class="cell-check">✓</span>`;
+          td.dataset.num = val;
+          if (window.hundredState[val]) td.classList.add('checked');
+          td.addEventListener('click', () => {
+            window.hundredState[val] = !window.hundredState[val];
+            td.classList.toggle('checked', window.hundredState[val]);
+            window.hUpdateStats();
+            localStorage.setItem('hundred_state', JSON.stringify(window.hundredState));
+            if (window.triggerCloudSave) window.triggerCloudSave();
+          });
+        }
+        tr.appendChild(td);
+      });
+      grid.appendChild(tr);
+    });
+    window.hUpdateStats();
+  };
+
+  window.hUpdateStats = function() {
+    const count = Object.values(window.hundredState).filter(Boolean).length;
+    const remain = 100 - count;
+    const pct = count;
+
+    const elChecked = document.getElementById('h-checked-count');
+    const elRemain = document.getElementById('h-remain-count');
+    const elPct = document.getElementById('h-pct-count');
+    const elProg = document.getElementById('h-progress-fill');
+    const elBanner = document.getElementById('h-complete-banner');
+
+    if(elChecked) elChecked.textContent = count;
+    if(elRemain) elRemain.textContent = remain;
+    if(elPct) elPct.textContent = pct + '%';
+    if(elProg) elProg.style.width = pct + '%';
+    if(elBanner) elBanner.classList.toggle('show', count === 100);
+
+    if (milestones[count]) hShowToast(milestones[count]);
+  };
+
+  function hShowToast(msg) {
+    const t = document.getElementById('h-toast');
+    if(!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(hToastTimer);
+    hToastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  window.hResetAll = function() {
+    if (!confirm('確定要清空所有紀錄重新開始嗎？')) return;
+    Object.keys(window.hundredState).forEach(k => window.hundredState[k] = false);
+    document.querySelectorAll('#h-grid td.checked').forEach(td => td.classList.remove('checked'));
+    window.hUpdateStats();
+    localStorage.setItem('hundred_state', JSON.stringify(window.hundredState));
+    if (window.triggerCloudSave) window.triggerCloudSave();
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    window.hRenderGrid();
+  });
+})();
 
 /* ══════════════════════════════════════════
    WinPlus+ 邁向目標複盤日誌 (取代 21天)
@@ -1065,7 +1296,7 @@ window.initMap = async function(forceRefresh = false) {
         html += `<div class="n-ccard" onclick="nOpenEdit(${c.id})">
           <div class="n-avatar">${nInitials(c.name)}</div>
           <div class="n-cname">${window.nbEscape ? window.nbEscape(c.name) : c.name}</div>
-          <div class="n-cmeta">${typeStr}${c.date||''}${c.dd?'<br>DD: '+window.nbEscape(c.dd):''}</div>
+          <div class="n-cmeta">${typeStr}${c.date||''}${c.dd?'<br>推薦人: '+window.nbEscape(c.dd):''}</div>
           <div class="n-pdots">${nProgressDots(c.services||[])}</div>
         </div>`;
       });
@@ -1416,8 +1647,10 @@ window.collectAllData = function() {
     },
     richLogs: JSON.parse(localStorage.getItem('richLogs') || '[]')
   };
+  
+  const hundredState = JSON.parse(localStorage.getItem('hundred_state') || '{}');
 
-  return { version:11, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData };
+  return { version:13, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
 };
 
 window.restoreAllData = function(data) {
@@ -1441,6 +1674,12 @@ window.restoreAllData = function(data) {
                 window.reviewLoadGoals();
                 window.reviewRenderTracker();
             }
+          }
+          
+          if (data.hundredState) {
+            localStorage.setItem('hundred_state', JSON.stringify(data.hundredState));
+            window.hundredState = data.hundredState;
+            if(typeof window.hRenderGrid === 'function') window.hRenderGrid();
           }
       } catch(err) {
           console.error("DOM 復原時發生錯誤: ", err);
