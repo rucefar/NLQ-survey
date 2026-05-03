@@ -54,20 +54,20 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 ══════════════════════════════════════════ */
 #home-view {
     --bg-color: #f4f1ea; --text-main: #2d3436; 
-    --accent-liofan: #8b2020; --accent-winplus: #e8a045;
+    --accent-review: #8b2020; --accent-winplus: #e8a045;
     --glass: rgba(255, 255, 255, 0.8); --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     font-family: 'Noto Sans TC', sans-serif; color: var(--text-main); min-height: 100vh; flex-direction: column; align-items: center; justify-content: center;
     padding: 2rem 1rem;
 }
 
 #home-view .header { text-align: center; margin-bottom: 3rem; animation: fadeInDown 1s ease-out; position: relative; }
-#home-view .header h1 { font-family: 'Noto Serif TC', serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; letter-spacing: 0.2em; margin-bottom: 1rem; background: linear-gradient(135deg, var(--accent-liofan), var(--accent-winplus)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+#home-view .header h1 { font-family: 'Noto Serif TC', serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; letter-spacing: 0.2em; margin-bottom: 1rem; background: linear-gradient(135deg, var(--accent-review), var(--accent-winplus)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 #home-view .header p { font-size: 1.1rem; color: #636e72; font-weight: 300; letter-spacing: 0.1em; }
 #home-view .container { display: flex; gap: 2.5rem; max-width: 1000px; width: 100%; flex-wrap: wrap; justify-content: center; }
 #home-view .card { background: var(--glass); backdrop-filter: blur(10px); border-radius: 24px; padding: 3rem 2rem; width: 450px; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.3); transition: var(--transition); position: relative; overflow: hidden; cursor: pointer; }
 #home-view .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; transition: var(--transition); }
-#home-view .card.liofan { border-top: 6px solid var(--accent-liofan); }
-#home-view .card.liofan .icon { color: var(--accent-liofan); }
+#home-view .card.review-card { border-top: 6px solid var(--accent-review); }
+#home-view .card.review-card .icon { color: var(--accent-review); }
 #home-view .card.winplus { border-top: 6px solid var(--accent-winplus); }
 #home-view .card.winplus .icon { color: var(--accent-winplus); }
 #home-view .card:hover { transform: translateY(-12px); box-shadow: 0 20px 50px rgba(0,0,0,0.12); background: rgba(255, 255, 255, 0.95); }
@@ -75,7 +75,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #home-view .card h2 { font-size: 1.8rem; margin-bottom: 1.2rem; transition: var(--transition); font-family: 'Noto Serif TC', serif; font-weight: 700; }
 #home-view .card p { font-size: 1rem; line-height: 1.8; color: #555; font-weight: 400; }
 #home-view .tag { margin-top: auto; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-#home-view .liofan .tag { background: rgba(139, 32, 32, 0.1); color: var(--accent-liofan); }
+#home-view .review-card .tag { background: rgba(139, 32, 32, 0.1); color: var(--accent-review); }
 #home-view .winplus .tag { background: rgba(232, 160, 69, 0.1); color: var(--accent-winplus); }
 #home-view .footer { margin-top: 4rem; text-align: center; font-size: 0.85rem; color: #999; letter-spacing: 0.05em; }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
@@ -181,11 +181,11 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .n-field { margin-bottom: 14px; }
 .n-field:last-child { margin-bottom: 0; }
 .n-field label { display: block; font-size: 11px; font-weight: 700; color: var(--n-text3); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
-.n-field input[type=text], .n-field input[type=date], .n-field textarea {
+.n-field input[type=text], .n-field input[type=date], .n-field textarea, .n-field select {
   width: 100%; background: var(--n-bg2); border: 1px solid var(--n-border); border-radius: var(--n-radius-sm);
   padding: 9px 12px; font-size: 13px; color: var(--n-text); font-family: inherit; outline: none; transition: border-color 0.15s;
 }
-.n-field input:focus, .n-field textarea:focus { border-color: var(--n-blue); background: #fff; }
+.n-field input:focus, .n-field textarea:focus, .n-field select:focus { border-color: var(--n-blue); background: #fff; }
 .n-field textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
 .n-card-dark .n-field input, .n-card-dark .n-field textarea { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.10); color: #c5d8f0; }
 .n-card-dark .n-field input:focus, .n-card-dark .n-field textarea:focus { border-color: #4a6fa5; background: rgba(255,255,255,0.09); }
@@ -200,6 +200,8 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .n-chk.on .n-chk-box { background: var(--n-blue); border-color: var(--n-blue); }
 .n-chk-mark { color: white; font-size: 10px; display: none; }
 .n-chk.on .n-chk-mark { display: block; }
+.chk-text-green { color: #1a9a50; font-weight: 700; }
+.n-chk.on .chk-text-green { color: #0e7d5a; }
 
 .n-tag-sec { margin-bottom: 14px; }
 .n-tag-sec:last-child { margin-bottom: 0; }
@@ -230,75 +232,39 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .n-toast { position: fixed; bottom: 24px; right: 24px; padding: 11px 20px; border-radius: var(--n-radius-sm); font-size: 13px; font-weight: 600; color: white; box-shadow: 0 4px 16px rgba(0,0,0,0.10); opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 0.25s, transform 0.25s; z-index: 9999; }
 .n-toast.show { opacity: 1; transform: translateY(0); }
 
-/* ── LIOFAN VIEW CSS ── */
-#liofan-view { --ink: #1a1208; --brush: #3d2b1f; --paper: #f5ede0; --paper2: #ede0cc; --silk: #c8a87a; --gold: #b8952a; --red: #8b2020; --sage: #5a7a5a; --shadow: rgba(61,43,31,0.12); background: var(--paper); font-family: 'Noto Serif TC', serif; color: var(--ink); min-height: 100vh; position: relative; overflow-y: auto; padding-bottom: 2rem; }
-#liofan-view .back-btn { background: var(--paper2); border: 1px solid var(--silk); color: var(--brush); padding: 6px 12px; cursor: pointer; font-family: 'Noto Sans TC', sans-serif; font-size: 0.8rem; border-radius: 4px; transition: all 0.2s; }
-#liofan-view .back-btn:hover { background: var(--silk); color: #fff; }
-#liofan-view .site-header { text-align: center; padding: 3rem 1rem 2rem; position: relative; }
-#liofan-view .site-header::after { content: ''; display: block; width: 80px; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 1.5rem auto 0; }
-#liofan-view .title-cn { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900; letter-spacing: 0.15em; color: var(--brush); text-shadow: 2px 3px 8px var(--shadow); }
-#liofan-view .title-sub { font-size: clamp(0.9rem, 2.5vw, 1.2rem); font-weight: 300; color: var(--silk); letter-spacing: 0.3em; margin-top: 0.5rem; }
-#liofan-view .week-nav { display: flex; justify-content: center; gap: 1rem; padding: 1rem; flex-wrap: wrap; }
-#liofan-view .week-btn { background: none; border: 1.5px solid var(--silk); color: var(--brush); font-family: 'Noto Serif TC', serif; font-size: 0.85rem; letter-spacing: 0.1em; padding: 0.5rem 1.2rem; cursor: pointer; transition: all 0.3s; position: relative; }
-#liofan-view .week-btn:hover, #liofan-view .week-btn.active { background: var(--brush); color: var(--paper); border-color: var(--brush); }
-#liofan-view .day-pills { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem 1rem; max-width: 700px; margin: 0 auto; }
-#liofan-view .day-pill { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--paper2); background: var(--paper2); cursor: pointer; font-family: 'Noto Sans TC', sans-serif; font-size: 0.8rem; color: var(--brush); transition: all 0.25s; position: relative; }
-#liofan-view .day-pill:hover { background: var(--silk); color: white; border-color: var(--silk); }
-#liofan-view .day-pill.active { background: var(--red); color: white; border-color: var(--red); }
-#liofan-view .day-pill.done::after { content: '✓'; position: absolute; top: -6px; right: -6px; background: var(--sage); color: white; font-size: 0.6rem; width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-#liofan-view .journal-card { max-width: 800px; margin: 1.5rem auto; padding: 0 1rem; animation: fadeUp 0.5s ease both; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-#liofan-view .card-inner { background: #fdf8f1; border: 1px solid var(--paper2); box-shadow: 0 4px 32px var(--shadow), inset 0 0 60px rgba(200,168,122,0.06); padding: 2.5rem 2.5rem 2rem; position: relative; }
-#liofan-view .card-inner::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--red), var(--gold) 60%, transparent); }
-#liofan-view .day-badge { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-#liofan-view .day-num { font-size: 3rem; font-weight: 900; color: var(--paper2); line-height: 1; letter-spacing: -0.02em; }
-#liofan-view .day-info { flex: 1; }
-#liofan-view .day-label { font-size: 0.7rem; letter-spacing: 0.25em; color: var(--silk); font-family: 'Noto Sans TC', sans-serif; font-weight: 300; }
-#liofan-view .day-title { font-size: 1.4rem; font-weight: 700; color: var(--brush); margin-top: 0.2rem; }
-#liofan-view .wisdom-box { background: linear-gradient(135deg, rgba(200,168,122,0.12), rgba(184,149,42,0.06)); border-left: 3px solid var(--gold); padding: 1rem 1.2rem; margin-bottom: 1.5rem; font-size: 0.88rem; line-height: 1.8; color: var(--brush); font-style: italic; }
-#liofan-view .wisdom-label { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); font-style: normal; font-family: 'Noto Sans TC', sans-serif; margin-bottom: 0.4rem; display: block; }
-#liofan-view .original-text { font-size: 0.92rem; line-height: 2.1; color: #4a3828; margin-bottom: 1.8rem; padding: 1rem; background: rgba(245,237,224,0.5); border-radius: 2px; white-space: pre-line; }
-#liofan-view .orig-label { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--silk); font-family: 'Noto Sans TC', sans-serif; margin-bottom: 0.6rem; display: block; }
-#liofan-view .date-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1.5rem; font-family: 'Noto Sans TC', sans-serif; font-size: 0.85rem; color: var(--silk); }
-#liofan-view .date-input { border: none; border-bottom: 1px solid var(--silk); background: transparent; font-family: 'Noto Sans TC', sans-serif; font-size: 0.85rem; color: var(--brush); padding: 0.15rem 0.4rem; width: 80px; text-align: center; }
-#liofan-view .date-input:focus { outline: none; border-bottom-color: var(--gold); }
-#liofan-view .section-label { font-size: 0.72rem; letter-spacing: 0.25em; color: var(--silk); font-family: 'Noto Sans TC', sans-serif; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
-#liofan-view .section-label::after { content: ''; flex: 1; height: 1px; background: var(--paper2); }
-#liofan-view .copywrite-area { width: 100%; min-height: 120px; background: repeating-linear-gradient(transparent, transparent 32px, var(--paper2) 32px, var(--paper2) 33px); border: 1px solid var(--paper2); padding: 8px 12px; font-family: 'Noto Serif TC', serif; font-size: 1.05rem; line-height: 33px; color: var(--ink); resize: vertical; margin-bottom: 1.5rem; outline: none; transition: border-color 0.2s;}
-#liofan-view .copywrite-area:focus { border-color: var(--gold); box-shadow: inset 0 0 5px rgba(184,149,42,0.2); }
-#liofan-view .reflection-block { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
-#liofan-view .refl-q { font-size: 0.85rem; color: var(--brush); margin-bottom: 0.4rem; display: flex; gap: 0.4rem; align-items: flex-start; }
-#liofan-view .refl-num { color: var(--red); font-weight: 700; flex-shrink: 0; }
-#liofan-view .refl-input { width: 100%; border: none; border-bottom: 1px solid var(--paper2); background: transparent; font-family: 'Noto Serif TC', serif; font-size: 0.9rem; color: var(--ink); padding: 0.4rem 0; transition: border-color 0.2s; }
-#liofan-view .refl-input:focus { outline: none; border-bottom-color: var(--gold); }
-#liofan-view .refl-textarea { width: 100%; min-height: 70px; border: none; border-bottom: 1px solid var(--paper2); background: rgba(245,237,224,0.35); font-family: 'Noto Serif TC', serif; font-size: 0.9rem; color: var(--ink); padding: 0.5rem 0.6rem; resize: vertical; transition: border-color 0.2s, background 0.2s; line-height: 1.8; }
-#liofan-view .refl-textarea:focus { outline: none; border-bottom-color: var(--gold); background: rgba(200,168,122,0.08); }
-#liofan-view .action-block { background: linear-gradient(135deg, rgba(90,122,90,0.07), rgba(90,122,90,0.03)); border: 1px solid rgba(90,122,90,0.2); border-left: 3px solid var(--sage); padding: 1rem 1.2rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.7rem; }
-#liofan-view .action-desc { font-size: 0.82rem; color: var(--sage); font-family: 'Noto Sans TC', sans-serif; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
-#liofan-view .action-item { display: flex; align-items: center; gap: 0.7rem; }
-#liofan-view .action-icon { color: var(--sage); font-size: 1rem; flex-shrink: 0; line-height: 1; }
-#liofan-view .action-input { flex: 1; border: none; border-bottom: 1px solid rgba(90,122,90,0.3); background: transparent; font-family: 'Noto Serif TC', serif; font-size: 0.9rem; color: var(--ink); padding: 0.35rem 0; transition: border-color 0.2s; }
-#liofan-view .action-input:focus { outline: none; border-bottom-color: var(--sage); }
-#liofan-view .mood-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; padding-top: 1rem; border-top: 1px solid var(--paper2); }
-#liofan-view .mood-label-text { font-size: 0.75rem; color: var(--silk); font-family: 'Noto Sans TC', sans-serif; letter-spacing: 0.1em; }
-#liofan-view .mood-btn { background: none; border: 1px solid var(--paper2); padding: 0.3rem 0.7rem; font-family: 'Noto Serif TC', serif; font-size: 0.78rem; color: var(--brush); cursor: pointer; transition: all 0.2s; }
-#liofan-view .mood-btn:hover { background: var(--paper2); }
-#liofan-view .mood-btn.selected { background: var(--sage); color: white; border-color: var(--sage); }
-#liofan-view .save-row { display: flex; justify-content: flex-end; gap: 0.8rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--paper2); }
-#liofan-view .btn-save { background: var(--brush); color: var(--paper); border: none; font-family: 'Noto Serif TC', serif; font-size: 0.85rem; letter-spacing: 0.1em; padding: 0.6rem 1.6rem; cursor: pointer; transition: background 0.2s; }
-#liofan-view .btn-save:hover { background: var(--red); }
-#liofan-view .btn-clear { background: none; color: var(--silk); border: 1px solid var(--paper2); font-family: 'Noto Sans TC', sans-serif; font-size: 0.8rem; padding: 0.6rem 1.2rem; cursor: pointer; transition: all 0.2s; }
-#liofan-view .btn-clear:hover { border-color: var(--red); color: var(--red); }
-#liofan-view .progress-bar-wrap { max-width: 800px; margin: 0 auto; padding: 0 1rem 0.5rem; display: flex; align-items: center; gap: 1rem; }
-#liofan-view .progress-bar { flex: 1; height: 4px; background: var(--paper2); position: relative; }
-#liofan-view .progress-fill { height: 100%; background: linear-gradient(90deg, var(--red), var(--gold)); transition: width 0.5s ease; }
-#liofan-view .progress-text { font-family: 'Noto Sans TC', sans-serif; font-size: 0.75rem; color: var(--silk); white-space: nowrap; }
-#liofan-view .week-review { background: #fdf8f1; border: 1px solid var(--paper2); box-shadow: 0 4px 32px var(--shadow); padding: 2.5rem 2.5rem 2rem; margin: 1.5rem auto; max-width: 800px; position: relative; }
-#liofan-view .week-review::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--gold), var(--red)); }
-#liofan-view .review-title { font-size: 1.3rem; font-weight: 700; color: var(--brush); margin-bottom: 1.5rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--paper2); }
-#liofan-view .review-q { font-size: 0.88rem; color: var(--brush); margin-bottom: 0.4rem; }
-#liofan-view .review-textarea { width: 100%; min-height: 80px; border: 1px solid var(--paper2); background: rgba(245,237,224,0.4); font-family: 'Noto Serif TC', serif; font-size: 0.9rem; color: var(--ink); padding: 0.6rem 0.8rem; resize: vertical; margin-bottom: 1rem; }
-#liofan-view .review-textarea:focus { outline: 2px solid var(--gold); outline-offset: 2px; }
+/* ── REVIEW VIEW CSS (取代原本的 LIOFAN) ── */
+#review-view {
+  --r-primary: #b59871;
+  --r-success: #8dae8c;
+  --r-bg: #f5f1eb;
+  --r-text: #4a4036;
+  --r-card-bg: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, var(--r-bg) 0%, #e6dfd3 100%);
+  color: var(--r-text);
+  min-height: 100vh; position: relative; overflow-y: auto; padding-bottom: 2rem;
+}
+#review-view .r-container { max-width: 850px; margin: 60px auto 20px; background: var(--r-card-bg); padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
+#review-view h1 { text-align: center; color: var(--r-primary); margin-bottom: 5px; font-family: 'Noto Serif TC', serif; font-size: 28px; font-weight:900;}
+#review-view .subtitle { text-align: center; font-size: 14px; color: #8c7e71; margin-bottom: 30px; letter-spacing: 0.1em;}
+#review-view .section { margin-bottom: 25px; padding: 20px 25px; background: #ffffff; border-radius: 16px; border-left: 5px solid var(--r-primary); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+#review-view h2 { font-size: 18px; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-family: 'Noto Serif TC', serif;}
+#review-view label { display: block; margin-top: 12px; font-weight: bold; font-size: 14px; color: #5a4f44;}
+#review-view textarea, #review-view input[type="text"] { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 14px; background: #faf8f5; transition: 0.3s; }
+#review-view textarea:focus, #review-view input[type="text"]:focus { outline: none; border-color: var(--r-primary); background: #fff; }
+#review-view .goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+@media (max-width: 600px) { #review-view .goal-grid { grid-template-columns: 1fr; } #review-view .r-container{ padding: 20px; margin-top: 50px;} }
+#review-view .tracker-container { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 8px; }
+#review-view .tracker-day { width: 30px; height: 30px; border-radius: 6px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #aaa; transition: 0.3s; }
+#review-view .tracker-day.completed { background: var(--r-success); color: white; font-weight: bold; box-shadow: 0 2px 5px rgba(141, 174, 140, 0.4); }
+#review-view .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+#review-view button { background: var(--r-primary); color: #fff; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-size: 15px; font-weight: bold; transition: 0.2s; font-family: 'Noto Sans TC', sans-serif;}
+#review-view button:hover { background: #9d805c; transform: translateY(-2px); }
+#review-view button.success-btn { background: var(--r-success); width: 100%; font-size: 18px; padding: 15px; margin-top: 20px;}
+#review-view button.success-btn:hover { background: #7a9c79; }
+#review-view button.outline-btn { background: transparent; border: 2px solid var(--r-primary); color: var(--r-primary); }
+#review-view button.outline-btn:hover { background: var(--r-primary); color: #fff; }
+#review-view #r-timer { font-size: 2.5em; font-weight: 800; color: var(--r-primary); text-align: center; margin-top: 10px; font-family: monospace;}
+#review-view .export-msg { color: var(--r-success); font-size: 14px; margin-top: 10px; display: none; font-weight: bold;}
 
 /* ── WINPLUS VIEW CSS ── */
 #winplus-view { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Noto Sans TC', sans-serif; background: #fff; }
@@ -312,7 +278,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .page { position: absolute; top: 50px; left: 0; right: 0; bottom: 0; overflow: hidden; display: none; visibility: hidden; pointer-events: none; z-index: 1; }
 .page.active { display: block; visibility: visible; pointer-events: auto; z-index: 10; }
 #page-mandala.active    { display: flex; }
-#page-cork.active       { display: block; }
 #page-mindmap.active    { display: block; }
 #page-notebook.active   { display: flex; flex-direction: column; }
 
@@ -333,49 +298,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .m-cell textarea { position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; resize: none; font-family: 'Noto Sans TC', sans-serif; font-size: clamp(.42rem, 1vw, .62rem); color: #333; padding: clamp(9px, 1.6vw, 15px) 2px 2px 2px; text-align: center; line-height: 1.35; }
 .cell-code { position: absolute; top: 2px; left: 3px; font-size: clamp(.38rem, 0.9vw, .52rem); color: rgba(0,0,0,.3); pointer-events: none; font-weight: 700; z-index: 1; }
 .cA{background:#f5e6b0} .cA .cell-code{color:#b8900a} .cB{background:#f5c0a8} .cB .cell-code{color:#c05030} .cC{background:#b0dff0} .cC .cell-code{color:#1a7aaa} .cD{background:#b0dff0} .cD .cell-code{color:#1a7aaa} .cE{background:#f5c0d8} .cE .cell-code{color:#b03070} .cF{background:#f5c0d8} .cF .cell-code{color:#b03070} .cG{background:#b0f0c8} .cG .cell-code{color:#1a9a50} .cH{background:#b0f0c8} .cH .cell-code{color:#1a9a50} .cM{background:#fff5cc} .cM .cell-code{color:#b8900a}
-
-
-/* Cork Board */
-#page-cork { background-color: #b07840; background-image: repeating-linear-gradient(12deg, transparent 0px, transparent 3px, rgba(160,100,40,.18) 3px, rgba(160,100,40,.18) 4px), repeating-linear-gradient(78deg, transparent 0px, transparent 5px, rgba(200,140,60,.12) 5px, rgba(200,140,60,.12) 6px), repeating-linear-gradient(145deg, transparent 0px, transparent 8px, rgba(100,55,15,.10) 8px, rgba(100,55,15,.10) 9px), radial-gradient(ellipse at 30% 40%, #d4a055 0%, #b07030 45%, #8a5020 100%); }
-#sticky-container { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
-#sticky-container .sticky { pointer-events: auto; }
-#cork-hint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-size: .7rem; color: rgba(255,255,255,.45); pointer-events: none; white-space: nowrap; z-index: 200; }
-#add-sticky-wrap { position: absolute; bottom: 22px; right: 22px; z-index: 500; }
-#add-sticky-btn { width: 52px; height: 52px; border-radius: 50%; border: none; background: #e8a045; color: #fff; font-size: 1.6rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.4); display: flex; align-items: center; justify-content: center; transition: transform .15s, background .15s; }
-#add-sticky-btn:hover { background: #d09030; transform: scale(1.08); }
-#add-sticky-btn.open { background: #555; transform: rotate(45deg); }
-#color-picker-popup { position: absolute; bottom: 62px; right: 0; background: rgba(20,12,4,.75); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; opacity: 0; pointer-events: none; transform: translateY(10px); transition: opacity .2s, transform .2s; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); min-width: 46px; align-items: center; }
-#color-picker-popup.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-.cp-swatch { width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.4); cursor: pointer; transition: transform .15s, border-color .15s; }
-.cp-swatch:hover { transform: scale(1.2); border-color: #fff; }
-.cp-y{background:#fdf876} .cp-b{background:#c8e8f8} .cp-p{background:#fcd0e0} .cp-g{background:#c8f0cc} .cp-w{background:#fefefe}
-.sticky { position: absolute; width: clamp(140px, 22vw, 220px); min-width: 130px; min-height: 150px; display: flex; flex-direction: column; border-radius: 2px; cursor: grab; user-select: none; box-shadow: 4px 6px 16px rgba(0,0,0,.4), 1px 1px 3px rgba(0,0,0,.2); }
-.s-resize { position: absolute; bottom: 0; right: 0; width: 18px; height: 18px; cursor: nwse-resize; z-index: 20; display: flex; align-items: flex-end; justify-content: flex-end; padding: 3px; }
-.s-resize::after { content: ''; display: block; width: 10px; height: 10px; border-right: 2.5px solid rgba(0,0,0,.25); border-bottom: 2.5px solid rgba(0,0,0,.25); border-radius: 0 0 2px 0; transition: border-color .15s; }
-.sticky:hover .s-resize::after { border-color: rgba(0,0,0,.5); }
-.sticky.sy{background:#fdf876} .sticky.sb{background:#c8e8f8} .sticky.sp{background:#fcd0e0} .sticky.sg{background:#c8f0cc} .sticky.sw{background:#fefefe}
-.s-pin { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); width: 22px; height: 25px; pointer-events: auto; z-index: 5; filter: drop-shadow(0 2px 3px rgba(0,0,0,.4)); cursor: grab; }
-.s-head { height: 26px; padding: 0 6px 0 5px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,.09); border-radius: 2px 2px 0 0; cursor: grab; flex-shrink: 0; gap: 4px; }
-.s-color-dots { display: flex; gap: 3px; align-items: center; flex: 1; cursor: pointer; position: relative; }
-.s-dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid rgba(0,0,0,.18); transition: transform .15s; }
-.s-dot:hover { transform: scale(1.35); }
-.dot-y{background:#fdf876} .dot-b{background:#c8e8f8} .dot-p{background:#fcd0e0} .dot-g{background:#c8f0cc} .dot-w{background:#fefefe}
-.s-color-popup { position: absolute; top: 18px; left: 0; background: rgba(20,12,4,.82); border-radius: 10px; padding: 7px 8px; display: flex; gap: 5px; opacity: 0; pointer-events: none; transform: translateY(-4px); transition: opacity .15s, transform .15s; z-index: 50; backdrop-filter: blur(6px); }
-.s-color-popup.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-.s-cp-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); cursor: pointer; transition: transform .12s; }
-.s-cp-swatch:hover { transform: scale(1.25); border-color: #fff; }
-.s-del { width: 17px; height: 17px; border: none; background: rgba(180,0,0,.2); color: rgba(100,0,0,.7); border-radius: 50%; font-size: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0; }
-.s-del:hover { background: rgba(210,0,0,.55); color: #fff; }
-.s-body { flex: 1; display: flex; flex-direction: column; padding: 7px; gap: 6px; overflow: hidden; }
-.s-ta { width: 100%; flex: 1; background: transparent; border: none; outline: none; resize: none; font-family: 'Caveat', cursive; font-size: 1.05rem; color: #222; line-height: 1.5; cursor: text; min-height: 40px; }
-.s-ta::placeholder { color: rgba(0,0,0,.22); font-size: .85rem; }
-.s-img { width: 100%; background: rgba(0,0,0,.07); border-radius: 2px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; position: relative; flex-shrink: 0; min-height: 52px; }
-.s-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.s-img-hint { display: flex; flex-direction: column; align-items: center; gap: 2px; color: rgba(0,0,0,.28); font-size: .63rem; pointer-events: none; }
-.s-img-hint-icon { font-size: 1.2rem; }
-.s-img-del { position: absolute; top: 4px; right: 4px; width: 17px; height: 17px; border: none; background: rgba(0,0,0,.52); color: #fff; border-radius: 50%; font-size: 9px; cursor: pointer; padding: 0; display: none; align-items: center; justify-content: center; }
-.s-img:hover .s-img-del { display: flex; }
-.s-file { display: none; }
 
 /* Mind Map */
 #page-mindmap { background: #f5f1ea; background-image: radial-gradient(circle at 20% 80%, rgba(74,124,142,.06) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(201,120,60,.06) 0%, transparent 60%); }
@@ -515,11 +437,11 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     </header>
 
     <main class="container">
-        <div class="card liofan" onclick="window.switchApp('liofan')">
+        <div class="card review-card" onclick="window.switchApp('review')">
             <div class="icon">🖋️</div>
             <h2>WinPlus+ 邁向目標複盤日誌</h2>
-            <p>透過二十一天抄寫與每日「三省錄」，<br>實踐斷惡修善，掌握立命之學。</p>
-            <div class="tag">心靈修養・立命之學</div>
+            <p>每日自我成長與安麗目標復盤，<br>保持正能量豐盛的感恩軌跡。</p>
+            <div class="tag">目標復盤・能量豐盛</div>
         </div>
 
         <div class="card winplus" onclick="window.switchApp('winplus')">
@@ -597,27 +519,35 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
           <div class="n-card">
             <div class="n-card-title">基本資料</div>
             <div class="n-field"><label>姓名</label><input type="text" id="nf-name" placeholder="請輸入姓名"></div>
+            <div class="n-field"><label>名單類型</label>
+              <select id="nf-type">
+                <option value="經營者">經營者</option>
+                <option value="消費者">消費者</option>
+                <option value="事業名單">事業名單</option>
+                <option value="消費者名單">消費者名單</option>
+              </select>
+            </div>
             <div class="n-field"><label>加入日期</label><input type="date" id="nf-date"></div>
             <div class="n-field"><label>上線 DD</label><input type="text" id="nf-dd" placeholder="上線 DD 姓名"></div>
             <div class="n-field"><label>居住地址</label><input type="text" id="nf-address" placeholder="請輸入居住地址"></div>
           </div>
           <div class="n-card n-card-dark">
-            <div class="n-card-title">加入初衷與原因</div>
-            <div class="n-field"><label>動機與目標</label><textarea id="nf-reason" placeholder="紀錄當初加入的動機與目標…"></textarea></div>
+            <div class="n-card-title">跟進與觀念溝通方向</div>
+            <div class="n-field"><label>動機與目標</label><textarea id="nf-reason" placeholder="紀錄跟進與溝通的方向、目標…"></textarea></div>
           </div>
           <div class="n-card n-card-dark" style="background: #2a2035; border-color: #4a3555;">
             <div class="n-card-title" style="color: #d4a5e0; border-color: #9b59b6;">客戶資訊 FORMHD</div>
-            <div class="n-field"><label style="color: #a88cb8;">F (家庭)</label><input type="text" id="nf-form-f" placeholder="家庭狀況..." style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5;"></div>
-            <div class="n-field"><label style="color: #a88cb8;">O (職業)</label><input type="text" id="nf-form-o" placeholder="職業/滿意度..." style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5;"></div>
-            <div class="n-field"><label style="color: #a88cb8;">R (休閒)</label><input type="text" id="nf-form-r" placeholder="興趣/嗜好..." style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5;"></div>
-            <div class="n-field"><label style="color: #a88cb8;">M (金錢)</label><input type="text" id="nf-form-m" placeholder="財務狀況..." style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5;"></div>
-            <div class="n-field"><label style="color: #a88cb8;">H (健康)</label><input type="text" id="nf-form-h" placeholder="健康/困擾..." style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5;"></div>
-            <div class="n-field"><label style="color: #a88cb8;">D (夢想)</label><input type="text" id="nf-form-d" placeholder="目標/夢想..." style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5;"></div>
+            <div class="n-field"><label style="color: #a88cb8;">F (家庭)</label><textarea id="nf-form-f" placeholder="家庭狀況..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+            <div class="n-field"><label style="color: #a88cb8;">O (職業)</label><textarea id="nf-form-o" placeholder="職業/滿意度..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+            <div class="n-field"><label style="color: #a88cb8;">R (休閒)</label><textarea id="nf-form-r" placeholder="興趣/嗜好..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+            <div class="n-field"><label style="color: #a88cb8;">M (金錢)</label><textarea id="nf-form-m" placeholder="財務狀況..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+            <div class="n-field"><label style="color: #a88cb8;">H (健康)</label><textarea id="nf-form-h" placeholder="健康/困擾..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
+            <div class="n-field"><label style="color: #a88cb8;">D (夢想)</label><textarea id="nf-form-d" placeholder="目標/夢想..." rows="2" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #f0e6f5; min-height: 45px;"></textarea></div>
           </div>
         </div>
         <div>
           <div class="n-card">
-            <div class="n-card-title">服務引導與基礎建設</div>
+            <div class="n-card-title">學習與跟進項目</div>
             <div class="n-check-grid" id="n-service-checks"></div>
           </div>
           <div class="n-card">
@@ -650,127 +580,73 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     <div id="map-container"></div>
 </div>
 
-<div id="liofan-view" class="app-view">
-    <button class="back-btn" style="position: absolute; top: 1rem; left: 1rem; z-index: 100;" onclick="window.switchApp('home')">← 回首頁</button>
-
+<div id="review-view" class="app-view">
+    <button class="back-btn" style="position: absolute; top: 1rem; left: 1rem; z-index: 100; background: rgba(255,255,255,0.8); border: 1px solid #b59871; color: #4a4036; padding: 6px 12px; cursor: pointer; font-family: 'Noto Sans TC', sans-serif; font-size: 0.8rem; border-radius: 4px; transition: all 0.2s;" onclick="window.switchApp('home')">← 回首頁</button>
     <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 10px; align-items: center; z-index: 100;">
-        <span class="cloud-status">☁️ 尚未登入</span>
-        <button class="logout-btn" onclick="window.logout()">登出</button>
+        <span class="cloud-status" style="font-size: 0.75rem; color: #888;">☁️ 尚未登入</span>
+        <button class="logout-btn" style="background: transparent; border: 1px solid rgba(0,0,0,0.3); color: #333; border-radius: 12px; padding: 4px 10px; cursor: pointer; font-size: 0.75rem; transition: background 0.2s;" onclick="window.logout()">登出</button>
     </div>
 
-    <header class="site-header">
-      <div class="title-cn">WinPlus+ 邁向目標複盤日誌</div>
-      <div class="title-sub">斷惡修善 · 掌握立命之學</div>
-    </header>
+    <div class="r-container">
+      <h1>✨ WinPlus+ 邁向目標複盤日誌</h1>
+      <div class="subtitle">累積豐盛頻率 ‧ 聚焦目標 ‧ 啟動顯化</div>
 
-    <div class="week-nav">
-      <button class="week-btn active" onclick="window.showWeek(1)">第一週｜立命</button>
-      <button class="week-btn" onclick="window.showWeek(2)">第二週｜改過</button>
-      <button class="week-btn" onclick="window.showWeek(3)">第三週｜積善</button>
-    </div>
-
-    <div class="progress-bar-wrap">
-      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="progress-text" id="progressText">0 / 21 天</div>
-    </div>
-
-    <div class="day-pills" id="dayPills"></div>
-
-    <div class="journal-card" id="journalCard">
-      <div class="card-inner">
-        <div class="day-badge">
-          <div class="day-num" id="dayNum">01</div>
-          <div class="day-info">
-            <div class="day-label" id="dayLabel">第一週 · DAY 1</div>
-            <div class="day-title" id="dayTitle">立命的宣言</div>
-          </div>
+      <!-- 目標設定區塊 -->
+      <div class="section">
+        <h2>🎯 核心目標設定 <span style="font-size: 12px; font-weight: normal; color: #888;">(自動儲存)</span></h2>
+        <div class="goal-grid">
+          <div><label>💪 健康體態</label><input type="text" id="goal-health" placeholder="例：每週三次運動，保持高能量狀態"></div>
+          <div><label>🤝 人際關係</label><input type="text" id="goal-social" placeholder="例：真誠連結，舉辦高品質的交流聚會"></div>
+          <div><label>👨‍👩‍👧 家庭關係</label><input type="text" id="goal-family" placeholder="例：週末與老婆安排精心時刻的專屬約會"></div>
+          <div><label>💎 安麗事業</label><input type="text" id="goal-amway" placeholder="例：每月幫助3位新朋友體驗產品與價值"></div>
+          <div style="grid-column: 1 / -1;"><label>💰 財富資產</label><input type="text" id="goal-wealth" placeholder="例：建立穩定被動收入與多元資產配置"></div>
         </div>
+      </div>
 
-        <div class="wisdom-box"><span class="wisdom-label">✦ 今日智慧精華</span><span id="wisdomText"></span></div>
-        <div><span class="orig-label">原文閱讀</span><div class="original-text" id="origText"></div></div>
+      <!-- 每日行動複盤 -->
+      <div class="section">
+        <h2>🔍 每日行動複盤</h2>
+        <label>1. 人生方向（健康/人際/家庭/財富）：</label>
+        <textarea id="log-life" rows="3" placeholder="今天採取了哪些行動？明天要怎麼調整進步？"></textarea>
+
+        <label>2. 安麗目標行動：</label>
+        <textarea id="log-amway" rows="3" placeholder="今天有做到哪些和安麗目標有關的？明天要怎麼優化？"></textarea>
+      </div>
+
+      <!-- 感恩與能量 -->
+      <div class="section">
+        <h2>🙏 感恩與能量豐盛</h2>
+        <label>今天感恩的五件人事物：</label>
+        <input type="text" id="gratitude-1" placeholder="1. 我感恩...">
+        <input type="text" id="gratitude-2" placeholder="2. 我感恩...">
+        <input type="text" id="gratitude-3" placeholder="3. 我感恩...">
+        <input type="text" id="gratitude-4" placeholder="4. 我感恩...">
+        <input type="text" id="gratitude-5" placeholder="5. 我感恩...">
         
-        <div class="section-label">✍ 靜心抄寫</div>
-        <textarea class="copywrite-area" id="mindfulCopy" placeholder="請在此靜心抄寫上方原文..." onchange="window.saveDay()"></textarea>
-
-        <div class="date-row">
-          手帳日期：<input class="date-input" id="inputYear" placeholder="年" maxlength="4" onchange="window.saveDay()">年
-          <input class="date-input" id="inputMonth" placeholder="月" maxlength="2" style="width:50px" onchange="window.saveDay()">月
-          <input class="date-input" id="inputDay" placeholder="日" maxlength="2" style="width:50px" onchange="window.saveDay()">日
-        </div>
-
-        <div class="section-label">✍ 省思隨筆｜三件可以做得更好的事</div>
-        <div class="reflection-block">
-          <div class="reflection-item">
-            <div class="refl-q"><span class="refl-num">1.</span> 今天，我可以做得更好的第一件事：</div>
-            <textarea class="refl-textarea" id="copywrite1" placeholder="寫下具體的情境與反思……" onchange="window.saveDay()"></textarea>
-          </div>
-          <div class="reflection-item">
-            <div class="refl-q"><span class="refl-num">2.</span> 今天，我可以做得更好的第二件事：</div>
-            <textarea class="refl-textarea" id="copywrite2" placeholder="寫下具體的情境與反思……" onchange="window.saveDay()"></textarea>
-          </div>
-          <div class="reflection-item">
-            <div class="refl-q"><span class="refl-num">3.</span> 今天，我可以做得更好的第三件事：</div>
-            <textarea class="refl-textarea" id="copywrite3" placeholder="寫下具體的情境與反思……" onchange="window.saveDay()"></textarea>
-          </div>
-        </div>
-
-        <div class="section-label">🙏 感恩日記</div>
-        <div class="reflection-block">
-          <div class="reflection-item">
-            <div class="refl-q"><span class="refl-num">1.</span> 今天，我感謝的人或事：</div>
-            <input class="refl-input" id="refl1" placeholder="……" onchange="window.saveDay()">
-          </div>
-          <div class="reflection-item">
-            <div class="refl-q"><span class="refl-num">2.</span> 今天，讓我感到幸運的一件小事：</div>
-            <input class="refl-input" id="refl2" placeholder="……" onchange="window.saveDay()">
-          </div>
-          <div class="reflection-item">
-            <div class="refl-q"><span class="refl-num">3.</span> 今天，我為別人做了什麼，讓自己感到有意義：</div>
-            <input class="refl-input" id="refl3" placeholder="……" onchange="window.saveDay()">
-          </div>
-        </div>
-
-        <div class="section-label">🎯 明日成功行動計畫</div>
-        <div class="action-block">
-          <div class="action-desc">明日我計畫安排要做的事：</div>
-          <div class="action-item"><span class="action-icon">◎</span><input class="action-input" id="action1" placeholder="行動一……" onchange="window.saveDay()"></div>
-          <div class="action-item"><span class="action-icon">◎</span><input class="action-input" id="action2" placeholder="行動二……" onchange="window.saveDay()"></div>
-          <div class="action-item"><span class="action-icon">◎</span><input class="action-input" id="action3" placeholder="行動三……" onchange="window.saveDay()"></div>
-        </div>
-
-        <div class="mood-row">
-          <span class="mood-label-text">今日感受：</span>
-          <button class="mood-btn" onclick="window.selectMood(this); window.saveDay();">還在摸索</button>
-          <button class="mood-btn" onclick="window.selectMood(this); window.saveDay();">有些觸動</button>
-          <button class="mood-btn" onclick="window.selectMood(this); window.saveDay();">穩定前行</button>
-          <button class="mood-btn" onclick="window.selectMood(this); window.saveDay();">清明深入</button>
-          <button class="mood-btn" onclick="window.selectMood(this); window.saveDay();">有所突破</button>
-        </div>
-
-        <div class="save-row">
-          <button class="btn-clear" onclick="window.clearDay()">清除</button>
-          <button class="btn-save" onclick="window.saveDay()">儲存今日記錄</button>
+        <div style="margin-top: 25px; text-align: center; border-top: 1px dashed #ddd; padding-top: 15px;">
+          <label style="font-size: 16px;">🧘‍♂️ 想像與感受成功的畫面</label>
+          <p style="color: #666; font-size: 13px; margin-bottom: 10px;">運用 1357 顯化法則的精神，閉上眼，看見你已經達成目標的豐盛畫面。</p>
+          <button onclick="window.reviewStartTimer()" id="btn-timer" class="outline-btn">開始 2 分鐘沉浸感受</button>
+          <div id="r-timer">02:00</div>
         </div>
       </div>
-    </div>
 
-    <div id="weekReviewSection" style="display:none; padding:0 1rem;">
-      <div class="week-review" style="max-width:800px; margin:0 auto 2rem;">
-        <div class="review-title" id="reviewTitle">第一週回顧｜立命</div>
-        <div class="review-q">1. 這七天裡，哪一句話最深深落在你心裡？</div>
-        <textarea class="review-textarea" id="reviewQ1" placeholder="……" onchange="window.saveReview()"></textarea>
-        <div class="review-q">2. 這一週，你有沒有發現自己的某個慣性模式？</div>
-        <textarea class="review-textarea" id="reviewQ2" placeholder="……" onchange="window.saveReview()"></textarea>
-        <div class="review-q">3. 這一週的學習，讓你對自己有了什麼不同的認識？</div>
-        <textarea class="review-textarea" id="reviewQ3" placeholder="……" onchange="window.saveReview()"></textarea>
-        <div class="review-q">4. 帶著這一週的體悟，下一週你想帶著什麼樣的心繼續？</div>
-        <textarea class="review-textarea" id="reviewQ4" placeholder="……" onchange="window.saveReview()"></textarea>
-        <div class="save-row">
-          <button class="btn-save" onclick="window.saveReview()">儲存週回顧</button>
+      <button class="success-btn" onclick="window.reviewSaveTodayLog()">✅ 完成今日複盤，累積豐盛</button>
+
+      <!-- 視覺化反饋與 AI 輸出區 -->
+      <div class="section" style="margin-top: 30px;">
+        <h2>📈 累積軌跡與 AI 輸出</h2>
+        <p style="font-size: 13px; color: #666; margin: 0;">每一個勾選，都是通往目標的堅實腳印。</p>
+        <div class="tracker-container" id="tracker-board"></div>
+        
+        <div class="btn-group">
+          <button class="outline-btn" onclick="window.reviewExportData(7)">📋 複製近 7 天紀錄</button>
+          <button class="outline-btn" onclick="window.reviewExportData(30)">📋 複製近 30 天紀錄</button>
         </div>
+        <div id="export-msg" class="export-msg">✔ 已複製成功！現在可以貼給 AI（如 ChatGPT 或 Claude）請它幫你分析並製作進步圖表了。</div>
       </div>
-    </div>
 
+    </div>
 </div>
 
 <div id="winplus-view" class="app-view">
@@ -778,7 +654,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
       <button class="tab-btn home-btn" onclick="window.switchApp('home')">← 回首頁</button>
       <span class="nav-logo">✦ WinPlus+Team</span>
       <button class="tab-btn active" onclick="window.gotoPage('mandala',this)">⊞ 曼陀羅九宮格</button>
-      <button class="tab-btn"       onclick="window.gotoPage('cork',this)">📌 靈感發想圖</button>
       <button class="tab-btn"       onclick="window.gotoPage('mindmap',this)">🕸 組織網路圖</button>
       <button class="tab-btn"       onclick="window.gotoPage('notebook',this)">📓 筆記本</button>
       
@@ -797,21 +672,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
           <div class="left-field"><div class="left-dot d-memo">memo</div><input id="ml-memo" class="left-input" placeholder="備忘錄"></div>
         </div>
         <div><div class="big-grid" id="big-grid"></div></div>
-      </div>
-    </div>
-
-    <div class="page" id="page-cork">
-      <div id="cork-hint">拖曳移動便條紙 · 點左上角點點換顏色 · 點圖片格上傳照片</div>
-      <div id="sticky-container"></div>
-      <div id="add-sticky-wrap">
-        <div id="color-picker-popup">
-          <div class="cp-swatch cp-y" onclick="window.addSticky('sy');window.toggleColorPicker();" title="黃色"></div>
-          <div class="cp-swatch cp-b" onclick="window.addSticky('sb');window.toggleColorPicker();" title="藍色"></div>
-          <div class="cp-swatch cp-p" onclick="window.addSticky('sp');window.toggleColorPicker();" title="粉色"></div>
-          <div class="cp-swatch cp-g" onclick="window.addSticky('sg');window.toggleColorPicker();" title="綠色"></div>
-          <div class="cp-swatch cp-w" onclick="window.addSticky('sw');window.toggleColorPicker();" title="白色"></div>
-        </div>
-        <button id="add-sticky-btn" onclick="window.toggleColorPicker()">＋</button>
       </div>
     </div>
 
@@ -898,7 +758,6 @@ window.gotoPage = function(name, btn) {
   document.querySelectorAll('#winplus-view .tab-btn:not(.home-btn)').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   btn.classList.add('active');
-  if (name !== 'cork' && typeof window.closeColorPicker === 'function') window.closeColorPicker();
   if (name === 'mindmap' && typeof window.mmLoadState === 'function') window.mmLoadState(); 
 }
 
@@ -914,6 +773,152 @@ window.showWPToast = function(msg) {
   clearTimeout(t._timer); 
   t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2200); 
 }
+
+/* ══════════════════════════════════════════
+   WinPlus+ 邁向目標複盤日誌 (取代 21天)
+══════════════════════════════════════════ */
+window.reviewLoadGoals = function() {
+  ['goal-health', 'goal-social', 'goal-family', 'goal-amway', 'goal-wealth'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = localStorage.getItem(id) || '';
+  });
+};
+
+window.reviewSaveGoals = function() {
+  ['goal-health', 'goal-social', 'goal-family', 'goal-amway', 'goal-wealth'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) localStorage.setItem(id, el.value);
+  });
+  if(window.triggerCloudSave) window.triggerCloudSave();
+};
+
+window.reviewSaveTodayLog = function() {
+  const today = new Date().toISOString().split('T')[0]; 
+  const logData = {
+    date: today,
+    life: document.getElementById('log-life').value,
+    amway: document.getElementById('log-amway').value,
+    gratitude: [
+      document.getElementById('gratitude-1').value,
+      document.getElementById('gratitude-2').value,
+      document.getElementById('gratitude-3').value,
+      document.getElementById('gratitude-4').value,
+      document.getElementById('gratitude-5').value
+    ].filter(g => g.trim() !== '')
+  };
+
+  if (!logData.life && !logData.amway && logData.gratitude.length === 0) {
+    window.showWPToast("請至少填寫一點內容再打卡唷！");
+    return;
+  }
+
+  let history = JSON.parse(localStorage.getItem('richLogs')) || [];
+  const existingIndex = history.findIndex(item => item.date === today);
+  if (existingIndex > -1) {
+    history[existingIndex] = logData;
+  } else {
+    history.push(logData);
+  }
+  
+  localStorage.setItem('richLogs', JSON.stringify(history));
+  if(window.triggerCloudSave) window.triggerCloudSave();
+  
+  document.getElementById('log-life').value = '';
+  document.getElementById('log-amway').value = '';
+  for(let i=1; i<=5; i++) document.getElementById(`gratitude-${i}`).value = '';
+  
+  window.showWPToast("✨ 恭喜！今日複盤已成功儲存！");
+  window.reviewRenderTracker();
+};
+
+window.reviewRenderTracker = function() {
+  const board = document.getElementById('tracker-board');
+  if(!board) return;
+  board.innerHTML = '';
+  let history = JSON.parse(localStorage.getItem('richLogs')) || [];
+  const historyDates = history.map(item => item.date);
+
+  for (let i = 29; i >= 0; i--) {
+    let d = new Date();
+    d.setDate(d.getDate() - i);
+    let dateStr = d.toISOString().split('T')[0];
+    
+    let box = document.createElement('div');
+    box.className = 'tracker-day';
+    box.title = dateStr;
+    
+    if (historyDates.includes(dateStr)) {
+      box.classList.add('completed');
+      box.innerText = '✓';
+    } else {
+      box.innerText = d.getDate();
+    }
+    board.appendChild(box);
+  }
+};
+
+window.reviewExportData = function(days) {
+  let history = JSON.parse(localStorage.getItem('richLogs')) || [];
+  history.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  let exportList = history.slice(0, days);
+  if (exportList.length === 0) {
+    window.showWPToast("目前還沒有紀錄喔！先完成幾天的複盤吧！");
+    return;
+  }
+
+  let promptText = `以下是我近 ${days} 天的「WinPlus+ 邁向目標複盤紀錄」。請你扮演我的個人教練，幫我分析我的行動趨勢，指出我的亮點與盲點，並幫我製作一個文字型的進步視覺化圖表：\n\n`;
+
+  exportList.forEach(log => {
+    promptText += `【日期：${log.date}】\n`;
+    promptText += `- 人生方向行動：${log.life || '無'}\n`;
+    promptText += `- 安麗目標行動：${log.amway || '無'}\n`;
+    promptText += `- 感恩事項：${log.gratitude.join('、') || '無'}\n\n`;
+  });
+
+  navigator.clipboard.writeText(promptText).then(() => {
+    const msg = document.getElementById('export-msg');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 5000);
+  });
+};
+
+window.reviewTimerInterval = null;
+window.reviewStartTimer = function() {
+  clearInterval(window.reviewTimerInterval);
+  let timeLeft = 120;
+  let btn = document.getElementById('btn-timer');
+  let timerDisplay = document.getElementById('r-timer');
+  
+  btn.innerText = "感受中... 讓頻率充滿你";
+  btn.style.background = "#8c7e71";
+  btn.style.color = "#fff";
+  timerDisplay.style.color = "#b59871";
+
+  window.reviewTimerInterval = setInterval(() => {
+    let m = Math.floor(timeLeft / 60);
+    let s = timeLeft % 60;
+    timerDisplay.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+
+    if (timeLeft <= 0) {
+      clearInterval(window.reviewTimerInterval);
+      timerDisplay.innerText = "✨ 顯化完成！";
+      btn.innerText = "重新感受";
+      btn.style.background = "transparent";
+      btn.style.color = "var(--r-primary)";
+    }
+    timeLeft -= 1;
+  }, 1000);
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  window.reviewLoadGoals();
+  window.reviewRenderTracker();
+  ['goal-health', 'goal-social', 'goal-family', 'goal-amway', 'goal-wealth'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', window.reviewSaveGoals);
+  });
+});
 
 /* ══════════════════════════════════════════
    地圖系統邏輯 
@@ -1004,8 +1009,8 @@ window.initMap = async function(forceRefresh = false) {
    90天夥伴跟進系統 JS
 ══════════════════════════════════════════ */
 (function() {
-  const SERVICES = ['一對一 OPP','會場 OPP','與上手 DD 認識','參觀體驗館','營養評估','生命密碼','會自己訂貨','會用信用卡'];
-  const COURSES  = ['健康管理45課程','寰宇菁英會','U+PLUS','海外特攻營','誓師大會','安麗年會','BTC','產品總導讀','百萬年薪俱樂部'];
+  const SERVICES = ['一對一 OPP','會場 OPP','與上手 DD 認識','參觀體驗館','營養評估','生命靈數','會自己訂貨','會用信用卡','營養早餐','健康管理'];
+  const COURSES  = ['健康管理45課程','寰宇菁英會','U+PLUS','海外特攻營','誓師大會','安麗年會','BTC','產品總導讀','百萬年薪俱樂部','教室會議'];
   const PRODUCTS = [
     { label:'家潔/個人護理', color:'blue',   items:['SA8','LOC','洗碟精','金屬','金剛刷','牙膏','牙刷','蜜乳','浴露','蜂皂'] },
     { label:'營養保健',      color:'green',  items:['魚油','VitC','酵素','鈣鎂','卵磷脂','營養早餐'] },
@@ -1056,10 +1061,11 @@ window.initMap = async function(forceRefresh = false) {
         </div>
         <div class="n-grid">`;
       grp.forEach(c => {
+        const typeStr = c.type && c.type !== '經營者' ? `[${window.nbEscape(c.type)}] ` : '';
         html += `<div class="n-ccard" onclick="nOpenEdit(${c.id})">
           <div class="n-avatar">${nInitials(c.name)}</div>
           <div class="n-cname">${window.nbEscape ? window.nbEscape(c.name) : c.name}</div>
-          <div class="n-cmeta">${c.date||''}${c.dd?'<br>DD: '+window.nbEscape(c.dd):''}</div>
+          <div class="n-cmeta">${typeStr}${c.date||''}${c.dd?'<br>DD: '+window.nbEscape(c.dd):''}</div>
           <div class="n-pdots">${nProgressDots(c.services||[])}</div>
         </div>`;
       });
@@ -1094,13 +1100,14 @@ window.initMap = async function(forceRefresh = false) {
     document.getElementById('n-delete-btn').style.display = 'block';
     nSetStageToggle(c.stage||0);
     nBuildFormUI(c);
+    
     document.getElementById('nf-name').value    = c.name||'';
+    document.getElementById('nf-type').value    = c.type||'經營者';
     document.getElementById('nf-date').value    = c.date||'';
     document.getElementById('nf-dd').value      = c.dd||'';
     document.getElementById('nf-address').value = c.address||'';
     document.getElementById('nf-reason').value  = c.reason||'';
     
-    // 載入 FORMHD 資料
     document.getElementById('nf-form-f').value = c.form_f || '';
     document.getElementById('nf-form-o').value = c.form_o || '';
     document.getElementById('nf-form-r').value = c.form_r || '';
@@ -1126,6 +1133,8 @@ window.initMap = async function(forceRefresh = false) {
 
   function nClearForm() {
     ['nf-name','nf-date','nf-dd','nf-address','nf-reason', 'nf-form-f', 'nf-form-o', 'nf-form-r', 'nf-form-m', 'nf-form-h', 'nf-form-d'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    const typeEl = document.getElementById('nf-type');
+    if(typeEl) typeEl.value = '經營者';
   }
 
   function nSetStageToggle(s) {
@@ -1138,13 +1147,16 @@ window.initMap = async function(forceRefresh = false) {
 
   function nBuildFormUI(data) {
     const sv = data.services||[], co = data.courses||[], pr = data.products||[];
-    document.getElementById('n-service-checks').innerHTML = SERVICES.map(s =>
-      `<div class="n-chk${sv.includes(s)?' on':''}" onclick="this.classList.toggle('on')">
-        <div class="n-chk-box"><span class="n-chk-mark">✓</span></div><span>${s}</span></div>`
-    ).join('');
+    document.getElementById('n-service-checks').innerHTML = SERVICES.map(s => {
+      const spanCls = (s === '會自己訂貨' || s === '會用信用卡') ? 'class="chk-text-green"' : '';
+      return `<div class="n-chk${sv.includes(s)?' on':''}" onclick="this.classList.toggle('on')">
+        <div class="n-chk-box"><span class="n-chk-mark">✓</span></div><span ${spanCls}>${s}</span></div>`;
+    }).join('');
+    
     document.getElementById('n-course-tags').innerHTML = COURSES.map(c =>
       `<span class="n-tag purple${co.includes(c)?' on':''}" onclick="this.classList.toggle('on')">${c}</span>`
     ).join('');
+    
     document.getElementById('n-product-tags').innerHTML = PRODUCTS.map(g =>
       `<div class="n-tag-sec"><div class="n-tag-sec-lbl">${g.label}</div><div class="n-tags">${
         g.items.map(item => `<span class="n-tag ${g.color}${pr.includes(item)?' on':''}" onclick="this.classList.toggle('on')">${item}</span>`).join('')
@@ -1160,7 +1172,9 @@ window.initMap = async function(forceRefresh = false) {
     const name = document.getElementById('nf-name').value.trim();
     if (!name) { nShowToast('請填寫姓名','#b03030'); return; }
     const data = {
-      name, date: document.getElementById('nf-date').value,
+      name, 
+      type: document.getElementById('nf-type').value,
+      date: document.getElementById('nf-date').value,
       dd: document.getElementById('nf-dd').value.trim(),
       address: document.getElementById('nf-address').value.trim(),
       reason: document.getElementById('nf-reason').value.trim(),
@@ -1175,6 +1189,7 @@ window.initMap = async function(forceRefresh = false) {
       courses:  [...document.querySelectorAll('#n-course-tags .n-tag.on')].map(el => el.textContent),
       products: [...document.querySelectorAll('#n-product-tags .n-tag.on')].map(el => el.textContent),
     };
+    
     if (nCurrentId) {
       const idx = nCustomers.findIndex(c => c.id === nCurrentId);
       nCustomers[idx] = { ...nCustomers[idx], ...data };
@@ -1210,213 +1225,6 @@ window.initMap = async function(forceRefresh = false) {
     window.nRenderList();
   });
 })();
-
-/* ══════════════════════════════════════════
-   21天日記邏輯 
-══════════════════════════════════════════ */
-window.LIOFAN_DATA = [
-  { week:1, title:"立命的宣言", wisdom:"所謂「立命」，就是我要創造命運，而不是讓命運來束縛我。", orig:"所謂「立命」，就是我要創造命運，\n而不是讓命運來束縛我。\n\n了凡先生把自己親身經歷的改命歷程，\n寫下來告訴兒子：\n一個人應該竭力行善，「勿以善小而不為」，\n也必須努力斷惡，「勿以惡小而為之」。\n\n能夠做到這樣，命運就一定會改變。\n所謂「斷惡修善，災消福來」——\n這不是一句口號，\n而是改造命運最根本的原理。" },
-  { week:1, title:"極善的人，命拘不住", wisdom:"只有平常人，才會被命數所束縛住。若是一個極善的人，命數就拘他不住了。", orig:"只有平常人，才會被命數所束縛住。\n若是一個極善的人，命數就拘他不住了。\n\n因為極善的人，儘管命裡原本註定吃苦，\n但他所做的極大善事，有著足以扭轉一切的力量——\n可以使苦變成樂，使貧賤短命，轉為富貴長壽。\n\n反過來說，極惡的人，命數也同樣拘不住他。\n若是做了極大的惡事，那股力量就可以使福變成禍，\n使富貴長壽，轉為貧賤短命。\n\n命運，從來就不是一條無法改道的河。" },
-  { week:1, title:"命由我自己造", wisdom:"命由我自己造，福由我自己求。我造惡自然折損福報，我修善自然感召福報。", orig:"命由我自己造，福由求。我造惡，就自然折損福報；我修善，就自然感召福報。\n\n這道理，古往今來的詩書都說得清楚明白。\n佛經裡也說：\n一個人要求富貴，就能得富貴；\n要求兒女，就能得兒女；\n要求長壽，就能得長壽。\n\n只要真心行善，命運就再也拘束不了你了。" },
-  { week:1, title:"心就是福田", wisdom:"六祖慧能大師說過：所有的福田，都在各人自己的心裡。", orig:"六祖慧能大師說過：所有的福田，都在各人自己的心裡。\n福離不開心，心外沒有福田可以尋找。\n\n所以，種福也好，種禍也好，根源全在自己的內心。\n只要從心裡去求福，沒有感應不到的。\n\n能向自己心裡去求，那麼不只是心內的道德仁義可以求得，就連身外的功名富貴，也一樣可以求到——這叫做內外雙得。\n\n為了耕耘福田而求仁求義、求福求祿，必然有所收穫。" },
-  { week:1, title:"從前種種，譬如昨日死", wisdom:"從前的一切，譬如昨日死；從今以後的一切，譬如今日生。", orig:"從前的一切，譬如昨日，已經死了；從今以後的一切，譬如今日，剛剛出生。\n\n能夠真正做到這樣，就是你重新再生了一個有道德、有義理的生命。\n\n我們這個血肉之軀，尚且還受著命數的制約；而一個在道德上重生的生命，怎麼可能感動不了上天？\n\n詩經說：人應該時時想到自己的所作所為，是否合乎天道。\n很多福報，不必強求，自然就會到來。\n求禍與求福，全在自己。" },
-  { week:1, title:"不以境遇，改變向善的心", wisdom:"無論身處什麼境遇，向善的心都不能停。", orig:"命運是自己造的。\n\n窮的人，不可以因為貧困就自暴自棄；儘管窮，仍然應該安分守己地做好人。\n能夠這樣，才可以把原本貧窮的命，改變成富貴的命。\n\n不得志的人，不可以因為不順遂就放縱自己；越是得意的時候，更應該為善去惡，廣種福田。\n\n短命的人，更應該做好人，希望來生能夠長壽，而這一生或許也可以因此延長。\n\n無論身處什麼境遇，向善的心都不能停。" },
-  { week:1, title:"修身以俟之", wisdom:"孟子說「修身以俟之」。修，是清除過失；俟，是等到修養工夫深了，命運自然轉好。", orig:"孟子說的「修身以俟之」，意思是：自己要時時刻刻修養德行，不做任何過失和罪惡。\n至於命運能不能改變，那是積德的事，是感應天道的事。\n\n所謂「修」，就是把身上一切的過失罪惡，像治病一樣，徹底清除乾淨。\n\n所謂「俟」，就是等到修養的工夫深了，命運自然就會轉好。\n\n不可以有任何非分之想，也不可以讓心中的念頭亂起亂滅——要把它們一一斬斷。\n\n能夠做到這種地步，才是真正受用一生的學問。" },
-  { week:2, title:"吉凶，從心開始顯露", wisdom:"想要得福避禍，必須先從改正過失開始。", orig:"一個人還沒有發生任何事情之前，吉凶禍福的徵兆，其實早就發自內心，顯現在外在的行為上了。\n\n待人處事穩重、厚道的人，往往能夠獲得福報；行為輕浮、刻補的人，往往容易招致災禍。\n\n一個人若能以至誠之心待人，他的心就和天道相吻合了。\n\n福報將要到來的時候，只要看他所做的善行，就能預先知道；災禍即將降臨的時候，只要看他所做的惡行，也必定能夠推測得到。\n\n想要得到福報、避開災禍，在行善之前，必須先從改正過失開始。" },
-  { week:2, title:"改過第一心：羞恥心", wisdom:"改正過失的方法，第一，要發起羞恥心。", orig:"改正過失的方法，第一，要發起羞恥心。\n\n試想，古代的聖賢和我們一樣是個普通人，他們為什麼能夠千古流芳，成為眾人學習的榜樣？而我為什麼一事無成？\n\n這都是因為過於沉溺逸樂，被世俗的欲望所染污，偷偷做著不合道義的事，卻毫無羞恥之心，就這樣一步步沉淪下去。\n\n孟子說：「恥這一個字，對一個人的關係，實在是太重大了。能夠知恥，就可以成就聖賢之道；如果不知羞恥，那就只不過是禽獸罷了。」\n\n知恥，是改過的起點。" },
-  { week:2, title:"改過第二心：敬畏心", wisdom:"改過的第二個要素，是要發起敬畏心。", orig:"改過的第二個要素，是要發起敬畏心。\n\n天地鬼神，始終在我們頭頂上監察著一切，難以欺騙。我們縱然在暗處犯過，旁人或許不容易察覺，但天地鬼神卻像一面鏡子，看得清清楚楚。\n\n所犯的過失若是重大，必定會降下災禍；就算是輕微的過失，也會悄悄折損現有的福報。\n\n就算在完全沒有人的地方，神明仍然清楚地看著人們的一切作為。我們可以掩蓋得多隱密，但內心深處的種種意念，早已全都顯露了——終究難以自欺。\n\n心存敬畏，是不敢輕易犯過最根本的保障。" },
-  { week:2, title:"改過第三心：勇猛心", wisdom:"改過的第三個要素，是要發起勇猛心。", orig:"改過的第三個要素，是要發起勇猛心。\n\n一個人犯了過失之後之所以改不了，大多是因為得過且過、退縮畏難。\n\n我們必須在認清過失的那一刻，立即痛下決心改正，不可以延遲，不可以疑惑，更不應當猶豫不決、遲遲不敢面對。\n\n犯了小過失，要像刺扎進肉裡一樣，趕快剔除。若是犯了大過失，更要像毒蛇咬到手指，須立刻斬斷，不可有片刻猶豫——否則毒液蔓延，就會一發不可收拾。\n\n具備了羞恥心、敬畏心和勇猛心，一旦發現過失，就能立即改正。就像春天的冰塊遇到陽光，還需要擔心它融化不了嗎？" },
-  { week:2, title:"改過的層次（一）：從行為改", wisdom:"最淺的一層是從行為改起，但犯過的根源若在，東邊壓去西邊又冒出來。", orig:"改過，有三個不同的層次，付出的工夫不同，得到的效果也截然不同。\n\n最淺的一層，是從行為上改起。譬如以前容易發怒罵人，現在戒除，不再發怒。這是就所犯的事情本身，將它直接改掉。\n\n然而，這種方式只是從外在勉強約束自己，比從根本上自然改正，要難上百倍。\n\n更麻煩的是，犯過的根源仍然存在——東邊壓制下去，西邊又冒了出來。表面上看似改了，內裡的土壤卻沒有動，實在不是徹底清除的方法。" },
-  { week:2, title:"改過的層次（二）：從道理改", wisdom:"比從行為改更深的，是從道理改起。明白道理，過失自然停止。", orig:"比從行為改更深一層的，是從道理改起。\n\n善於改過的人，在還沒有去禁止某種行為之前，會先深入理解這件事為什麼不能做。一旦真正明白了道理，過失自然就會停止。\n\n譬如以前容易發脾氣，就應該想到：每個人都有短處，本來就值得憐憫和包容；若有人冒犯我，那是他自己的問題，和我有什麼關係呢？\n\n天下沒有自以為是的英雄，也沒有靠怨恨別人成就的學問。凡事不順，往往是自己的德行還不夠。\n\n這樣想清楚了，外來的毀謗與傷害，反而都成了磨練自己、成就自己的助緣，還有什麼好發怒的？" },
-  { week:2, title:"改過的層次（三）：從心念改", wisdom:"改過最高明的層次，是從心念改起。當下修心，惡念一動即覺察。", orig:"改過最高明的層次，是從心念改起。\n\n人所犯的過失，項目雖有千種，但全都從心裡造作而來。若能在念頭還沒生起之前就守住心，過失又從哪裡產生呢？\n\n人的過失由心而造，所以也必須從心地上來改正。這就像要斬除毒樹，必須直接砍斷它的根，而不是一枝一枝地砍，一葉一葉地摘——根在，它永遠還會長出來。\n\n最高明的改過方法，是當下修心。每當心裡剛動了一個壞念頭，就立刻覺察，立刻讓它消失——過失，自然就不會再生。" },
-  { week:3, title:"積善，把壞命轉成好命", wisdom:"改過與積善同時並行，命運才能真正改變。", orig:"改過，能讓好命不變成壞命；但光是不犯過失，還不足以把壞命轉成好命。\n\n因為這一生就算不再造業，前世所造的罪過，依然需要承受報應。所以，改過之外，還必須積善、積德，才能消去前世的罪孽，讓命運真正轉向。\n\n善事積累得夠多了，壞命自然能轉成好命——這不是空話，而是可以一一驗證的真實效驗。\n\n改過是清空，積善是注入。兩件事同時做，命運才能真正改變。" },
-  { week:3, title:"真善與假善", wisdom:"出於公心與良心的是真善；為博名聲或私心的是假善。", orig:"做對別人有益的事，是善；做只對自己有益的事，是惡。\n\n若是所做的事能讓別人得到好處，就算是罵人、打人，也可以是善；若只是為了自己的利益，就算是恭敬人、有禮貌，也可能是惡。\n\n善行讓旁人受益，出於公心，就是真善；只想著自己的利益，出於私心，就是假善。\n\n從良心深處自然流露出來的善行，是真的；只不過照例做做、流於形式的，是假的。\n\n為了博取回報或名聲而行的善，是假的；不求任何回報、不留任何痕跡的善，才是真的。\n\n行善之前，先問問自己：這一步，是為了誰？" },
-  { week:3, title:"陰德勝陽善", wisdom:"默默行善（陰德）上天必有回報；享有虛名（陽善）常遭橫禍。", orig:"做善事讓人知道，叫做陽善；做善事沒有人知道，叫做陰德。\n\n有陰德的人，上天自然知道，自然會回報他。有陽善的人，大家稱讚他，他享有美名——名聲雖然也是一種福，但「名」這件事，向來為天地所忌。\n\n你看那些享有極大名聲，卻沒有相應德行的人，常常會遭遇意想不到的橫禍。\n\n反過來，那些沒有過失卻被無辜冤枉、默默承受的人，他們的子孫，常常會忽然發達起來。\n\n陰德與陽善之間的差別，看似細微，卻深刻影響著命運的走向，不可不細細分辨。" },
-  { week:3, title:"三輪體空", wisdom:"做了就放下，心不掛念，布施一文錢也能消除千劫罪業。", orig:"做了善事，心裡不要惦記，不要覺得自己做了什麼了不起的事——能夠這樣，任何一件善事都能成功而圓滿。\n\n若是做完了善事，心裡一直掛念著、計較著，就算一生都勤勉地做善事，也只不過是半善而已。\n\n真正圓滿的布施，是「三輪體空」：心裡沒有布施的我，沒有受施的人，也沒有所施的物——這就叫做一心清淨。\n\n能夠這樣布施，縱使只布施了一斗米，也可以種下無邊無際的福；縱使只布施了一文錢，也可以消除千劫以來的罪業。\n\n做了，就放下。這才是真正的圓滿。" },
-  { week:3, title:"念頭的力量", wisdom:"行善不在大小而在發心. 存心利益天下，功德即無量。", orig:"立志做善事，若是目的在利益天下眾人，那麼善事縱然小，功德卻很大。若只是為了利益自己一個人，那麼善事做得再多，功德也很小。\n\n有一個道理說得很深刻：一位官員曾上奏勸皇帝不要大興土木，免得勞民傷財，但皇帝沒有聽。\n旁人問：奏章沒有起作用，怎麼還能算是功德？\n\n回答是：皇帝雖然沒有採納，但這個念頭的目的，是要讓千萬百姓免去勞役之苦。念頭本身，幾是功德所在。\n\n行善積德，都是從這顆心做出來的。只要常常存著為人行善的念頭，功德就無量無邊了。" },
-  { week:3, title:"謙卦", wisdom:"謙虛是命運持續往好方向走的最穩固根基。", orig:"《易經》謙卦說：天道，對驕傲自滿的使他虧損，對謙虛的使他受益。地道，對驕傲自滿的使他改變，對謙虛的使他滋潤豐盈。鬼神，對驕傲自滿的使他受害，對謙虛的使他受福。人，也是厭惡驕傲自滿的，而喜歡謙虛的。\n\n天、地、鬼神、人，全都站在謙虛這一邊。\n\n《易經》六十四卦中，每一卦都有吉有凶——唯獨謙卦，每一爻都是吉兆，沒有一爻是凶的。\n\n《書經》也說：自滿，就會招來損害；自謙，就會得到益處。\n\n謙虛，是命運能持續往好的方向走，最穩固的根基。" },
-  { week:3, title:"造福，全在自己", wisdom:"保持謙虛、存好心、落實積德，命運與福報由自己決定。", orig:"舉頭三尺，一定有神明在監察著人的行為。\n\n所以，存好心，約束一切不善的行為，不得罪天地鬼神；同時保持謙虛，不驕傲，不自滿，讓天地鬼神時時憐憫我——這才是福報能夠持續流入的根基。\n\n謙虛的人，肯向別人學習，看到別人的善行就去效法，所能累積的善行因此沒有窮盡。這對一個真心想要進德修業的人，是絕對不可缺少的。\n\n造福這件事，全在自己。自己真心想造，就一定造得成。\n\n把求福的心，落實在積德行善上，盡心盡力地去做——命運與福報，就都能夠由自己決定了。" }
-];
-
-window.liofanDay = 1;
-window.liofanWeek = 1;
-
-window.buildPills = function() {
-  const container = document.getElementById('dayPills');
-  if(!container) return;
-  container.innerHTML = '';
-  const start = (window.liofanWeek - 1) * 7;
-  for (let i = start + 1; i <= Math.min(start + 7, 21); i++) {
-    const btn = document.createElement('button');
-    btn.className = 'day-pill' + (i === window.liofanDay ? ' active' : '');
-    btn.textContent = i;
-    btn.onclick = () => window.showDay(i);
-    const saved = window.loadDay(i);
-    if (saved && (saved.mindfulCopy || saved.copywrite1 || saved.refl1)) btn.classList.add('done');
-    container.appendChild(btn);
-  }
-  const revBtn = document.createElement('button');
-  revBtn.className = 'day-pill'; revBtn.textContent = '回顧'; revBtn.style.width = 'auto'; revBtn.style.padding = '0 10px';
-  revBtn.onclick = () => window.showReview();
-  container.appendChild(revBtn);
-}
-
-window.showWeek = function(w) {
-  window.liofanWeek = w;
-  document.querySelectorAll('.week-btn').forEach((b,i) => b.classList.toggle('active', i+1===w));
-  document.getElementById('weekReviewSection').style.display = 'none';
-  document.getElementById('journalCard').style.display = 'block';
-  window.showDay((w-1)*7 + 1);
-};
-
-window.showDay = function(d) {
-  window.liofanDay = d;
-  const data = window.LIOFAN_DATA[d - 1];
-  if(!data) return;
-  document.getElementById('dayNum').textContent = String(d).padStart(2,'0');
-  document.getElementById('dayLabel').textContent = `第${['一','二','三'][data.week-1]}週 · DAY ${d}`;
-  document.getElementById('dayTitle').textContent = data.title;
-  document.getElementById('wisdomText').textContent = data.wisdom;
-  document.getElementById('origText').textContent = data.orig;
-
-  document.getElementById('weekReviewSection').style.display = 'none';
-  document.getElementById('journalCard').style.display = 'block';
-
-  const saved = window.loadDay(d);
-  document.getElementById('inputYear').value = saved?.year || '';
-  document.getElementById('inputMonth').value = saved?.month || '';
-  document.getElementById('inputDay').value = saved?.day || '';
-  document.getElementById('mindfulCopy').value = saved?.mindfulCopy || '';
-  document.getElementById('copywrite1').value = saved?.copywrite1 || '';
-  document.getElementById('copywrite2').value = saved?.copywrite2 || '';
-  document.getElementById('copywrite3').value = saved?.copywrite3 || '';
-  document.getElementById('refl1').value = saved?.refl1 || '';
-  document.getElementById('refl2').value = saved?.refl2 || '';
-  document.getElementById('refl3').value = saved?.refl3 || '';
-  document.getElementById('action1').value = saved?.action1 || '';
-  document.getElementById('action2').value = saved?.action2 || '';
-  document.getElementById('action3').value = saved?.action3 || '';
-
-  document.querySelectorAll('#liofan-view .mood-btn').forEach(b => { b.classList.toggle('selected', b.textContent === saved?.mood); });
-  window.buildPills();
-};
-
-window.showReview = function() {
-  document.getElementById('journalCard').style.display = 'none';
-  document.getElementById('weekReviewSection').style.display = 'block';
-  document.getElementById('reviewTitle').textContent = `第${['一','二','三'][window.liofanWeek-1]}週回顧｜${['立命','改過','積善'][window.liofanWeek-1]}`;
-  const saved = JSON.parse(localStorage.getItem(`review_week${window.liofanWeek}`) || '{}');
-  document.getElementById('reviewQ1').value = saved.q1 || '';
-  document.getElementById('reviewQ2').value = saved.q2 || '';
-  document.getElementById('reviewQ3').value = saved.q3 || '';
-  document.getElementById('reviewQ4').value = saved.q4 || '';
-};
-
-window.selectMood = function(btn) {
-  document.querySelectorAll('#liofan-view .mood-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-};
-
-window.saveDay = function() {
-  const mood = document.querySelector('#liofan-view .mood-btn.selected')?.textContent || '';
-  const data = {
-    year: document.getElementById('inputYear').value, month: document.getElementById('inputMonth').value, day: document.getElementById('inputDay').value,
-    mindfulCopy: document.getElementById('mindfulCopy').value,
-    copywrite1: document.getElementById('copywrite1').value, copywrite2: document.getElementById('copywrite2').value, copywrite3: document.getElementById('copywrite3').value,
-    refl1: document.getElementById('refl1').value, refl2: document.getElementById('refl2').value, refl3: document.getElementById('refl3').value,
-    action1: document.getElementById('action1').value, action2: document.getElementById('action2').value, action3: document.getElementById('action3').value,
-    mood
-  };
-  localStorage.setItem(`day_${window.liofanDay}`, JSON.stringify(data));
-    window.showWPToast('✅ 已儲存！'); window.updateProgress(); window.buildPills();
-  if (window.triggerCloudSave) window.triggerCloudSave();
-};
-
-window.clearDay = function() {
-  if (!confirm('確定清除今日記錄？')) return;
-  localStorage.removeItem(`day_${window.liofanDay}`);
-  window.showDay(window.liofanDay); window.updateProgress();
-  if (window.triggerCloudSave) window.triggerCloudSave();
-};
-
-window.saveReview = function() {
-  const data = {
-    q1: document.getElementById('reviewQ1').value, q2: document.getElementById('reviewQ2').value,
-    q3: document.getElementById('reviewQ3').value, q4: document.getElementById('reviewQ4').value,
-  };
-  localStorage.setItem(`review_week${window.liofanWeek}`, JSON.stringify(data));
-  window.showWPToast('✅ 週回顧已儲存！');
-  if (window.triggerCloudSave) window.triggerCloudSave();
-};
-
-window.loadDay = function(d) { return JSON.parse(localStorage.getItem(`day_${d}`) || 'null'); }
-window.updateProgress = function() {
-  let done = 0;
-  for (let i = 1; i <= 21; i++) { const s = window.loadDay(i); if (s && (s.mindfulCopy || s.copywrite1 || s.refl1)) done++; }
-  const fill = document.getElementById('progressFill');
-  if(fill) fill.style.width = Math.round(done / 21 * 100) + '%';
-  const txt = document.getElementById('progressText');
-  if(txt) txt.textContent = `${done} / 21 天`;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    window.buildPills(); window.updateProgress(); window.showDay(1);
-});
-
-/* ══════════════════════════════════════════
-   曼陀羅 & 靈感發想
-══════════════════════════════════════════ */
-const SG = [ {n:'H',r:1,c:1,cl:'cH'},{n:'A',r:1,c:4,cl:'cA'},{n:'D',r:1,c:7,cl:'cD'}, {n:'G',r:4,c:1,cl:'cG'},{n:'' ,r:4,c:4,cl:'cM'},{n:'C',r:4,c:7,cl:'cC'}, {n:'F',r:7,c:1,cl:'cF'},{n:'B',r:7,c:4,cl:'cB'},{n:'E',r:7,c:7,cl:'cE'} ]; 
-const LM = [['2','3','4'],['1','','5'],['8','7','6']];
-const CLM = [['H','A','D'],['G','','C'],['F','B','E']]; 
-
-document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.getElementById('big-grid'); 
-    const info = Array.from({length:9}, () => Array(9).fill(0).map(() => ({code:'',cl:''}))); 
-    SG.forEach(sg => { for (let dr=0;dr<3;dr++) for (let dc=0;dc<3;dc++) { info[sg.r-1+dr][sg.c-1+dc] = { code: (dr===1&&dc===1) ? sg.n : (sg.n === '' ? CLM[dr][dc] : sg.n+LM[dr][dc]), cl: (dr===1&&dc===1) ? sg.cl : '' }; } }); 
-    for (let r=0;r<9;r++) for (let c=0;c<9;c++) { const cell = document.createElement('div'); cell.className = 'm-cell' + (c===3||c===6?' bl':'') + (r===3||r===6?' bt':''); const {code,cl} = info[r][c]; if (cl) cell.classList.add(cl); const cd = document.createElement('div'); cd.className='cell-code'; cd.textContent=code; cell.appendChild(cd); const ta = document.createElement('textarea'); const key = 'mc-'+r+'-'+c; try { ta.value = localStorage.getItem(key)||''; } catch(e){} ta.addEventListener('input', () => { try { localStorage.setItem(key, ta.value); if(window.triggerCloudSave) window.triggerCloudSave(); } catch(e){} }); cell.appendChild(ta); grid.appendChild(cell); } 
-});
-
-window.topZ=20; window.uid=0; 
-window.PIN_CLR = {sy:'#c8a010',sb:'#2070a0',sp:'#b02060',sg:'#187838',sw:'#777'}; 
-window.STICKY_COLORS = [ {cls:'sy', bg:'#fdf876', label:'黃'}, {cls:'sb', bg:'#c8e8f8', label:'藍'}, {cls:'sp', bg:'#fcd0e0', label:'粉'}, {cls:'sg', bg:'#c8f0cc', label:'綠'}, {cls:'sw', bg:'#fefefe', label:'白'} ];
-window.pickerOpen = false;
-
-window.toggleColorPicker = function() { window.pickerOpen = !window.pickerOpen; document.getElementById('color-picker-popup').classList.toggle('show', window.pickerOpen); document.getElementById('add-sticky-btn').classList.toggle('open', window.pickerOpen); }
-window.closeColorPicker = function() { window.pickerOpen = false; document.getElementById('color-picker-popup').classList.remove('show'); document.getElementById('add-sticky-btn').classList.remove('open'); }
-
-window.changeColor = function(el, newCls) { window.STICKY_COLORS.forEach(c => el.classList.remove(c.cls)); el.classList.add(newCls); const pc = window.PIN_CLR[newCls] || '#c44'; const pin = el.querySelector('.s-pin'); if (pin) { pin.querySelectorAll('circle')[0].setAttribute('fill', pc); pin.querySelector('line').setAttribute('stroke', pc); } }
-
-window.addSticky = function(cls, px, py, initText, initRot, initImgSrc, initWidth, initHeight) { 
-    const W = window.innerWidth, H = window.innerHeight - 50; 
-    const x = (px != null) ? px : 20 + Math.random()*(W-220); const y = (py != null) ? py : 50 + Math.random()*(H-300); const rot = (initRot != null) ? parseFloat(initRot) : (Math.random()-.5)*9; 
-    const id = ++window.uid; const pc = window.PIN_CLR[cls]||'#c44'; 
-    const el = document.createElement('div'); el.className = 'sticky ' + cls; el.style.left = x+'px'; el.style.top = y+'px'; el.style.transform = `rotate(${rot}deg)`; el.style.zIndex = ++window.topZ; 
-    const dotSwatches = window.STICKY_COLORS.map(c => `<div class="s-cp-swatch" style="background:${c.bg}" data-cls="${c.cls}" title="${c.label}"></div>` ).join(''); 
-    el.innerHTML = `<svg class="s-pin" viewBox="0 0 22 25" fill="none"><circle cx="11" cy="9" r="7" fill="${pc}"/><circle cx="9" cy="7" r="2.5" fill="rgba(255,255,255,.38)"/><line x1="11" y1="15.5" x2="11" y2="25" stroke="${pc}" stroke-width="3" stroke-linecap="round"/></svg><div class="s-head"><div class="s-color-dots"><div class="s-dot dot-y"></div><div class="s-dot dot-b"></div><div class="s-dot dot-p"></div><div class="s-color-popup">${dotSwatches}</div></div><button class="s-del">✕</button></div><div class="s-body"><textarea class="s-ta" placeholder="寫下你的想法…"></textarea><div class="s-img" id="simg-${id}"><div class="s-img-hint"><div class="s-img-hint-icon">🖼</div><div>點擊上傳照片</div></div><button class="s-img-del">✕</button></div><input type="file" class="s-file" id="sfile-${id}" accept="image/*"></div><div class="s-resize"></div>`;
-    el.querySelector('.s-ta').value = initText || '';
-    if (initWidth) el.style.width = initWidth + 'px'; if (initHeight) el.style.height = initHeight + 'px'; else el.style.height = '220px'; 
-    el.addEventListener('mousedown', () => { el.style.zIndex = ++window.topZ; }); el.addEventListener('touchstart', () => { el.style.zIndex = ++window.topZ; }, {passive:true}); 
-    el.querySelector('.s-del').addEventListener('click', e => { e.stopPropagation(); el.remove(); window.saveStickyState(); }); 
-    const colorDots = el.querySelector('.s-color-dots'); const colorPopup = el.querySelector('.s-color-popup'); let colorPopupOpen = false; 
-    colorDots.addEventListener('click', e => { e.stopPropagation(); colorPopupOpen = !colorPopupOpen; colorPopup.classList.toggle('show', colorPopupOpen); }); 
-    colorPopup.querySelectorAll('.s-cp-swatch').forEach(sw => { sw.addEventListener('click', e => { e.stopPropagation(); window.changeColor(el, sw.dataset.cls); colorPopupOpen = false; colorPopup.classList.remove('show'); window.saveStickyState(); }); }); 
-    const ta = el.querySelector('.s-ta'); ta.addEventListener('mousedown', e => e.stopPropagation()); ta.addEventListener('touchstart', e => e.stopPropagation(), {passive:true}); ta.addEventListener('input', () => window.saveStickyState());
-    const head = el.querySelector('.s-head'); function onDragStart(sx, sy) { const ox = parseFloat(el.style.left)||0, oy = parseFloat(el.style.top)||0; el.style.transform='rotate(0deg)'; el.style.zIndex=++window.topZ; function onMove(e) { const cx=e.touches?e.touches[0].clientX:e.clientX, cy=e.touches?e.touches[0].clientY:e.clientY; el.style.left=(ox+cx-sx)+'px'; el.style.top=(oy+cy-sy)+'px'; } function onEnd() { el.style.transform=`rotate(${(Math.random()-.5)*5}deg)`; document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onEnd); document.removeEventListener('touchmove',onMove); document.removeEventListener('touchend',onEnd); window.saveStickyState(); } document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onEnd); document.addEventListener('touchmove',onMove,{passive:false}); document.addEventListener('touchend',onEnd); } head.addEventListener('mousedown', e => { if (e.target.classList.contains('s-del')||e.target.classList.contains('s-color-dots')||e.target.closest('.s-color-dots')) return; e.preventDefault(); onDragStart(e.clientX, e.clientY); }); head.addEventListener('touchstart', e => { if (e.target.classList.contains('s-del')||e.target.closest('.s-color-dots')) return; onDragStart(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true}); 
-    const pin = el.querySelector('.s-pin'); pin.addEventListener('mousedown', e => { e.preventDefault(); e.stopPropagation(); onDragStart(e.clientX, e.clientY); }); pin.addEventListener('touchstart', e => { e.stopPropagation(); onDragStart(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true}); 
-    const resizeHandle = el.querySelector('.s-resize'); resizeHandle.addEventListener('mousedown', e => { e.preventDefault(); e.stopPropagation(); el.style.zIndex = ++window.topZ; const startX = e.clientX, startY = e.clientY; const startW = el.offsetWidth, startH = el.offsetHeight; function onResizeMove(ev) { const newW = Math.max(140, startW + ev.clientX - startX); const newH = Math.max(160, startH + ev.clientY - startY); el.style.width = newW + 'px'; el.style.height = newH + 'px'; } function onResizeUp() { window.saveStickyState(); document.removeEventListener('mousemove', onResizeMove); document.removeEventListener('mouseup', onResizeUp); } document.addEventListener('mousemove', onResizeMove); document.addEventListener('mouseup', onResizeUp); }); resizeHandle.addEventListener('touchstart', e => { e.preventDefault(); e.stopPropagation(); el.style.zIndex = ++window.topZ; const startX = e.touches[0].clientX, startY = e.touches[0].clientY; const startW = el.offsetWidth, startH = el.offsetHeight; function onResizeMove(ev) { const newW = Math.max(140, startW + ev.touches[0].clientX - startX); const newH = Math.max(160, startH + ev.touches[0].clientY - startY); el.style.width = newW + 'px'; el.style.height = newH + 'px'; } function onResizeUp() { window.saveStickyState(); document.removeEventListener('touchmove', onResizeMove); document.removeEventListener('touchend', onResizeUp); } document.addEventListener('touchmove', onResizeMove, {passive:false}); document.addEventListener('touchend', onResizeUp); }, {passive:false}); 
-    const imgSlot = el.querySelector('#simg-'+id); const fileInp = el.querySelector('#sfile-'+id); imgSlot.addEventListener('click', e => { if (e.target.classList.contains('s-img-del')) return; fileInp.click(); }); function setImgExpanded(hasImg) { imgSlot.style.flex = hasImg ? '1' : '0 0 52px'; imgSlot.style.height = hasImg ? '' : '52px'; }
-    function resetSlot() { imgSlot.innerHTML=`<div class="s-img-hint"><div class="s-img-hint-icon">🖼</div><div>點擊上傳照片</div></div><button class="s-img-del">✕</button>`; imgSlot.querySelector('.s-img-del').addEventListener('click', e=>e.stopPropagation()); setImgExpanded(false); window.saveStickyState(); }
-    function setSlotImg(src) {
-        if (!src || (!src.startsWith('data:image/') && !src.startsWith('blob:'))) { resetSlot(); return; }
-        imgSlot.innerHTML = '<button class="s-img-del" style="display:flex">✕</button>';
-        const img = document.createElement('img'); img.alt = '';
-        img.src = src; imgSlot.insertBefore(img, imgSlot.firstChild);
-        setImgExpanded(true); imgSlot.querySelector('.s-img-del').addEventListener('click', e2 => { e2.stopPropagation(); resetSlot(); });
-    }
-    fileInp.addEventListener('change', () => { const f=fileInp.files[0]; if(!f) return; const rd=new FileReader(); rd.onload = ev => { setSlotImg(ev.target.result); window.saveStickyState(); }; rd.readAsDataURL(f); }); el.querySelector('.s-img-del').addEventListener('click', e=>e.stopPropagation()); if (initImgSrc) { setSlotImg(initImgSrc); } else { setImgExpanded(false); } 
-    document.getElementById('sticky-container').appendChild(el); window.saveStickyState(); 
-}
 
 /* ══════════════════════════════════════════
    筆記本 & 同步邏輯
@@ -1574,19 +1382,42 @@ window.mmDeleteNode = function(id) {
 };
 
 /* ══════════════════════════════════════════
+   曼陀羅九宮格
+══════════════════════════════════════════ */
+const SG = [ {n:'H',r:1,c:1,cl:'cH'},{n:'A',r:1,c:4,cl:'cA'},{n:'D',r:1,c:7,cl:'cD'}, {n:'G',r:4,c:1,cl:'cG'},{n:'' ,r:4,c:4,cl:'cM'},{n:'C',r:4,c:7,cl:'cC'}, {n:'F',r:7,c:1,cl:'cF'},{n:'B',r:7,c:4,cl:'cB'},{n:'E',r:7,c:7,cl:'cE'} ]; 
+const LM = [['2','3','4'],['1','','5'],['8','7','6']];
+const CLM = [['H','A','D'],['G','','C'],['F','B','E']]; 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('big-grid'); 
+    if(grid) {
+        const info = Array.from({length:9}, () => Array(9).fill(0).map(() => ({code:'',cl:''}))); 
+        SG.forEach(sg => { for (let dr=0;dr<3;dr++) for (let dc=0;dc<3;dc++) { info[sg.r-1+dr][sg.c-1+dc] = { code: (dr===1&&dc===1) ? sg.n : (sg.n === '' ? CLM[dr][dc] : sg.n+LM[dr][dc]), cl: (dr===1&&dc===1) ? sg.cl : '' }; } }); 
+        for (let r=0;r<9;r++) for (let c=0;c<9;c++) { const cell = document.createElement('div'); cell.className = 'm-cell' + (c===3||c===6?' bl':'') + (r===3||r===6?' bt':''); const {code,cl} = info[r][c]; if (cl) cell.classList.add(cl); const cd = document.createElement('div'); cd.className='cell-code'; cd.textContent=code; cell.appendChild(cd); const ta = document.createElement('textarea'); const key = 'mc-'+r+'-'+c; try { ta.value = localStorage.getItem(key)||''; } catch(e){} ta.addEventListener('input', () => { try { localStorage.setItem(key, ta.value); if(window.triggerCloudSave) window.triggerCloudSave(); } catch(e){} }); cell.appendChild(ta); grid.appendChild(cell); } 
+    }
+});
+
+/* ══════════════════════════════════════════
    雲端同步打包與解包 
 ══════════════════════════════════════════ */
 window.collectAllData = function() {
   const cells = {}; for (let r=0;r<9;r++) for (let c=0;c<9;c++) { const k = 'mc-'+r+'-'+c; const v = localStorage.getItem(k); if (v) cells[k] = v; }
   const fields = {}; ['ml_date','ml_title','ml_name','ml_memo'].forEach(k => { const v = localStorage.getItem(k); if (v) fields[k] = v; });
-  const stickies = JSON.parse(localStorage.getItem('sticky_data') || '[]');
   const mindmap = JSON.parse(localStorage.getItem('mm_nodes') || '[]');
-  
-  const liofan = {}; for (let i = 1; i <= 21; i++) { const d = localStorage.getItem(`day_${i}`); if (d) liofan[`day_${i}`] = d; } for (let i = 1; i <= 3; i++) { const r = localStorage.getItem(`review_week${i}`); if (r) liofan[`review_week${i}`] = r; }
-  
   const ninety90 = window.nGetCustomers ? window.nGetCustomers() : JSON.parse(localStorage.getItem('crm90_v3') || '[]');
   
-  return { version:9, cells, fields, stickies, mindmap, notebook: window.NotebookApp.getAllNotes(), liofan, ninety90 };
+  const reviewData = {
+    goals: {
+        health: localStorage.getItem('goal-health') || '',
+        social: localStorage.getItem('goal-social') || '',
+        family: localStorage.getItem('goal-family') || '',
+        amway: localStorage.getItem('goal-amway') || '',
+        wealth: localStorage.getItem('goal-wealth') || ''
+    },
+    richLogs: JSON.parse(localStorage.getItem('richLogs') || '[]')
+  };
+
+  return { version:11, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData };
 };
 
 window.restoreAllData = function(data) {
@@ -1595,14 +1426,22 @@ window.restoreAllData = function(data) {
       try {
           if (data.cells) { Object.entries(data.cells).forEach(([k,v]) => localStorage.setItem(k, v)); document.querySelectorAll('#big-grid .m-cell textarea').forEach(ta => { const idx = Array.from(ta.closest('#big-grid').querySelectorAll('textarea')).indexOf(ta); const r=Math.floor(idx/9), c=idx%9; ta.value = data.cells['mc-'+r+'-'+c] || ''; }); }
           if (data.fields) { ['ml_date','ml_title','ml_name','ml_memo'].forEach((k,i) => { if (data.fields[k] != null) { localStorage.setItem(k, data.fields[k]); const ids = ['ml-date','ml-title','ml-name','ml-memo']; const el = document.getElementById(ids[i]); if (el) el.value = data.fields[k]; } }); }
-          
-          if (data.stickies) { localStorage.setItem('sticky_data', JSON.stringify(data.stickies)); if (typeof window.loadStickyState === 'function') window.loadStickyState(); }
           if (data.mindmap) { localStorage.setItem('mm_nodes', JSON.stringify(data.mindmap)); if(typeof window.mmLoadState === 'function') window.mmLoadState(); }
-          
           if (data.notebook && typeof window.NotebookApp.restoreNotes === 'function') window.NotebookApp.restoreNotes(data.notebook);
-          if (data.liofan) { Object.entries(data.liofan).forEach(([k,v]) => localStorage.setItem(k, v)); if (typeof window.showDay === 'function') window.showDay(window.liofanDay || 1); }
-          
           if (data.ninety90 && Array.isArray(data.ninety90)) { localStorage.setItem('crm90_v3', JSON.stringify(data.ninety90)); if (typeof window.nLoadCustomers === 'function') window.nLoadCustomers(data.ninety90); }
+          
+          if (data.reviewData) {
+            localStorage.setItem('goal-health', data.reviewData.goals.health || '');
+            localStorage.setItem('goal-social', data.reviewData.goals.social || '');
+            localStorage.setItem('goal-family', data.reviewData.goals.family || '');
+            localStorage.setItem('goal-amway', data.reviewData.goals.amway || '');
+            localStorage.setItem('goal-wealth', data.reviewData.goals.wealth || '');
+            localStorage.setItem('richLogs', JSON.stringify(data.reviewData.richLogs || []));
+            if(typeof window.reviewLoadGoals === 'function') {
+                window.reviewLoadGoals();
+                window.reviewRenderTracker();
+            }
+          }
       } catch(err) {
           console.error("DOM 復原時發生錯誤: ", err);
       }
