@@ -251,14 +251,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #review-view textarea:focus, #review-view input[type="text"]:focus { outline: none; border-color: var(--r-primary); background: #fff; }
 #review-view .goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 @media (max-width: 600px) { #review-view .goal-grid { grid-template-columns: 1fr; } #review-view .r-container{ padding: 20px; margin-top: 50px;} }
-
-#review-view .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; font-size: 16px; color: var(--r-primary); }
-#review-view .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
-#review-view .calendar-day-header { font-size: 12px; color: #888; padding-bottom: 4px; font-weight: bold; }
-#review-view .tracker-day { width: 100%; aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; background: #f0ebe4; color: #999; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
-#review-view .tracker-day:hover:not(.empty) { transform: scale(1.05); border-color: var(--r-primary); }
+#review-view .tracker-container { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 8px; }
+#review-view .tracker-day { width: 30px; height: 30px; border-radius: 6px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #aaa; transition: 0.3s; }
 #review-view .tracker-day.completed { background: var(--r-success); color: white; font-weight: bold; box-shadow: 0 2px 5px rgba(141, 174, 140, 0.4); }
-
 #review-view .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
 #review-view button { background: var(--r-primary); color: #fff; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-size: 15px; font-weight: bold; transition: 0.2s; font-family: 'Noto Sans TC', sans-serif;}
 #review-view button:hover { background: #9d805c; transform: translateY(-2px); }
@@ -367,7 +362,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #mm-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
 #mm-canvas { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; }
 .mm-hint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-size: .7rem; color: rgba(26,26,46,.35); pointer-events: none; white-space: nowrap; z-index: 50; }
-.mm-toolbar { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; z-index: 100; background: #1e1e1e; padding: 7px 12px; border-radius: 40px; box-shadow: 0 6px 24px rgba(0,0,0,.25); max-width: calc(100vw - 24px); flex-wrap: wrap; justify-content: center; }
+.mm-toolbar { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 100; background: #1e1e1e; padding: 7px 12px; border-radius: 40px; box-shadow: 0 6px 24px rgba(0,0,0,.25); max-width: calc(100vw - 24px); flex-wrap: wrap; justify-content: center; }
 .mm-btn { padding: 6px 12px; border: none; background: rgba(255,255,255,.1); color: #f0ebe0; font-family: 'Noto Sans TC', sans-serif; font-size: clamp(.65rem, 2vw, .76rem); cursor: pointer; border-radius: 22px; transition: background .15s; letter-spacing: .03em; white-space: nowrap; }
 .mm-btn:hover { background: rgba(255,255,255,.2); }
 .mm-btn.danger { color: #ff9a9a; }
@@ -559,9 +554,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
       <div class="n-toolbar">
         <div class="n-search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input class="n-search" type="text" placeholder="搜尋客戶姓名…" oninput="window.nFilterCustomers(this.value)">
+          <input class="n-search" type="text" placeholder="搜尋客戶姓名…" oninput="nFilterCustomers(this.value)">
         </div>
-        <button class="n-btn-add" onclick="window.nOpenNew(0)">
+        <button class="n-btn-add" onclick="nOpenNew(0)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
           新增客戶
         </button>
@@ -573,16 +568,16 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
   <div id="n-form-page" style="display:none">
     <div class="n-form-wrap">
       <div class="n-form-topbar">
-        <button class="n-back-btn" onclick="window.nGoBack()">
+        <button class="n-back-btn" onclick="nGoBack()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           返回列表
         </button>
         <h2 id="n-form-title">客戶資料</h2>
       </div>
       <div class="n-stage-toggle">
-        <button class="n-stg-btn active" onclick="window.nSetStage(0,this)">1–30 天</button>
-        <button class="n-stg-btn" onclick="window.nSetStage(1,this)">31–60 天</button>
-        <button class="n-stg-btn" onclick="window.nSetStage(2,this)">61–90 天</button>
+        <button class="n-stg-btn active" onclick="nSetStage(0,this)">1–30 天</button>
+        <button class="n-stg-btn" onclick="nSetStage(1,this)">31–60 天</button>
+        <button class="n-stg-btn" onclick="nSetStage(2,this)">61–90 天</button>
       </div>
       <div class="n-fgrid">
         <div>
@@ -633,9 +628,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         </div>
       </div>
       <div class="n-form-actions">
-        <div class="n-fa-left"><button class="n-btn n-btn-danger" id="n-delete-btn" onclick="window.nDeleteCustomer()" style="display:none">刪除此客戶</button></div>
-        <button class="n-btn n-btn-ghost" onclick="window.nGoBack()">取消</button>
-        <button class="n-btn n-btn-primary" onclick="window.nSaveCustomer()">儲存資料</button>
+        <div class="n-fa-left"><button class="n-btn n-btn-danger" id="n-delete-btn" onclick="nDeleteCustomer()" style="display:none">刪除此客戶</button></div>
+        <button class="n-btn n-btn-ghost" onclick="nGoBack()">取消</button>
+        <button class="n-btn n-btn-primary" onclick="nSaveCustomer()">儲存資料</button>
       </div>
     </div>
   </div>
@@ -707,44 +702,17 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 
       <!-- 視覺化反饋與 AI 輸出區 -->
       <div class="section" style="margin-top: 30px;">
-        <h2>📈 統計複盤日記的進度</h2>
+        <h2>📈 累積軌跡與 AI 輸出</h2>
+        <p style="font-size: 13px; color: #666; margin: 0;">每一個勾選，都是通往目標的堅實腳印。</p>
+        <div class="tracker-container" id="tracker-board"></div>
         
-        <div class="progress-wrap" style="margin-top: 15px; margin-bottom: 20px;">
-          <div class="progress-track" style="height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
-            <div class="progress-fill" id="review-month-progress" style="height: 100%; background: var(--r-success); width: 0%; transition: 0.5s;"></div>
-          </div>
-          <div class="progress-label" style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 6px; color: #666;">
-            <span id="review-month-text">0 / 31 天</span>
-            <span id="review-month-encourage" style="color: var(--r-primary); font-weight: bold;">加油！每一天都是新的開始。</span>
-          </div>
+        <div class="btn-group">
+          <button class="outline-btn" onclick="window.reviewExportData(7)">📋 複製近 7 天紀錄</button>
+          <button class="outline-btn" onclick="window.reviewExportData(30)">📋 複製近 30 天紀錄</button>
         </div>
-
-        <div class="calendar-header">
-            <button class="outline-btn" style="padding: 4px 12px;" onclick="window.reviewChangeMonth(-1)">‹</button>
-            <span id="calendar-month-year" style="font-weight: bold; font-size: 16px;"></span>
-            <button class="outline-btn" style="padding: 4px 12px;" onclick="window.reviewChangeMonth(1)">›</button>
-        </div>
-        
-        <div class="calendar-grid" id="tracker-board" style="margin-top: 15px;">
-            <!-- 月曆內容由 JS 產生 -->
-        </div>
-        
-        <div class="btn-group" style="margin-top: 25px; border-top: 1px dashed #ddd; padding-top: 20px;">
-          <button class="outline-btn" onclick="window.reviewExportToday()">📋 複製今天紀錄</button>
-          <button class="outline-btn" onclick="window.reviewExportData(7)">📋 複製近 7 天</button>
-          <button class="outline-btn" onclick="window.reviewExportData(30)">📋 複製近 30 天</button>
-        </div>
-        <div id="export-msg" class="export-msg">✔ 已複製成功！現在可以貼給 AI 請它幫你分析了。</div>
+        <div id="export-msg" class="export-msg">✔ 已複製成功！現在可以貼給 AI（如 ChatGPT 或 Claude）請它幫你分析並製作進步圖表了。</div>
       </div>
-    </div>
-</div>
 
-<!-- 檢視紀錄的彈出視窗 -->
-<div id="review-record-modal" class="biz-modal-overlay">
-    <div class="biz-modal" style="max-width: 500px;">
-        <h3 id="rr-title" style="color: var(--r-primary); font-family: 'Noto Serif TC', serif; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">紀錄</h3>
-        <div id="rr-content" style="font-size: 14px; line-height: 1.8; color: #4a4036; white-space: pre-wrap; background: #faf8f5; padding: 15px; border-radius: 8px; max-height: 50vh; overflow-y: auto;"></div>
-        <button class="success-btn" style="background: var(--r-primary); width: 100%; margin-top: 20px; padding: 12px; border-radius: 30px; border: none; color: white; cursor: pointer; font-weight: bold;" onclick="document.getElementById('review-record-modal').classList.remove('show')">關閉</button>
     </div>
 </div>
 
@@ -781,16 +749,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
       <div class="mm-toolbar">
         <button class="mm-btn" onclick="window.mmAddChildToSelected()">＋ 新增子節點</button>
         <button class="mm-btn" onclick="window.mmAutoLayout()">⟳ 自動排版</button>
-        <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
-        <label style="display:flex; align-items:center; gap:4px; color:#f0ebe0; font-size:0.7rem; cursor:pointer;" title="文字顏色">
-          <span style="font-weight:bold;">A</span>
-          <input type="color" onchange="window.mmChangeTextColor(this.value)" value="#333333" style="width:20px;height:20px;padding:0;border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor:pointer; background:transparent;">
-        </label>
-        <label style="display:flex; align-items:center; gap:4px; color:#f0ebe0; font-size:0.7rem; cursor:pointer; margin-left: 4px;" title="節點背景色">
-          <span style="font-weight:bold;">Bg</span>
-          <input type="color" onchange="window.mmChangeBgColor(this.value)" value="#ffffff" style="width:20px;height:20px;padding:0;border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor:pointer; background:transparent;">
-        </label>
-        <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
         <button class="mm-btn danger" onclick="window.mmClearAll()">✕ 清除全部</button>
       </div>
     </div>
@@ -928,7 +886,6 @@ window.switchApp = function(appId) {
     document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
     document.getElementById(appId + '-view').classList.add('active');
     if (appId === 'map' && typeof window.initMap === 'function') window.initMap();
-    if (appId === 'review' && typeof window.reviewRenderTracker === 'function') window.reviewRenderTracker();
 };
 
 window.gotoPage = function(name, btn) {
@@ -1050,7 +1007,6 @@ window.showWPToast = function(msg) {
 /* ══════════════════════════════════════════
    WinPlus+ 邁向目標複盤日誌
 ══════════════════════════════════════════ */
-;(function(){
 window.reviewLoadGoals = function() {
   ['goal-health', 'goal-social', 'goal-family', 'goal-amway', 'goal-wealth'].forEach(id => {
     const el = document.getElementById(id);
@@ -1105,132 +1061,30 @@ window.reviewSaveTodayLog = function() {
   window.reviewRenderTracker();
 };
 
-window.reviewMonthOffset = 0;
-window.reviewEncouragements = [
-    "太棒了！持續累積豐盛！", 
-    "每天一點進步，未來無限可能！", 
-    "你的堅持，宇宙都看見了！", 
-    "做得很棒，繼續保持這個頻率！", 
-    "感恩的心，吸引更多美好的事！"
-];
-
-window.reviewChangeMonth = function(delta) {
-    let newOffset = window.reviewMonthOffset + delta;
-    if (newOffset > 0) newOffset = 0;
-    if (newOffset < -3) {
-        window.showWPToast("最多只能回顧過去三個月的紀錄唷！");
-        newOffset = -3;
-    }
-    window.reviewMonthOffset = newOffset;
-    window.reviewRenderTracker();
-};
-
 window.reviewRenderTracker = function() {
-    const board = document.getElementById('tracker-board');
-    if(!board) return;
-    
-    let targetDate = new Date();
-    targetDate.setMonth(targetDate.getMonth() + window.reviewMonthOffset);
-    const year = targetDate.getFullYear();
-    const month = targetDate.getMonth(); // 0-11
-    
-    document.getElementById('calendar-month-year').textContent = `${year}年 ${month + 1}月`;
-    
-    const firstDay = new Date(year, month, 1).getDay(); // 0 (Sun) to 6 (Sat)
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
-    let history = JSON.parse(localStorage.getItem('richLogs')) || [];
-    
-    let html = `
-        <div class="calendar-day-header">日</div><div class="calendar-day-header">一</div><div class="calendar-day-header">二</div><div class="calendar-day-header">三</div><div class="calendar-day-header">四</div><div class="calendar-day-header">五</div><div class="calendar-day-header">六</div>
-    `;
-    
-    for(let i=0; i<firstDay; i++) {
-        html += `<div class="tracker-day empty" style="background:transparent; cursor:default; border:none;"></div>`;
-    }
-    
-    let monthCompleted = 0;
-    const todayStr = new Date().toISOString().split('T')[0];
+  const board = document.getElementById('tracker-board');
+  if(!board) return;
+  board.innerHTML = '';
+  let history = JSON.parse(localStorage.getItem('richLogs')) || [];
+  const historyDates = history.map(item => item.date);
 
-    for(let d=1; d<=daysInMonth; d++) {
-        let mStr = String(month+1).padStart(2,'0');
-        let dStr = String(d).padStart(2,'0');
-        let dateStr = `${year}-${mStr}-${dStr}`;
-        
-        const log = history.find(item => item.date === dateStr);
-        
-        let classes = "tracker-day";
-        if(log) {
-            classes += " completed";
-            monthCompleted++;
-        }
-        
-        let borderStyle = dateStr === todayStr ? 'border: 2px solid var(--r-primary);' : '';
-        
-        html += `<div class="${classes}" style="${borderStyle}" onclick="window.reviewViewRecord('${dateStr}')">${d}</div>`;
-    }
+  for (let i = 29; i >= 0; i--) {
+    let d = new Date();
+    d.setDate(d.getDate() - i);
+    let dateStr = d.toISOString().split('T')[0];
     
-    board.innerHTML = html;
+    let box = document.createElement('div');
+    box.className = 'tracker-day';
+    box.title = dateStr;
     
-    const progBar = document.getElementById('review-month-progress');
-    const progText = document.getElementById('review-month-text');
-    const progEncourage = document.getElementById('review-month-encourage');
-    if(progBar && progText) {
-        let pct = Math.round((monthCompleted / daysInMonth) * 100);
-        progBar.style.width = pct + '%';
-        progText.textContent = `${monthCompleted} / ${daysInMonth} 天`;
-        
-        if (monthCompleted === 0) {
-            progEncourage.textContent = "這個月還沒開始，馬上寫下第一篇吧！";
-        } else {
-            progEncourage.textContent = window.reviewEncouragements[monthCompleted % window.reviewEncouragements.length];
-        }
-    }
-};
-
-window.reviewViewRecord = function(dateStr) {
-    let history = JSON.parse(localStorage.getItem('richLogs')) || [];
-    const log = history.find(l => l.date === dateStr);
-    if(!log) {
-        window.showWPToast(`${dateStr} 沒有複盤紀錄`);
-        return;
-    }
-    
-    document.getElementById('rr-title').textContent = `📅 ${dateStr} 複盤紀錄`;
-    let contentHtml = `<strong>💡 人生方向行動：</strong>\n${window.nbEscape(log.life) || '無'}\n\n`;
-    contentHtml += `<strong>🎯 安麗目標行動：</strong>\n${window.nbEscape(log.amway) || '無'}\n\n`;
-    contentHtml += `<strong>🙏 感恩事項：</strong>\n`;
-    if (log.gratitude && log.gratitude.length > 0) {
-        log.gratitude.forEach((g, i) => {
-            contentHtml += `${i+1}. ${window.nbEscape(g)}\n`;
-        });
+    if (historyDates.includes(dateStr)) {
+      box.classList.add('completed');
+      box.innerText = '✓';
     } else {
-        contentHtml += `無\n`;
+      box.innerText = d.getDate();
     }
-    
-    document.getElementById('rr-content').innerHTML = contentHtml;
-    document.getElementById('review-record-modal').classList.add('show');
-};
-
-window.reviewExportToday = function() {
-    const today = new Date().toISOString().split('T')[0];
-    let history = JSON.parse(localStorage.getItem('richLogs')) || [];
-    const log = history.find(l => l.date === today);
-    if (!log) {
-        window.showWPToast("今天還沒有紀錄喔！先完成複盤再複製吧。");
-        return;
-    }
-    let promptText = `【日期：${log.date}】\n`;
-    promptText += `- 人生方向行動：${log.life || '無'}\n`;
-    promptText += `- 安麗目標行動：${log.amway || '無'}\n`;
-    promptText += `- 感恩事項：${log.gratitude.join('、') || '無'}\n`;
-
-    navigator.clipboard.writeText(promptText).then(() => {
-        const msg = document.getElementById('export-msg');
-        msg.textContent = "✔ 已複製今天的紀錄！";
-        msg.style.display = 'block';
-        setTimeout(() => msg.style.display = 'none', 5000);
-    });
+    board.appendChild(box);
+  }
 };
 
 window.reviewExportData = function(days) {
@@ -1254,7 +1108,6 @@ window.reviewExportData = function(days) {
 
   navigator.clipboard.writeText(promptText).then(() => {
     const msg = document.getElementById('export-msg');
-    msg.textContent = "✔ 已複製多天紀錄！";
     msg.style.display = 'block';
     setTimeout(() => msg.style.display = 'none', 5000);
   });
@@ -1296,7 +1149,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if(el) el.addEventListener('input', window.reviewSaveGoals);
   });
 });
-})();
 
 /* ══════════════════════════════════════════
    地圖系統邏輯 
@@ -1440,14 +1292,14 @@ window.initMap = async function(forceRefresh = false) {
         <div class="n-grid">`;
       grp.forEach(c => {
         const typeStr = c.type && c.type !== '經營者' ? `[${window.nbEscape(c.type)}] ` : '';
-        html += `<div class="n-ccard" onclick="window.nOpenEdit(${c.id})">
+        html += `<div class="n-ccard" onclick="nOpenEdit(${c.id})">
           <div class="n-avatar">${nInitials(c.name)}</div>
           <div class="n-cname">${window.nbEscape ? window.nbEscape(c.name) : c.name}</div>
           <div class="n-cmeta">${typeStr}${c.date||''}${c.dd?'<br>推薦人: '+window.nbEscape(c.dd):''}</div>
           <div class="n-pdots">${nProgressDots(c.services||[])}</div>
         </div>`;
       });
-      html += `<button class="n-add-card" onclick="window.nOpenNew(${s})"><span style="font-size:20px;line-height:1">+</span><span>新增客戶</span></button>
+      html += `<button class="n-add-card" onclick="nOpenNew(${s})"><span style="font-size:20px;line-height:1">+</span><span>新增客戶</span></button>
         </div></div>`;
     }
     const blocks = document.getElementById('n-stage-blocks');
@@ -1680,11 +1532,7 @@ window.mmRender = function() {
         el.className = 'mm-node' + (node.id === 'root' ? ' root' : '') + (node.id === window.mmSelectedId ? ' selected' : '');
         el.style.left = node.x + 'px'; el.style.top = node.y + 'px';
         
-        let customStyle = '';
-        if (node.color) customStyle += `color: ${node.color} !important;`;
-        if (node.bgColor) customStyle += `background-color: ${node.bgColor} !important;`;
-
-        el.innerHTML = `<div class="mm-node-inner" style="${customStyle}"><span class="mm-node-text" contenteditable="true">${window.nbEscape ? window.nbEscape(node.text) : node.text}</span></div>${node.id !== 'root' ? '<button class="mm-node-del">✕</button>' : ''}`;
+        el.innerHTML = `<div class="mm-node-inner"><span class="mm-node-text" contenteditable="true">${window.nbEscape ? window.nbEscape(node.text) : node.text}</span></div>${node.id !== 'root' ? '<button class="mm-node-del">✕</button>' : ''}`;
 
         el.addEventListener('mousedown', (e) => {
             if (e.target.tagName === 'BUTTON') return;
@@ -1756,18 +1604,6 @@ window.mmDeleteNode = function(id) {
     if(window.mmSelectedId === id || idsToDelete.has(window.mmSelectedId)) window.mmSelectedId = 'root';
     window.mmSaveState(); window.mmRender();
 };
-
-window.mmChangeTextColor = function(val) {
-    if(!window.mmSelectedId) return window.showWPToast('請先點選一個節點');
-    const node = window.mmNodes.find(n => n.id === window.mmSelectedId);
-    if(node) { node.color = val; window.mmSaveState(); window.mmRender(); }
-};
-
-window.mmChangeBgColor = function(val) {
-    if(!window.mmSelectedId) return window.showWPToast('請先點選一個節點');
-    const node = window.mmNodes.find(n => n.id === window.mmSelectedId);
-    if(node) { node.bgColor = val; window.mmSaveState(); window.mmRender(); }
-};
 })();
 
 /* ══════════════════════════════════════════
@@ -1810,7 +1646,7 @@ window.collectAllData = function() {
   
   const hundredState = JSON.parse(localStorage.getItem('hundred_state') || '{}');
 
-  return { version:16, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
+  return { version:14, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
 };
 
 window.restoreAllData = function(data) {
