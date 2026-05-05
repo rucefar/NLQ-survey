@@ -904,12 +904,18 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     };
 
     window.switchApp = function(appId) {
-        document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
-        const targetView = document.getElementById(appId + '-view');
-        if (targetView) targetView.classList.add('active');
-        if (appId === 'map' && typeof window.initMap === 'function') window.initMap();
-        if (appId === 'review' && typeof window.reviewRenderTracker === 'function') window.reviewRenderTracker();
-    };
+    document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
+    document.getElementById(appId + '-view').classList.add('active');
+    
+    // 切換頁面時，自動尋找並關閉複盤紀錄的彈出視窗
+    const reviewModal = document.getElementById('review-record-modal');
+    if (reviewModal) {
+        reviewModal.classList.remove('show');
+    }
+    
+    if (appId === 'map' && typeof window.initMap === 'function') window.initMap();
+    if (appId === 'review' && typeof window.reviewRenderTracker === 'function') window.reviewRenderTracker();
+};
 
     window.gotoPage = function(name, btn) {
       document.querySelectorAll('#winplus-view .page').forEach(p => p.classList.remove('active'));
