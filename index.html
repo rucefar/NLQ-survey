@@ -109,6 +109,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
   background: var(--n-bg); font-family: 'Noto Sans TC', sans-serif;
   color: var(--n-text); min-height: 100vh; overflow-y: auto; padding-bottom: 60px;
 }
+#ninety-view.active { display: block; }
 .n-topbar {
   background: #1e1e1e; height: 50px; display: flex; align-items: center;
   padding: 0 16px; gap: 12px; position: sticky; top: 0; z-index: 50;
@@ -217,8 +218,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .n-btn-ghost { background: none; border: 1px solid var(--n-border); color: var(--n-text2); }
 .n-btn-danger { background: none; border: 1px solid rgba(176,48,48,0.25); color: var(--n-red); }
 .n-btn-primary { background: #1a1a1a; border: none; color: white; }
-.n-toast { position: fixed; bottom: 24px; right: 24px; padding: 11px 20px; border-radius: var(--n-radius-sm); font-size: 13px; font-weight: 600; color: white; box-shadow: 0 4px 16px rgba(0,0,0,0.10); opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 0.25s, transform 0.25s; z-index: 9999; }
-.n-toast.show { opacity: 1; transform: translateY(0); }
+.biz-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9500; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.biz-modal-overlay.show { display: flex; }
+.biz-modal { background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; box-shadow: 0 12px 48px rgba(0,0,0,0.22); font-family: 'Noto Sans TC', sans-serif; }
 
 /* ── REVIEW VIEW CSS (邁向目標複盤日誌) ── */
 #review-view {
@@ -252,7 +254,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #review-view button.outline-btn { background: transparent; border: 2px solid var(--r-primary); color: var(--r-primary); }
 #review-view button.outline-btn:hover { background: var(--r-primary); color: #fff; }
 #review-view #r-timer { font-size: 2.5em; font-weight: 800; color: var(--r-primary); text-align: center; margin-top: 10px; font-family: monospace;}
-#review-view .export-msg { color: var(--r-success); font-size: 14px; margin-top: 10px; display: none; font-weight: bold;}
+.export-msg { color: #8dae8c; font-size: 14px; margin-top: 10px; display: none; font-weight: bold;}
 
 /* ── HUNDRED VIEW CSS (百戰成功圖) ── */
 #hundred-view {
@@ -718,11 +720,11 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 </div>
 
 <!-- 檢視紀錄的彈出視窗 -->
-<div id="review-record-modal" class="biz-modal-overlay" style="align-items: flex-end; padding-bottom: 40px;">
+<div id="review-record-modal" class="biz-modal-overlay" style="align-items: flex-end; padding-bottom: 40px;" onclick="if(event.target===this) window.closeReviewModal()">
     <div class="biz-modal" style="max-width: 500px;">
         <h3 id="rr-title" style="color: var(--r-primary); font-family: 'Noto Serif TC', serif; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">紀錄</h3>
         <div id="rr-content" style="font-size: 14px; line-height: 1.8; color: #4a4036; white-space: pre-wrap; background: #faf8f5; padding: 15px; border-radius: 8px; max-height: 50vh; overflow-y: auto;"></div>
-        <button class="success-btn" style="background: var(--r-primary); width: 100%; margin-top: 20px; padding: 12px; border-radius: 30px; border: none; color: white; cursor: pointer; font-weight: bold;" onclick="document.getElementById('review-record-modal').classList.remove('show')">關閉</button>
+        <button class="success-btn" style="background: var(--r-primary); width: 100%; margin-top: 20px; padding: 12px; border-radius: 30px; border: none; color: white; cursor: pointer; font-weight: bold;" onclick="window.closeReviewModal()">關閉</button>
     </div>
 </div>
 
@@ -903,26 +905,38 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     };
 
+    window.closeReviewModal = function() {
+        const modal = document.getElementById('review-record-modal');
+        if (modal) modal.classList.remove('show');
+    };
+
     window.switchApp = function(appId) {
-    document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
-    document.getElementById(appId + '-view').classList.add('active');
-    
-    // 切換頁面時，自動尋找並關閉複盤紀錄的彈出視窗
-    const reviewModal = document.getElementById('review-record-modal');
-    if (reviewModal) {
-        reviewModal.classList.remove('show');
-    }
-    
-    if (appId === 'map' && typeof window.initMap === 'function') window.initMap();
-    if (appId === 'review' && typeof window.reviewRenderTracker === 'function') window.reviewRenderTracker();
-};
+        // 隱藏所有頁面
+        document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
+        
+        // 顯示目標頁面
+        const targetView = document.getElementById(appId + '-view');
+        if (targetView) targetView.classList.add('active');
+        
+        // 切換主選單時，自動關閉所有浮動視窗 (包含複盤紀錄視窗)
+        document.querySelectorAll('.biz-modal-overlay').forEach(m => m.classList.remove('show'));
+
+        // 特殊頁面載入邏輯
+        if (appId === 'map' && typeof window.initMap === 'function') window.initMap();
+        if (appId === 'review' && typeof window.reviewRenderTracker === 'function') window.reviewRenderTracker();
+    };
 
     window.gotoPage = function(name, btn) {
       document.querySelectorAll('#winplus-view .page').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('#winplus-view .tab-btn:not(.home-btn)').forEach(b => b.classList.remove('active'));
+      
       const page = document.getElementById('page-' + name);
       if (page) page.classList.add('active');
       if (btn) btn.classList.add('active');
+      
+      // 頁籤切換時，自動關閉所有浮動視窗
+      document.querySelectorAll('.biz-modal-overlay').forEach(m => m.classList.remove('show'));
+
       if (name === 'mindmap' && typeof window.mmLoadState === 'function') window.mmLoadState(); 
     };
 
@@ -1797,7 +1811,7 @@ window.collectAllData = function() {
   
   const hundredState = JSON.parse(localStorage.getItem('hundred_state') || '{}');
 
-  return { version:19, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
+  return { version:20, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
 };
 
 window.restoreAllData = function(data) {
