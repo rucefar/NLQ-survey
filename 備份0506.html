@@ -82,8 +82,8 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #home-view .hundred .tag { background: rgba(200, 169, 110, 0.1); color: var(--accent-hundred); }
 #home-view .footer { margin-top: 4rem; text-align: center; font-size: 0.85rem; color: #999; letter-spacing: 0.05em; }
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
+/* 90天卡片 */
 #home-view .card.ninety { border-top: 6px solid #1a5fb4; }
 #home-view .card.ninety .icon { color: #1a5fb4; }
 #home-view .ninety .tag { background: rgba(26,95,180,0.10); color: #1a5fb4; }
@@ -216,10 +216,11 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .n-form-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--n-border); }
 .n-btn { padding: 9px 20px; font-size: 13px; font-weight: 600; border-radius: var(--n-radius-sm); cursor: pointer; font-family: inherit; transition: all 0.15s; }
 .n-btn-ghost { background: none; border: 1px solid var(--n-border); color: var(--n-text2); }
-.n-btn-ghost:hover { background: var(--n-bg2); }
 .n-btn-danger { background: none; border: 1px solid rgba(176,48,48,0.25); color: var(--n-red); }
-.n-btn-danger:hover { background: var(--n-red-l); }
 .n-btn-primary { background: #1a1a1a; border: none; color: white; }
+.biz-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9500; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.biz-modal-overlay.show { display: flex; }
+.biz-modal { background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; box-shadow: 0 12px 48px rgba(0,0,0,0.22); font-family: 'Noto Sans TC', sans-serif; }
 
 /* ── REVIEW VIEW CSS (邁向目標複盤日誌) ── */
 #review-view {
@@ -254,11 +255,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #review-view button.outline-btn:hover { background: var(--r-primary); color: #fff; }
 #review-view #r-timer { font-size: 2.5em; font-weight: 800; color: var(--r-primary); text-align: center; margin-top: 10px; font-family: monospace;}
 .export-msg { color: #8dae8c; font-size: 14px; margin-top: 10px; display: none; font-weight: bold;}
-
-/* 彈出視窗基礎樣式 */
-.biz-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-.biz-modal-overlay.show { display: flex !important; }
-.biz-modal { background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; box-shadow: 0 12px 48px rgba(0,0,0,0.22); animation: slideUp 0.3s ease-out; }
 
 /* ── HUNDRED VIEW CSS (百戰成功圖) ── */
 #hundred-view {
@@ -371,7 +367,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .mm-node-del { position: absolute; left: -10px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; background: #e05a5a; color: #fff; border: none; border-radius: 50%; font-size: 11px; line-height: 18px; cursor: pointer; display: none; z-index: 15; }
 .mm-node:hover .mm-node-add, .mm-node.selected .mm-node-add { display: block; }
 .mm-node:hover .mm-node-del, .mm-node.selected .mm-node-del { display: block; }
-.mm-node:hover .mm-node-link-btn, .mm-node.selected .mm-node-link-btn { display: flex !important; }
 .mm-node.root .mm-node-del { display: none !important; }
 
 /* Notebook */
@@ -662,10 +657,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 
       <!-- 每日行動複盤 -->
       <div class="section">
-        <h2>
-          <span>🔍 每日行動複盤</span>
-          <input type="date" id="log-date" onchange="window.reviewLoadLogByDate()" style="font-family: inherit; font-size: 14px; margin-left: auto; width: 140px; border: 1px solid #ddd; padding: 4px 8px; border-radius: 6px; font-weight: normal; color: var(--r-text); background: #faf8f5;">
-        </h2>
+        <h2>🔍 每日行動複盤</h2>
         <label>1. 人生方向（健康/人際/家庭/財富）：</label>
         <textarea id="log-life" rows="3" placeholder="今天採取了哪些行動？明天要怎麼調整進步？"></textarea>
 
@@ -691,7 +683,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         </div>
       </div>
 
-      <button class="success-btn" onclick="window.reviewSaveLog()">✅ 完成複盤紀錄，累積豐盛</button>
+      <button class="success-btn" onclick="window.reviewSaveTodayLog()">✅ 完成今日複盤，累積豐盛</button>
 
       <!-- 視覺化反饋與 AI 輸出區 -->
       <div class="section" style="margin-top: 30px;">
@@ -701,9 +693,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
           <div class="progress-track" style="height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
             <div class="progress-fill" id="review-month-progress" style="height: 100%; background: var(--r-success); width: 0%; transition: 0.5s;"></div>
           </div>
-          <div class="progress-label" style="position: relative; font-size: 12px; margin-top: 6px; color: #666; text-align: center; display: flex; justify-content: center; align-items: center; min-height: 18px;">
+          <div class="progress-label" style="position: relative; font-size: 12px; margin-top: 6px; color: #666; text-align: center; min-height: 18px;">
             <span id="review-month-text" style="position: absolute; left: 0;">0 / 31 天</span>
-            <span id="review-month-encourage" style="color: var(--r-primary); font-weight: bold;">加油！每一天都是新的開始。</span>
+            <span id="review-month-encourage" style="color: var(--r-primary); font-weight: bold; display: inline-block;">加油！每一天都是新的開始。</span>
           </div>
         </div>
 
@@ -713,24 +705,26 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
             <button class="outline-btn" style="padding: 4px 12px;" onclick="window.reviewChangeMonth(1)">›</button>
         </div>
         
-        <div class="calendar-grid" id="tracker-board" style="margin-top: 15px;"></div>
+        <div class="calendar-grid" id="tracker-board" style="margin-top: 15px;">
+            <!-- 月曆內容由 JS 產生 -->
+        </div>
         
         <div class="btn-group" style="margin-top: 25px; border-top: 1px dashed #ddd; padding-top: 20px;">
-          <button class="outline-btn" onclick="window.reviewExportToday()">📋 複製當前紀錄</button>
+          <button class="outline-btn" onclick="window.reviewExportToday()">📋 複製今天紀錄</button>
           <button class="outline-btn" onclick="window.reviewExportData(7)">📋 複製近 7 天</button>
           <button class="outline-btn" onclick="window.reviewExportData(30)">📋 複製近 30 天</button>
         </div>
         <div id="export-msg" class="export-msg">✔ 已複製成功！現在可以貼給 AI 請它幫你分析了。</div>
       </div>
     </div>
-    
-    <!-- 檢視紀錄的彈出視窗 -->
-    <div id="review-record-modal" class="biz-modal-overlay" style="align-items: flex-end; padding-bottom: 40px;" onclick="if(event.target===this) window.closeReviewModal()">
-        <div class="biz-modal" style="max-width: 500px;">
-            <h3 id="rr-title" style="color: var(--r-primary); font-family: 'Noto Serif TC', serif; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; margin-top:0;">紀錄</h3>
-            <div id="rr-content" style="font-size: 14px; line-height: 1.8; color: #4a4036; white-space: pre-wrap; background: #faf8f5; padding: 15px; border-radius: 8px; overflow-y: auto; flex: 1;"></div>
-            <button class="success-btn" style="background: var(--r-primary); width: 100%; margin-top: 20px; padding: 12px; border-radius: 30px; border: none; color: white; cursor: pointer; font-weight: bold; font-size: 16px;" onclick="window.closeReviewModal()">關閉</button>
-        </div>
+</div>
+
+<!-- 檢視紀錄的彈出視窗 -->
+<div id="review-record-modal" class="biz-modal-overlay" style="align-items: flex-end; padding-bottom: 40px;" onclick="if(event.target===this) window.closeReviewModal()">
+    <div class="biz-modal" style="max-width: 500px;">
+        <h3 id="rr-title" style="color: var(--r-primary); font-family: 'Noto Serif TC', serif; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">紀錄</h3>
+        <div id="rr-content" style="font-size: 14px; line-height: 1.8; color: #4a4036; white-space: pre-wrap; background: #faf8f5; padding: 15px; border-radius: 8px; max-height: 50vh; overflow-y: auto;"></div>
+        <button class="success-btn" style="background: var(--r-primary); width: 100%; margin-top: 20px; padding: 12px; border-radius: 30px; border: none; color: white; cursor: pointer; font-weight: bold;" onclick="window.closeReviewModal()">關閉</button>
     </div>
 </div>
 
@@ -778,20 +772,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         </label>
         <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
         <button class="mm-btn danger" onclick="window.mmClearAll()">✕ 清除全部</button>
-      </div>
-    </div>
-    
-    <!-- 組織網路圖的配對客戶彈窗 -->
-    <div id="mm-link-modal" class="biz-modal-overlay" onclick="if(event.target===this) this.classList.remove('show')">
-      <div class="biz-modal">
-        <h3 style="color:#333; margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">配對客戶資料</h3>
-        <p style="font-size:13px; color:#666; margin-bottom:15px;">選擇要與此節點配對的 CRM 90天跟進客戶：</p>
-        <select id="mm-link-select" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; outline:none; font-family:inherit;"></select>
-        <div id="mm-link-modal-actions" style="display:flex; gap:10px; margin-top:20px;">
-          <button class="n-btn n-btn-danger" onclick="window.mmUnlink()" style="flex:1;" id="mm-unlink-btn">解除配對</button>
-          <button class="n-btn n-btn-ghost" onclick="document.getElementById('mm-link-modal').classList.remove('show')" style="flex:1;">取消</button>
-          <button class="n-btn n-btn-primary" onclick="window.mmSaveLink()" style="flex:1;">確認配對</button>
-        </div>
       </div>
     </div>
 
@@ -938,8 +918,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         const targetView = document.getElementById(appId + '-view');
         if (targetView) targetView.classList.add('active');
         
-        // 切換主頁面時，自動關閉所有浮動視窗 (包含複盤紀錄視窗與組織圖連結)
-        window.closeReviewModal();
+        // 切換主選單時，自動關閉所有浮動視窗 (包含複盤紀錄視窗)
         document.querySelectorAll('.biz-modal-overlay').forEach(m => m.classList.remove('show'));
 
         // 特殊頁面載入邏輯
@@ -1089,34 +1068,10 @@ window.reviewSaveGoals = function() {
   if(window.triggerCloudSave) window.triggerCloudSave();
 };
 
-window.reviewLoadLogByDate = function() {
-  const selectedDate = document.getElementById('log-date').value;
-  if(!selectedDate) return;
-  let history = JSON.parse(localStorage.getItem('richLogs')) || [];
-  const log = history.find(item => item.date === selectedDate);
-  
-  if(log) {
-      document.getElementById('log-life').value = log.life || '';
-      document.getElementById('log-amway').value = log.amway || '';
-      for(let i=1; i<=5; i++) {
-          document.getElementById(`gratitude-${i}`).value = (log.gratitude && log.gratitude[i-1]) ? log.gratitude[i-1] : '';
-      }
-  } else {
-      document.getElementById('log-life').value = '';
-      document.getElementById('log-amway').value = '';
-      for(let i=1; i<=5; i++) document.getElementById(`gratitude-${i}`).value = '';
-  }
-};
-
-window.reviewSaveLog = function() {
-  const selectedDate = document.getElementById('log-date').value;
-  if(!selectedDate) {
-      window.showWPToast("請先選擇要填寫的日期！");
-      return;
-  }
-  
+window.reviewSaveTodayLog = function() {
+  const today = new Date().toISOString().split('T')[0]; 
   const logData = {
-    date: selectedDate,
+    date: today,
     life: document.getElementById('log-life').value,
     amway: document.getElementById('log-amway').value,
     gratitude: [
@@ -1134,7 +1089,7 @@ window.reviewSaveLog = function() {
   }
 
   let history = JSON.parse(localStorage.getItem('richLogs')) || [];
-  const existingIndex = history.findIndex(item => item.date === selectedDate);
+  const existingIndex = history.findIndex(item => item.date === today);
   if (existingIndex > -1) {
     history[existingIndex] = logData;
   } else {
@@ -1144,7 +1099,11 @@ window.reviewSaveLog = function() {
   localStorage.setItem('richLogs', JSON.stringify(history));
   if(window.triggerCloudSave) window.triggerCloudSave();
   
-  window.showWPToast(`✨ 恭喜！${selectedDate} 複盤已成功儲存！`);
+  document.getElementById('log-life').value = '';
+  document.getElementById('log-amway').value = '';
+  for(let i=1; i<=5; i++) document.getElementById(`gratitude-${i}`).value = '';
+  
+  window.showWPToast("✨ 恭喜！今日複盤已成功儲存！");
   window.reviewRenderTracker();
 };
 
@@ -1256,11 +1215,11 @@ window.reviewViewRecord = function(dateStr) {
 };
 
 window.reviewExportToday = function() {
-    const selectedDate = document.getElementById('log-date').value;
+    const today = new Date().toISOString().split('T')[0];
     let history = JSON.parse(localStorage.getItem('richLogs')) || [];
-    const log = history.find(l => l.date === selectedDate);
+    const log = history.find(l => l.date === today);
     if (!log) {
-        window.showWPToast("該日期還沒有紀錄喔！先完成複盤再複製吧。");
+        window.showWPToast("今天還沒有紀錄喔！先完成複盤再複製吧。");
         return;
     }
     let promptText = `【日期：${log.date}】\n`;
@@ -1270,7 +1229,7 @@ window.reviewExportToday = function() {
 
     navigator.clipboard.writeText(promptText).then(() => {
         const msg = document.getElementById('export-msg');
-        msg.textContent = "✔ 已複製當前選擇日期的紀錄！";
+        msg.textContent = "✔ 已複製今天的紀錄！";
         msg.style.display = 'block';
         setTimeout(() => msg.style.display = 'none', 5000);
     });
@@ -1332,11 +1291,6 @@ window.reviewStartTimer = function() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  const logDateEl = document.getElementById('log-date');
-  if(logDateEl) {
-      logDateEl.value = new Date().toISOString().split('T')[0];
-      window.reviewLoadLogByDate();
-  }
   window.reviewLoadGoals();
   window.reviewRenderTracker();
   ['goal-health', 'goal-social', 'goal-family', 'goal-amway', 'goal-wealth'].forEach(id => {
@@ -1739,18 +1693,11 @@ window.mmRender = function() {
         let customStyle = '';
         if (node.color) customStyle += `color: ${node.color} !important;`;
         if (node.bgColor) customStyle += `background-color: ${node.bgColor} !important;`;
-        
-        let linkIcon = node.linkedCrmId ? '🔗' : '➕';
-        let linkColor = node.linkedCrmId ? '#4CAF50' : '#888';
 
-        el.innerHTML = `
-            <div class="mm-node-inner" style="${customStyle}"><span class="mm-node-text" contenteditable="true">${window.nbEscape ? window.nbEscape(node.text) : node.text}</span></div>
-            <div class="mm-node-link-btn" title="連結客戶檔案" style="position:absolute; top:-10px; left:50%; transform:translateX(-50%); cursor:pointer; background:#fff; border-radius:50%; border:1px solid #ddd; width:20px; height:20px; font-size:10px; align-items:center; justify-content:center; color:${linkColor}; display:none; z-index:15;">${linkIcon}</div>
-            ${node.id !== 'root' ? '<button class="mm-node-del">✕</button>' : ''}
-        `;
+        el.innerHTML = `<div class="mm-node-inner" style="${customStyle}"><span class="mm-node-text" contenteditable="true">${window.nbEscape ? window.nbEscape(node.text) : node.text}</span></div>${node.id !== 'root' ? '<button class="mm-node-del">✕</button>' : ''}`;
 
         el.addEventListener('mousedown', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('.mm-node-link-btn')) return;
+            if (e.target.tagName === 'BUTTON') return;
             if (window.mmSelectedId !== node.id) {
                 window.mmSelectedId = node.id;
                 document.querySelectorAll('.mm-node').forEach(n => n.classList.remove('selected'));
@@ -1763,18 +1710,10 @@ window.mmRender = function() {
 
         const delBtn = el.querySelector('.mm-node-del');
         if (delBtn) { delBtn.addEventListener('click', (e) => { e.stopPropagation(); window.mmDeleteNode(node.id); }); }
-        
-        const linkBtn = el.querySelector('.mm-node-link-btn');
-        if(linkBtn) {
-            linkBtn.addEventListener('mousedown', (e) => {
-                e.stopPropagation();
-                window.mmHandleLinkClick(node.id);
-            });
-        }
 
         let isDragging = false;
         el.addEventListener('mousedown', (e) => {
-            if (e.target.classList.contains('mm-node-text') || e.target.tagName === 'BUTTON' || e.target.closest('.mm-node-link-btn')) return;
+            if (e.target.classList.contains('mm-node-text') || e.target.tagName === 'BUTTON') return;
             isDragging = true;
             const startX = e.clientX - node.x; const startY = e.clientY - node.y;
             function onMouseMove(ev) { if(!isDragging) return; node.x = ev.clientX - startX; node.y = ev.clientY - startY; el.style.left = node.x + 'px'; el.style.top = node.y + 'px'; window.mmDrawLines(); }
@@ -1819,15 +1758,6 @@ window.mmClearAll = function() {
     if (window.triggerCloudSave) window.triggerCloudSave();
 };
 
-window.mmDeleteNode = function(id) {
-    if(id === 'root') return;
-    const idsToDelete = new Set([id]); let added = true;
-    while(added) { added = false; window.mmNodes.forEach(n => { if(n.parentId && idsToDelete.has(n.parentId) && !idsToDelete.has(n.id)) { idsToDelete.add(n.id); added = true; } }); }
-    window.mmNodes = window.mmNodes.filter(n => !idsToDelete.has(n.id));
-    if(window.mmSelectedId === id || idsToDelete.has(window.mmSelectedId)) window.mmSelectedId = 'root';
-    window.mmSaveState(); window.mmRender();
-};
-
 window.mmChangeTextColor = function(val) {
     if(!window.mmSelectedId) return window.showWPToast('請先點選一個節點');
     const node = window.mmNodes.find(n => n.id === window.mmSelectedId);
@@ -1838,72 +1768,6 @@ window.mmChangeBgColor = function(val) {
     if(!window.mmSelectedId) return window.showWPToast('請先點選一個節點');
     const node = window.mmNodes.find(n => n.id === window.mmSelectedId);
     if(node) { node.bgColor = val; window.mmSaveState(); window.mmRender(); }
-};
-
-window.mmNodeToLink = null;
-window.mmHandleLinkClick = function(nodeId) {
-    const node = window.mmNodes.find(n => n.id === nodeId);
-    if(!node) return;
-    
-    if(node.linkedCrmId) {
-        const customers = window.nGetCustomers ? window.nGetCustomers() : JSON.parse(localStorage.getItem('crm90_v3') || '[]');
-        const c = customers.find(x => x.id === node.linkedCrmId);
-        if(c) {
-            window.switchApp('ninety');
-            if(typeof window.nOpenEdit === 'function') window.nOpenEdit(c.id);
-        } else {
-            window.showWPToast('該客戶檔案已被刪除，請重新配對');
-            node.linkedCrmId = null;
-            window.mmSaveState();
-            window.mmRender();
-            window.mmOpenLinkModal(nodeId);
-        }
-    } else {
-        window.mmOpenLinkModal(nodeId);
-    }
-};
-
-window.mmOpenLinkModal = function(nodeId) {
-    window.mmNodeToLink = nodeId;
-    const customers = window.nGetCustomers ? window.nGetCustomers() : JSON.parse(localStorage.getItem('crm90_v3') || '[]');
-    const sel = document.getElementById('mm-link-select');
-    sel.innerHTML = '<option value="">-- 請選擇客戶 --</option>';
-    customers.forEach(c => {
-        sel.innerHTML += `<option value="${c.id}">${window.nbEscape(c.name)}</option>`;
-    });
-    
-    const node = window.mmNodes.find(n => n.id === nodeId);
-    const unlinkBtn = document.getElementById('mm-unlink-btn');
-    if(unlinkBtn) unlinkBtn.style.display = node && node.linkedCrmId ? 'block' : 'none';
-    
-    document.getElementById('mm-link-modal').classList.add('show');
-};
-
-window.mmSaveLink = function() {
-    const selId = document.getElementById('mm-link-select').value;
-    if(!selId) {
-        window.showWPToast('請選擇客戶');
-        return;
-    }
-    const node = window.mmNodes.find(n => n.id === window.mmNodeToLink);
-    if(node) {
-        node.linkedCrmId = Number(selId);
-        window.mmSaveState();
-        window.mmRender();
-        window.showWPToast('配對成功！');
-        document.getElementById('mm-link-modal').classList.remove('show');
-    }
-};
-
-window.mmUnlink = function() {
-     const node = window.mmNodes.find(n => n.id === window.mmNodeToLink);
-     if(node) {
-         node.linkedCrmId = null;
-         window.mmSaveState();
-         window.mmRender();
-         window.showWPToast('解除配對！');
-         document.getElementById('mm-link-modal').classList.remove('show');
-     }
 };
 })();
 
@@ -1947,7 +1811,7 @@ window.collectAllData = function() {
   
   const hundredState = JSON.parse(localStorage.getItem('hundred_state') || '{}');
 
-  return { version:23, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
+  return { version:20, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
 };
 
 window.restoreAllData = function(data) {
