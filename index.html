@@ -84,6 +84,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
+/* 90天卡片 */
 #home-view .card.ninety { border-top: 6px solid #1a5fb4; }
 #home-view .card.ninety .icon { color: #1a5fb4; }
 #home-view .ninety .tag { background: rgba(26,95,180,0.10); color: #1a5fb4; }
@@ -173,6 +174,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 @media (max-width: 640px) { .n-fgrid { grid-template-columns: 1fr; } }
 
 .n-card { background: var(--n-card); border: 1px solid var(--n-border); border-radius: var(--n-radius); padding: 20px; box-shadow: var(--n-shadow); margin-bottom: 14px; }
+.n-card:last-child { margin-bottom: 0; }
 .n-card-title { font-size: 13px; font-weight: 700; color: var(--n-text); margin-bottom: 14px; padding-left: 11px; border-left: 3px solid var(--n-blue); }
 .n-card-title.green { border-left-color: var(--n-green); }
 .n-card-title.purple { border-left-color: var(--n-purple); }
@@ -221,6 +223,14 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .n-btn-danger:hover { background: var(--n-red-l); }
 .n-btn-primary { background: #1a1a1a; border: none; color: white; }
 
+.n-toast { position: fixed; bottom: 24px; right: 24px; padding: 11px 20px; border-radius: var(--n-radius-sm); font-size: 13px; font-weight: 600; color: white; box-shadow: 0 4px 16px rgba(0,0,0,0.10); opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity 0.25s, transform 0.25s; z-index: 9999; }
+.n-toast.show { opacity: 1; transform: translateY(0); }
+
+/* 彈出視窗基礎樣式 */
+.biz-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+.biz-modal-overlay.show { display: flex !important; }
+.biz-modal { background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; box-shadow: 0 12px 48px rgba(0,0,0,0.22); animation: slideUp 0.3s ease-out; }
+
 /* ── REVIEW VIEW CSS (邁向目標複盤日誌) ── */
 #review-view {
   --r-primary: #b59871; --r-success: #8dae8c; --r-bg: #f5f1eb; --r-text: #4a4036; --r-card-bg: rgba(255, 255, 255, 0.9);
@@ -254,11 +264,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 #review-view button.outline-btn:hover { background: var(--r-primary); color: #fff; }
 #review-view #r-timer { font-size: 2.5em; font-weight: 800; color: var(--r-primary); text-align: center; margin-top: 10px; font-family: monospace;}
 .export-msg { color: #8dae8c; font-size: 14px; margin-top: 10px; display: none; font-weight: bold;}
-
-/* 彈出視窗基礎樣式 */
-.biz-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-.biz-modal-overlay.show { display: flex !important; }
-.biz-modal { background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; box-shadow: 0 12px 48px rgba(0,0,0,0.22); animation: slideUp 0.3s ease-out; }
 
 /* ── HUNDRED VIEW CSS (百戰成功圖) ── */
 #hundred-view {
@@ -372,6 +377,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 .mm-node:hover .mm-node-add, .mm-node.selected .mm-node-add { display: block; }
 .mm-node:hover .mm-node-del, .mm-node.selected .mm-node-del { display: block; }
 .mm-node:hover .mm-node-link-btn, .mm-node.selected .mm-node-link-btn { display: flex !important; }
+.mm-node:hover .mm-node-unlink-btn, .mm-node.selected .mm-node-unlink-btn { display: flex !important; }
 .mm-node.root .mm-node-del { display: none !important; }
 
 /* Notebook */
@@ -648,7 +654,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
       <h1>✨ WinPlus+ 邁向目標複盤日誌</h1>
       <div class="subtitle">累積豐盛頻率 ‧ 聚焦目標 ‧ 啟動顯化</div>
 
-      <!-- 目標設定區塊 -->
       <div class="section">
         <h2>🎯 核心目標設定 <span style="font-size: 12px; font-weight: normal; color: #888;">(自動儲存)</span></h2>
         <div class="goal-grid">
@@ -660,7 +665,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         </div>
       </div>
 
-      <!-- 每日行動複盤 -->
       <div class="section">
         <h2>
           <span>🔍 每日行動複盤</span>
@@ -668,12 +672,10 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         </h2>
         <label>1. 人生方向（健康/人際/家庭/財富）：</label>
         <textarea id="log-life" rows="3" placeholder="今天採取了哪些行動？明天要怎麼調整進步？"></textarea>
-
         <label>2. 安麗目標行動：</label>
         <textarea id="log-amway" rows="3" placeholder="今天有做到哪些和安麗目標有關的？明天要怎麼優化？"></textarea>
       </div>
 
-      <!-- 感恩與能量 -->
       <div class="section">
         <h2>🙏 感恩與能量豐盛</h2>
         <label>今天感恩的五件人事物：</label>
@@ -693,7 +695,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
 
       <button class="success-btn" onclick="window.reviewSaveLog()">✅ 完成複盤紀錄，累積豐盛</button>
 
-      <!-- 視覺化反饋與 AI 輸出區 -->
       <div class="section" style="margin-top: 30px;">
         <h2>📈 統計複盤日記的進度</h2>
         
@@ -724,12 +725,12 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
       </div>
     </div>
     
-    <!-- 檢視紀錄的彈出視窗 -->
-    <div id="review-record-modal" class="biz-modal-overlay" style="align-items: flex-end; padding-bottom: 40px;" onclick="if(event.target===this) window.closeReviewModal()">
-        <div class="biz-modal" style="max-width: 500px;">
-            <h3 id="rr-title" style="color: var(--r-primary); font-family: 'Noto Serif TC', serif; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; margin-top:0;">紀錄</h3>
+    <!-- 檢視紀錄的彈出視窗 (專屬放置在 review-view 內部) -->
+    <div id="review-record-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; display: none; justify-content: center; align-items: flex-end; padding-bottom: 30px; backdrop-filter: blur(3px);" onclick="if(event.target===this) window.closeReviewModal()">
+        <div style="background: #fff; border-radius: 16px; padding: 24px; width: 90%; max-width: 500px; box-shadow: 0 12px 48px rgba(0,0,0,0.22); animation: slideUp 0.3s ease-out; display: flex; flex-direction: column; max-height: 65vh;">
+            <h3 id="rr-title" style="color: #b59871; font-family: 'Noto Serif TC', serif; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; margin-top:0;">紀錄</h3>
             <div id="rr-content" style="font-size: 14px; line-height: 1.8; color: #4a4036; white-space: pre-wrap; background: #faf8f5; padding: 15px; border-radius: 8px; overflow-y: auto; flex: 1;"></div>
-            <button class="success-btn" style="background: var(--r-primary); width: 100%; margin-top: 20px; padding: 12px; border-radius: 30px; border: none; color: white; cursor: pointer; font-weight: bold; font-size: 16px;" onclick="window.closeReviewModal()">關閉</button>
+            <button style="background: #b59871; width: 100%; margin-top: 20px; padding: 12px; border-radius: 30px; border: none; color: white; cursor: pointer; font-weight: bold; font-size: 16px;" onclick="window.closeReviewModal()">關閉</button>
         </div>
     </div>
 </div>
@@ -777,6 +778,9 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
           <input type="color" oninput="window.mmChangeBgColor(this.value)" value="#ffffff" style="width:20px;height:20px;padding:0;border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor:pointer; background:transparent;">
         </label>
         <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
+        <!-- 專屬換層與解除連結按鈕 -->
+        <button class="mm-btn" onclick="window.mmOpenReparentModal()" style="color: #e8a045;">↳ 更換上層</button>
+        <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 2px;"></div>
         <button class="mm-btn danger" onclick="window.mmClearAll()">✕ 清除全部</button>
       </div>
     </div>
@@ -785,12 +789,24 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
     <div id="mm-link-modal" class="biz-modal-overlay" onclick="if(event.target===this) this.classList.remove('show')">
       <div class="biz-modal">
         <h3 style="color:#333; margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">配對客戶資料</h3>
-        <p style="font-size:13px; color:#666; margin-bottom:15px;">選擇要與此節點配對的 CRM 90天跟進客戶：</p>
+        <p style="font-size:13px; color:#666; margin-bottom:15px;">選擇要與此節點配對的 90天跟進客戶：</p>
         <select id="mm-link-select" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; outline:none; font-family:inherit;"></select>
         <div id="mm-link-modal-actions" style="display:flex; gap:10px; margin-top:20px;">
-          <button class="n-btn n-btn-danger" onclick="window.mmUnlink()" style="flex:1;" id="mm-unlink-btn">解除配對</button>
           <button class="n-btn n-btn-ghost" onclick="document.getElementById('mm-link-modal').classList.remove('show')" style="flex:1;">取消</button>
           <button class="n-btn n-btn-primary" onclick="window.mmSaveLink()" style="flex:1;">確認配對</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 組織網路圖的更換上層彈窗 -->
+    <div id="mm-reparent-modal" class="biz-modal-overlay" onclick="if(event.target===this) this.classList.remove('show')">
+      <div class="biz-modal">
+        <h3 style="color:#333; margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">更換上層項目</h3>
+        <p style="font-size:13px; color:#666; margin-bottom:15px;">請選擇此節點要移動到哪一個項目下方：</p>
+        <select id="mm-reparent-select" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; outline:none; font-family:inherit;"></select>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button class="n-btn n-btn-ghost" onclick="document.getElementById('mm-reparent-modal').classList.remove('show')" style="flex:1;">取消</button>
+          <button class="n-btn n-btn-primary" onclick="window.mmSaveReparent()" style="flex:1;">確認更換</button>
         </div>
       </div>
     </div>
@@ -914,7 +930,6 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
   <div class="toast" id="h-toast"></div>
 </div>
 
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
@@ -938,7 +953,7 @@ body { margin: 0; padding: 0; overflow-x: hidden; background: #f4f1ea; font-fami
         const targetView = document.getElementById(appId + '-view');
         if (targetView) targetView.classList.add('active');
         
-        // 切換主頁面時，自動關閉所有浮動視窗 (包含複盤紀錄視窗與組織圖連結)
+        // 切換主頁面時，自動關閉所有浮動視窗
         window.closeReviewModal();
         document.querySelectorAll('.biz-modal-overlay').forEach(m => m.classList.remove('show'));
 
@@ -1742,15 +1757,19 @@ window.mmRender = function() {
         
         let linkIcon = node.linkedCrmId ? '🔗' : '➕';
         let linkColor = node.linkedCrmId ? '#4CAF50' : '#888';
+        
+        // 如果有綁定，顯示快速解除綁定的 X 標記
+        let unlinkBtnHtml = node.linkedCrmId ? `<div class="mm-node-unlink-btn" title="解除配對" style="position:absolute; top:-10px; left:calc(50% + 15px); cursor:pointer; background:#ffe0e0; color:#c03030; border-radius:50%; border:1px solid #ffcccc; width:20px; height:20px; font-size:10px; display:none; align-items:center; justify-content:center; z-index:16;">✕</div>` : '';
 
         el.innerHTML = `
             <div class="mm-node-inner" style="${customStyle}"><span class="mm-node-text" contenteditable="true">${window.nbEscape ? window.nbEscape(node.text) : node.text}</span></div>
             <div class="mm-node-link-btn" title="連結客戶檔案" style="position:absolute; top:-10px; left:50%; transform:translateX(-50%); cursor:pointer; background:#fff; border-radius:50%; border:1px solid #ddd; width:20px; height:20px; font-size:10px; align-items:center; justify-content:center; color:${linkColor}; display:none; z-index:15;">${linkIcon}</div>
+            ${unlinkBtnHtml}
             ${node.id !== 'root' ? '<button class="mm-node-del">✕</button>' : ''}
         `;
 
         el.addEventListener('mousedown', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.closest('.mm-node-link-btn')) return;
+            if (e.target.tagName === 'BUTTON' || e.target.closest('.mm-node-link-btn') || e.target.closest('.mm-node-unlink-btn')) return;
             if (window.mmSelectedId !== node.id) {
                 window.mmSelectedId = node.id;
                 document.querySelectorAll('.mm-node').forEach(n => n.classList.remove('selected'));
@@ -1771,10 +1790,23 @@ window.mmRender = function() {
                 window.mmHandleLinkClick(node.id);
             });
         }
+        
+        const quickUnlinkBtn = el.querySelector('.mm-node-unlink-btn');
+        if(quickUnlinkBtn) {
+            quickUnlinkBtn.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                if(confirm('確定要解除此節點的客戶連結嗎？\n(注意：原始客戶檔案不會被刪除)')) {
+                    node.linkedCrmId = null;
+                    window.mmSaveState();
+                    window.mmRender();
+                    window.showWPToast('已解除配對！');
+                }
+            });
+        }
 
         let isDragging = false;
         el.addEventListener('mousedown', (e) => {
-            if (e.target.classList.contains('mm-node-text') || e.target.tagName === 'BUTTON' || e.target.closest('.mm-node-link-btn')) return;
+            if (e.target.classList.contains('mm-node-text') || e.target.tagName === 'BUTTON' || e.target.closest('.mm-node-link-btn') || e.target.closest('.mm-node-unlink-btn')) return;
             isDragging = true;
             const startX = e.clientX - node.x; const startY = e.clientY - node.y;
             function onMouseMove(ev) { if(!isDragging) return; node.x = ev.clientX - startX; node.y = ev.clientY - startY; el.style.left = node.x + 'px'; el.style.top = node.y + 'px'; window.mmDrawLines(); }
@@ -1905,6 +1937,60 @@ window.mmUnlink = function() {
          document.getElementById('mm-link-modal').classList.remove('show');
      }
 };
+
+// ==========================================
+// 組織網路圖 - 更換上層邏輯
+// ==========================================
+window.mmOpenReparentModal = function() {
+    if(!window.mmSelectedId || window.mmSelectedId === 'root') {
+        window.showWPToast('請先選擇一個需要移動的子節點');
+        return;
+    }
+    const sel = document.getElementById('mm-reparent-select');
+    sel.innerHTML = '';
+    
+    // 檢查目標節點是否為某節點的子孫 (防止循環繼承)
+    function isDescendant(nodeId, targetId) {
+        if(nodeId === targetId) return true;
+        let n = window.mmNodes.find(x => x.id === nodeId);
+        while(n && n.parentId) {
+            if(n.parentId === targetId) return true;
+            n = window.mmNodes.find(x => x.id === n.parentId);
+        }
+        return false;
+    }
+
+    let hasOptions = false;
+    window.mmNodes.forEach(n => {
+        // 不能選自己，也不能選自己的子孫當作新的爸爸
+        if(!isDescendant(n.id, window.mmSelectedId)) {
+            sel.innerHTML += `<option value="${n.id}">${window.nbEscape(n.text)}</option>`;
+            hasOptions = true;
+        }
+    });
+
+    if(!hasOptions) {
+        window.showWPToast('沒有合適的上層項目可以選擇');
+        return;
+    }
+
+    document.getElementById('mm-reparent-modal').classList.add('show');
+};
+
+window.mmSaveReparent = function() {
+    const newParentId = document.getElementById('mm-reparent-select').value;
+    if(!newParentId) return;
+
+    const node = window.mmNodes.find(n => n.id === window.mmSelectedId);
+    if(node) {
+        node.parentId = newParentId;
+        window.mmSaveState();
+        window.mmAutoLayout();
+        window.showWPToast('更換成功！');
+        document.getElementById('mm-reparent-modal').classList.remove('show');
+    }
+};
+
 })();
 
 /* ══════════════════════════════════════════
@@ -1947,7 +2033,7 @@ window.collectAllData = function() {
   
   const hundredState = JSON.parse(localStorage.getItem('hundred_state') || '{}');
 
-  return { version:23, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
+  return { version:25, cells, fields, mindmap, notebook: window.NotebookApp.getAllNotes(), ninety90, reviewData, hundredState };
 };
 
 window.restoreAllData = function(data) {
